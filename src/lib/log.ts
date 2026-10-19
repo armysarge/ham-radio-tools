@@ -58,9 +58,21 @@ export function fromAdif(rec: Record<string, string>, id: string): Qso | null {
   if (!call || !/^\d{8}$/.test(d)) return null
   const hh = t.slice(0, 2) || '00', mm = t.slice(2, 4) || '00'
   const f = Number(rec.FREQ)
-  return { id, call, date: `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}`, time: `${hh}:${mm}`, freqMHz: Number.isFinite(f) && rec.FREQ ? f : null, mode: fromSub(rec.MODE ?? '', rec.SUBMODE ?? '') ?? rec.MODE ?? '', rstSent: rec.RST_SENT ?? '', rstRcvd: rec.RST_RCVD ?? '', name: rec.NAME ?? '', grid: (rec.GRIDSQUARE ?? '').toUpperCase(), comment: rec.COMMENT ?? '' }
+  return sanitizeQso({ id, call, date: `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}`, time: `${hh}:${mm}`, freqMHz: Number.isFinite(f) && rec.FREQ ? f : null, mode: fromSub(rec.MODE ?? '', rec.SUBMODE ?? '') ?? rec.MODE ?? '', rstSent: rec.RST_SENT ?? '', rstRcvd: rec.RST_RCVD ?? '', name: rec.NAME ?? '', grid: (rec.GRIDSQUARE ?? '').toUpperCase(), comment: rec.COMMENT ?? '' })
 }
 
 /** Same call, band and mode on the same UTC date: the usual contest duplicate rule. */
 export const isDuplicate = (log: Qso[], q: Pick<Qso, 'call' | 'date' | 'freqMHz' | 'mode'>) =>
   log.some((x) => x.call === q.call.toUpperCase() && x.date === q.date && x.mode === q.mode && bandOf(x.freqMHz) === bandOf(q.freqMHz))
+
+const clip = (v: unknown, n: number) => (typeof v === 'string' ? v.slice(0, n) : '')
+/** Make a stored or imported record safe to render: drops it if it has no usable call or date, clips every text field. */
+export function sanitizeQso(v: unknown): Qso | null {
+  if (typeof v !== 'object' || v === null) return null
+  const o = v as Record<string, unknown>
+  const call = clip(o.call, 20).trim().toUpperCase(), date = clip(o.date, 10), time = clip(o.time, 5)
+  if (!call || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null
+  const f = typeof o.freqMHz === 'number' && Number.isFinite(o.freqMHz) && o.freqMHz > 0 ? o.freqMHz : null
+  return { id: clip(o.id, 32) || Math.random().toString(36).slice(2, 10), call, date, time: /^\d{2}:\d{2}$/.test(time) ? time : '00:00', freqMHz: f, mode: clip(o.mode, 20), rstSent: clip(o.rstSent, 10), rstRcvd: clip(o.rstRcvd, 10), name: clip(o.name, 80), grid: clip(o.grid, 12), comment: clip(o.comment, 200) }
+}
+export const MAX_IMPORT_BYTES = 10 * 1024 * 1024, MAX_IMPORT_RECORDS = 50000

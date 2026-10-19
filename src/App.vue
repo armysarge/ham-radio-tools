@@ -68,7 +68,7 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
 
     <main id="main" tabindex="-1">
       <router-view v-slot="{ Component }">
-        <Suspense><component :is="Component" /><template #fallback><p class="muted">Loading…</p></template></Suspense>
+        <Suspense v-if="Component"><component :is="Component" /><template #fallback><p class="muted">Loading…</p></template></Suspense>
       </router-view>
     </main>
   </div>

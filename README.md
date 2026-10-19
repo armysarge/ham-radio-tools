@@ -126,7 +126,7 @@ Key design goals:
 - `npm run check:offline` scans `dist/` for external URLs, then drives the built app in a real browser with **every non-localhost request blocked and recorded**: start-up, search, calculators, dipole save, map and locator, persistence across reload, a project export → delete → re-import round trip, and a 375 px phone pass (no horizontal overflow on any page, menu drawer works).
 - **Not yet done:** the separate clean-machine installation check — it needs a packaged installer, which doesn't exist yet.
 
-**What has actually been tested:** Windows 10 (build 19045), Node 24, Microsoft Edge via Playwright (including real IndexedDB for packs), Vitest/jsdom with 99 tests. The microphone decoder is tested on synthesised audio only, never on a real microphone or radio. Linux, macOS, Firefox, Safari and real phones/tablets are **untested**. Visual review was at 375 px and 768 px, mostly in dark theme. On phones the map supports touch pan; pinch-zoom is not implemented (use +/−).
+**What has actually been tested:** Windows 10 (build 19045), Node 24, Microsoft Edge via Playwright (including real IndexedDB for packs), Vitest/jsdom with 195 tests. The microphone decoder is tested on synthesised audio only, never on a real microphone or radio. Linux, macOS, Firefox, Safari and real phones/tablets are **untested**. Visual review was at 375 px and 768 px, mostly in dark theme. On phones the map supports touch pan; pinch-zoom is not implemented (use +/−).
 
 ## Project files
 
@@ -136,7 +136,7 @@ Key design goals:
 
 | Content | Status |
 |---|---|
-| App, calculators, diagrams | Bundled |
+| App, calculators, diagrams, toroid core table, cable-loss presets | Bundled (typical catalogue figures, labelled approximate) |
 | World basemap (Natural Earth 1:110m, public domain) | Bundled — country outlines only |
 | ITU region band plans, CTCSS, abbreviations, constants, Q codes, callsign prefixes, time stations, antenna mods, QRM guide | Bundled — each dated in its tool |
 | National band tables: United States, Canada, Germany, Australia, South Africa, Japan, Brazil | Bundled — compiled from each regulator's own text (see below) |
@@ -209,9 +209,9 @@ Band-preset buttons are convenience design frequencies, **not** a band plan; all
 
 ```
 src/lib/        pure logic (rf, antenna, maidenhead, geo, units, morse, callsign, qrm, packs, project, scheduleImport, station, beams, log, trainer, timers, propagation, sat) — no Vue, fully unit-tested
-src/data/       dated reference data kept apart from logic (Q codes, ITU bands, CTCSS, constants, callsign blocks, time stations, antenna mods, QRM sources)
+src/data/       dated reference data kept apart from logic (Q codes, ITU bands, CTCSS, constants, callsign blocks, time stations, antenna mods, materials, toroid cores, QRM sources)
 src/core/       registry.ts (typed tool list, categories, search) · store.ts (settings, favorites, locations, designs → localStorage) · packs.ts (content packs → IndexedDB)
-src/components/ NumField (unit-aware validated input, v-model is canonical SI), ResultRow, ToolLayout, LineChart, WorldMap, LocationInput, DesignActions, ModsPanel, PackManager, SpectrumSketch
+src/components/ NumField (unit-aware validated input, v-model is canonical SI), ResultRow, ToolLayout, LineChart, WorldMap, LocationInput, DesignActions, ModsPanel, MaterialsPanel, PackManager, SpectrumSketch, and the SVG diagrams (BeamDiagram, RadialDiagram, SnifferLoopDiagram)
 src/tools/      one .vue per tool, lazy-loaded
 src/views/      dashboard, settings, saved designs
 src/platform/   the only place for OS-level access (file save, clipboard)
@@ -225,7 +225,8 @@ Canonical units are Hz, m, W, Ω and degrees; display units are a UI concern in 
 
 1. Put the maths in `src/lib/` with tests in `tests/`.
 2. Create `src/tools/MyTool.vue`: wrap it in `<ToolLayout id="my-tool" :references="[…]">`, use `NumField` / `ResultRow`, and put the formula and assumptions in the `#explain` slot.
-3. Add one entry to `tools` in `src/core/registry.ts` (id, title, category, kind, keywords, lazy import). Routing, sidebar, search and favorites follow automatically.
+3. Add one entry to `tools` in `src/core/registry.ts` (id, title, category, kind, keywords, lazy import) and a `TOOL_ICON` entry (add the icon to `src/components/NavIcon.vue` if it is new). Routing, sidebar, search and favorites follow automatically.
+4. Add `'tool/my-tool'` to the phone-width route list in `scripts/check-offline.mjs`. `tests/registry.test.ts` fails if a tool is missing its icon, category, route or page wiring.
 
 ## Desktop wrapper recommendation: Tauri 2
 
@@ -250,13 +251,13 @@ Recommendation: **Tauri**, because size, memory and a narrow permission model ma
 - [x] Morse chart, player, WAV export and decoders
 - [x] Content-pack infrastructure, ITU band plans, CTCSS, abbreviations, constants, callsign lookup
 - [x] QRM hunting guide, antenna mods, broadcast schedules
-- [ ] Morse practice trainer (Koch method), UTC/local time and timers
-- [ ] National band-plan packs with sub-band segments (jurisdiction, source, revision) — format exists, **no national pack is bundled yet**
+- [x] Morse practice trainer (Koch method), UTC clock and timers, logbook with ADIF, station calculators, propagation basics and satellite passes
+- [x] National band tables bundled for the USA, Canada, Germany, Australia, South Africa, Japan and Brazil; UK and India wait for official PDFs (see docs/DATA_SOURCES.md)
 - [ ] DCS codes, DXCC-level callsign entities, CQ/ITU zones
 - [x] Saved-project export/import (JSON file)
 - [ ] Regional map packs (evaluate MapLibre GL + PMTiles) and pinch-zoom
 - [ ] Tauri shell and clean-machine install tests on Windows and Linux
-- [ ] J-pole, end-fed, matching networks, Yagi (documented methods only)
+- [x] J-pole, end-fed, L-network matching, Yagi and quad starting designs (documented methods only)
 - [ ] Manual library (user-imported PDFs, local search; OCR later) — no bundled radio-manual library is promised
 - [ ] Optional local AI with page-level citations and no cloud fallback
 - [ ] Narrow native utilities (serial discovery, checksums) via explicit commands
@@ -271,7 +272,7 @@ Recommendation: **Tauri**, because size, memory and a narrow permission model ma
 
 ## Security & privacy notes
 
-- Nothing leaves the device. Settings, favorites, locations and saved designs live in this browser's `localStorage`; clearing site data erases them.
+- Nothing leaves the device. Settings, favorites, locations, saved designs and the **logbook** live in this browser's `localStorage`; clearing site data erases them. The logbook is not part of the project file: back it up with **Export ADIF**.
 - If the browser blocks storage, the app still works and says so in **Settings**.
 - Antenna voltages are high at wire ends — keep them insulated and out of reach (the inverted-V tool warns about low ends).
 

@@ -18,7 +18,7 @@ const show = (m: number) => (imp.value ? `${(m / 0.3048).toFixed(1)} ft` : `${m.
 </script>
 
 <template>
-  <ToolLayout id="radial-planner" :references="['Brown, Lewallen &amp; Epstein, “Ground systems as a factor in antenna efficiency”, Proc. IRE, 1937; ARRL Antenna Book on radial systems; Rudge, The Handbook of Antennas and Propagation. Radial count recommendations are published rules of thumb, not a calculation of your soil.']">
+  <ToolLayout id="radial-planner" :references="['Brown, Lewallen &amp; Epstein, “Ground systems as a factor in antenna efficiency”, Proc. IRE, 1937; ARRL Antenna Book on radial systems; Rudge et al., The Handbook of Antenna Design (IEE, 1982). Radial count recommendations are published rules of thumb, not a calculation of your soil.']">
     <div class="cols">
       <div class="card stack">
         <NumField v-model="f" label="Band frequency" :units="FREQ_UNITS" unit="MHz" :min="0" minExclusive />

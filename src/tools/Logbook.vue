@@ -3,14 +3,14 @@ import { computed, ref, watch } from 'vue'
 import ToolLayout from '../components/ToolLayout.vue'
 import NumField from '../components/NumField.vue'
 import { FREQ_UNITS } from '../lib/units'
-import { bandOf, fromAdif, isDuplicate, parseAdif, toAdif, type Qso } from '../lib/log'
+import { MAX_IMPORT_BYTES, MAX_IMPORT_RECORDS, bandOf, fromAdif, isDuplicate, parseAdif, sanitizeQso, toAdif, type Qso } from '../lib/log'
 import { state } from '../core/store'
 import { platform } from '../platform'
 
 declare const __APP_VERSION__: string
 const KEY = 'hrt:log'
 // ponytail: localStorage keeps about 20 000 QSOs; move to IndexedDB (as the content packs do) if logs ever outgrow that.
-function load(): Qso[] { try { return JSON.parse(localStorage.getItem(KEY) ?? '[]') } catch { return [] } }
+function load(): Qso[] { try { const v = JSON.parse(localStorage.getItem(KEY) ?? '[]'); return Array.isArray(v) ? v.map(sanitizeQso).filter((q): q is Qso => q !== null) : [] } catch { return [] } }
 const log = ref<Qso[]>(load())
 const saveErr = ref('')
 watch(log, (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); saveErr.value = '' } catch { saveErr.value = 'The browser would not store the log. Export it now so nothing is lost.' } }, { deep: true })
@@ -37,7 +37,8 @@ const exportAdif = () => platform.saveFile(`log-${nowParts().date}.adi`, new Blo
 async function importAdif(e: Event) {
   note.value = ''; const file = (e.target as HTMLInputElement).files?.[0]; if (!file) return
   try {
-    const recs = parseAdif(await file.text()); let added = 0, skipped = 0
+    if (file.size > MAX_IMPORT_BYTES) { note.value = 'That file is larger than 10 MB, so it is probably not a log.'; return }
+    const recs = parseAdif(await file.text()).slice(0, MAX_IMPORT_RECORDS); let added = 0, skipped = 0
     for (const r of recs) {
       const q = fromAdif(r, Math.random().toString(36).slice(2, 10))
       if (!q || isDuplicate(log.value, q)) { skipped++; continue }

@@ -19,4 +19,4 @@ npm run build        # type-check + build
 npm run check:offline
 ```
 
-Add a tool: see *Adding a tool* in the README.
+Add a tool: see *Adding a tool* in the README (it also needs an icon and an entry in the offline phone-width route list; `npm test` checks this).
