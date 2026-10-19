@@ -105,6 +105,12 @@ export const tools: ToolDef[] = [
   { id: 'maidenhead', title: 'Grid Squares, Distance & Bearing', category: 'maps', kind: 'analytical',
     summary: 'Coordinates ↔ Maidenhead locators on an offline world map, with beam heading.',
     keywords: ['locator', 'qth', 'grid', 'bearing', 'distance', 'great circle', 'map', 'latitude'], component: load(() => import('../tools/Maidenhead.vue')) },
+  { id: 'propagation', title: 'Propagation Basics', category: 'prop', kind: 'analytical',
+    summary: 'Which bands suit which time of day, a single-hop MUF estimate, and sunrise, sunset and the grey line on a map.',
+    keywords: ['muf', 'skip', 'grey line', 'gray line', 'sunrise', 'sunset', 'terminator', 'ionosphere', 'fof2', 'hf', 'dx'], component: load(() => import('../tools/Propagation.vue')) },
+  { id: 'satellite-passes', title: 'Satellite Pass Calculator', category: 'prop', kind: 'analytical',
+    summary: 'When a satellite rises, peaks and sets over you, from a TLE you paste in. Runs offline.',
+    keywords: ['satellite', 'iss', 'tle', 'pass', 'amsat', 'orbit', 'sgp4', 'azimuth', 'elevation', 'oscar', 'keplerian'], component: load(() => import('../tools/SatellitePasses.vue')) },
   { id: 'qrm-hunting', title: 'QRM Hunting', category: 'ops', kind: 'reference',
     summary: 'Step-by-step noise hunting, source signatures, a harmonic finder, and a DIY SDR sniffer loop.',
     keywords: ['interference', 'noise', 'rfi', 'sdr', 'birdies', 'plc', 'switching supply', 'loop', 'direction finding', 'qrm'], component: load(() => import('../tools/QrmHunting.vue')) },
@@ -154,7 +160,7 @@ const TOOL_ICON: Record<string, string> = {
   'frequency-wavelength': 'wave', 'ohms-law': 'resistor', components: 'chip', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
   dipole: 'dipole', efhw: 'endfed', 'inverted-v': 'invertedv', vertical: 'vertical', jpole: 'jpole', loop: 'loop', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
   'band-plans': 'plan', 'itu-regulations': 'scale', ctcss: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'q-codes': 'q', phonetic: 'letterA',
-  'feedline-loss': 'cable', 'link-budget': 'link', 'l-network': 'match', 'low-pass-filter': 'filter', coils: 'toroid', 'power-planner': 'battery', yagi: 'yagi', quad: 'loop', 'radial-planner': 'vertical', logbook: 'book', clock: 'clock', 'morse-trainer': 'morse',
+  'feedline-loss': 'cable', 'link-budget': 'link', 'l-network': 'match', 'low-pass-filter': 'filter', coils: 'toroid', 'power-planner': 'battery', yagi: 'yagi', quad: 'loop', 'radial-planner': 'vertical', logbook: 'book', clock: 'clock', 'morse-trainer': 'morse', propagation: 'sun', 'satellite-passes': 'sat',
 }
 export const iconFor = (id: string) => TOOL_ICON[id] ?? 'wave'
 export const toolById = (id: string) => tools.find((t) => t.id === id)

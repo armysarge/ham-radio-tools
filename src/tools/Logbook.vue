@@ -56,14 +56,14 @@ async function importAdif(e: Event) {
       <div class="card stack">
         <label class="field"><span class="lbl">Call sign worked</span><input v-model="call" autocapitalize="characters" spellcheck="false" @keyup.enter="add" /></label>
         <p v-if="dup" class="notice" role="status">You already have this call on this band and mode today.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem">
           <label class="field"><span class="lbl">Date (UTC)</span><input type="date" v-model="date" /></label>
           <label class="field"><span class="lbl">Time (UTC)</span><input type="time" v-model="time" /></label>
         </div>
         <button class="ghost" @click="useNow">Use the time now</button>
         <NumField v-model="f" label="Frequency" :units="FREQ_UNITS" unit="MHz" :min="0" minExclusive :hint="bandOf(f == null ? null : f / 1e6) ? 'Band: ' + bandOf(f == null ? null : f / 1e6) : 'Outside the amateur bands ADIF knows'" />
         <label class="field"><span class="lbl">Mode</span><select v-model="mode"><option v-for="m in MODES" :key="m">{{ m }}</option></select></label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem">
           <label class="field"><span class="lbl">RST sent</span><input v-model="rs" /></label>
           <label class="field"><span class="lbl">RST received</span><input v-model="rr" /></label>
         </div>

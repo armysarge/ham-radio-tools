@@ -5,6 +5,11 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 ## [0.2.0] - 2026-10-19
 
 ### Added
+- Station tools: feedline loss, link budget and path loss (with radio horizon and Fresnel clearance), L-network matching, low-pass filter designer, coils and toroids, battery and solar planner.
+- Yagi and quad starting designs and a radial and site planner.
+- Logbook with duplicate warning and ADIF 3.1 export / import; UTC clock with time zones, station-ID reminder and UTC countdown; Koch Morse practice trainer.
+- Propagation basics (band use by time of day, MUF estimate, sunrise / sunset / grey line map) and a satellite pass calculator from a pasted TLE (new runtime dependency: satellite.js 6, MIT, bundled).
+- Categories “Station & Logging” and “Propagation & Satellites”.
 - Components page: resistor colour codes (3–6 bands, both directions), capacitor and SMD / EIA-96 codes, E6–E96 preferred values, series/parallel, voltage divider, LED resistor.
 - J-pole antenna design tool; the vertical tool is now titled “Vertical Antenna (Quarter-wave Ground Plane)” and its drawing shows radiator, radials, base insulator, coax and choke.
 - “What to build it from” guidance (wire, coax, connectors, chokes, supports, weatherproofing) on every antenna tool.

@@ -50,11 +50,13 @@ Key design goals:
 | Area | Feature |
 |---|---|
 | **RF & electronics** | Frequency ↔ wavelength with velocity factor · Ohm's law and power (any two in, rest out) · dBm / watts / dB ratios with impedance assumptions · SWR, return loss, reflection coefficient, mismatch loss · Reactance and LC resonance · Feedline electrical length · **Component codes: resistor colours both ways, capacitor and SMD codes, E-series values, series/parallel, divider, LED resistor** |
-| **Antenna design** | Half-wave dipole with trim helper · End-fed half-wave (harmonic bands, counterpoise, 49:1/64:1 transformer guidance) · Inverted-V (apex angle, span, end height) · Quarter-wave vertical with elevated or ground radials · J-pole for VHF/UHF (pipe or twin-lead) · Full-wave loop (square, triangle, circle) with a 75 Ω matching section · Dimensioned SVG drawings · **what to build it from** (wire, coax, connectors, chokes, supports: best/good/OK/avoid) · Save, export SVG, print |
+| **Antenna design** | Half-wave dipole with trim helper · End-fed half-wave (harmonic bands, counterpoise, 49:1/64:1 transformer guidance) · Inverted-V (apex angle, span, end height) · Quarter-wave vertical with elevated or ground radials · J-pole for VHF/UHF (pipe or twin-lead) · Full-wave loop (square, triangle, circle) with a 75 Ω matching section · **Yagi and quad starting designs** · **radial and site planner** · Dimensioned SVG drawings · **what to build it from** (wire, coax, connectors, chokes, supports: best/good/OK/avoid) · Save, export SVG, print |
+| **Station & logging** | Feedline loss (datasheet figures, length, frequency, SWR) · link budget with path loss, noise floor, radio horizon and Fresnel clearance · L-network matching · Butterworth/Chebyshev low-pass filter designer with response curve · toroid and air-core coil turns · battery runtime and solar sizing · **logbook with duplicate warning and ADIF 3.1 export/import** |
+| **Propagation & satellites** | Typical band use by time of day · single-hop MUF estimate (secant law) · sunrise, sunset, grey line and day/night terminator on the map · **satellite pass prediction from a TLE you paste in (SGP4, offline)** |
 | **Maps & grid squares** | Coordinates ↔ Maidenhead (4, 6 or 8 characters) · Cell edges vs. cell centre · Short- and long-path distance and bearing · Bundled offline world map with grid overlay, pan and zoom · Saved named locations and "my station" |
 | **Projects** | Export saved designs and locations to a JSON file; import by adding or replacing; invalid entries are skipped with a reason |
 | **Operating references** | Phonetic alphabet · Q codes · Abbreviations · CTCSS tones · Constants and rules of thumb · ITU Radio Regulations explained · ITU region band plans and **national band tables for the USA, Canada, Germany, Australia, South Africa, Japan and Brazil** with a "what is at this frequency?" lookup · Callsign lookup (issuing country, island/home nation, DL/ prefixes, /P /MM suffixes) |
-| **CW (Morse)** | Chart · text → Morse player (PARIS timing, Farnsworth, adjustable pitch) · WAV download · decoder for typed dots/dashes, tapped keying and an experimental microphone decoder |
+| **CW (Morse)** | **Koch practice trainer (Farnsworth, scored)** · UTC clock, time zones, station-ID reminder and UTC countdown · Chart · text → Morse player (PARIS timing, Farnsworth, adjustable pitch) · WAV download · decoder for typed dots/dashes, tapped keying and an experimental microphone decoder |
 | **QRM hunting** | Step-by-step method · source signatures (schematic sketches) · harmonic finder · DIY shielded-loop size calculator **and a full step-by-step build guide with diagram, tests and troubleshooting** |
 | **Antenna mods** | A proven / situational / unproven checklist on every antenna tool, with the reasoning and no invented gain figures |
 | **Broadcast schedules** | Bundled time & frequency stations · installable, dated schedule packs with staleness warnings · "on air now" at any UTC time |
@@ -179,6 +181,16 @@ Band-plan pack format (`data.segments`): `{ "band": "20 m", "fromHz": 14000000, 
 | Dipole | L = k·c/2f, k = 0.95 (≈ 468/f ft) | Empirical. No pattern, impedance, bandwidth, height or ground modelling |
 | End-fed half-wave | Dipole-length wire (k = 0.95); harmonics n·f against HF bands; ideal-transformer Zin = Zend/ratio | Empirical. End impedance and per-band SWR are not predicted |
 | J-pole | Overall 0.75·k·λ, stub 0.25·k·λ, k = 0.957 (≈ 58 in at 146 MHz in ½-inch pipe); spacing 0.025 λ and tap 0.025 λ as starting values | Empirical. Tap and spacing depend on tube size: tune with an analyser |
+| Feedline loss | Matched loss scaled from one datasheet point by √f and length; mismatch added with the ARRL formula | √f law is HF/VHF; preset cable figures are approximate: use your datasheet |
+| Link budget | FSPL = 20 log d + 20 log f + 32.44; noise floor −174 dBm/Hz + 10 log B + NF + SNR; horizon 3.57√(kh); Fresnel 17.32√(n d₁d₂/fD) | Free space, best case; terrain and fading are an allowance you enter |
+| L-network | Q = √(Rhi/Rlo − 1), Xs = Q·Rlo, Xp = Rhi/Q | Resistive loads at one frequency; ideal parts |
+| Low-pass filter | Butterworth and Chebyshev ladder prototypes, scaled to cutoff and impedance; odd orders 3–9 | Ideal lossless parts; tolerance and stray capacitance not modelled |
+| Coils | N = √(L/AL); Wheeler L = d²n²/(18d + 40l) | AL is typical catalogue value (±10–25 %); Wheeler good to ~1 % for l > 0.8d |
+| Battery & solar | Wh = A·h·V; panel = Wh/(sun hours × efficiency) | Planning figures; weather, ageing and temperature are not modelled |
+| Yagi / quad | Rule-of-thumb proportions (reflector +5 %, director −5 %; quad 1005/1030/975 per f) | Empirical starting point: **no gain or pattern is claimed** |
+| Logbook | ADIF 3.1.4 fields, ASCII only; duplicate = call + band + mode + UTC day | Stored in this browser: export regularly; no DXCC entity is written |
+| Propagation | NOAA solar position (~1 min); MUF = foF2·sec θ on a spherical Earth | foF2 must be supplied; no D-layer absorption, no forecast |
+| Satellite passes | SGP4 via satellite.js 6 (MIT) from a pasted TLE | Accuracy depends on the age of the element set; no Doppler; passes in progress at the end of the window are not listed |
 | Components | IEC 60062 colour code, EIA capacitor and SMD/EIA-96 codes, IEC 60063 E-series, Ohm’s law | Colour codes beyond the six common temperature-coefficient colours vary by maker |
 | Inverted-V | Dipole length × sloping-leg factor 0.97; span/drop by trigonometry | Empirical. Impedance guidance is qualitative |
 | Vertical | k·c/4f for radiator and resonant radials, k = 0.95 (≈ 234/f ft) | Empirical. Radial counts are common guidance, not computed |
@@ -196,7 +208,7 @@ Band-preset buttons are convenience design frequencies, **not** a band plan; all
 ## Architecture
 
 ```
-src/lib/        pure logic (rf, antenna, maidenhead, geo, units, morse, callsign, qrm, packs, project, scheduleImport) — no Vue, fully unit-tested
+src/lib/        pure logic (rf, antenna, maidenhead, geo, units, morse, callsign, qrm, packs, project, scheduleImport, station, beams, log, trainer, timers, propagation, sat) — no Vue, fully unit-tested
 src/data/       dated reference data kept apart from logic (Q codes, ITU bands, CTCSS, constants, callsign blocks, time stations, antenna mods, QRM sources)
 src/core/       registry.ts (typed tool list, categories, search) · store.ts (settings, favorites, locations, designs → localStorage) · packs.ts (content packs → IndexedDB)
 src/components/ NumField (unit-aware validated input, v-model is canonical SI), ResultRow, ToolLayout, LineChart, WorldMap, LocationInput, DesignActions, ModsPanel, PackManager, SpectrumSketch
@@ -254,7 +266,7 @@ Recommendation: **Tauri**, because size, memory and a narrow permission model ma
 - **Reference project:** [it-tools](https://github.com/CorentinTh/it-tools) (GPL-3.0) was reviewed for ideas only — per-tool modules in a central registry, categories, and easy tool scaffolding. **No code or assets were copied.**
 - **Icons:** the GitHub mark in the app is the Octicons “mark-github” icon (MIT, © GitHub, Inc.); the other menu icons are original line drawings.
 - **Basemap:** Natural Earth 1:110m countries (public domain) via `world-atlas` 2.0.2 (ISC, © Michael Bostock), compiled into the app.
-- **Runtime dependencies:** Vue, vue-router (MIT), topojson-client (ISC). Fonts: none bundled (system stacks).
+- **Runtime dependencies:** Vue, vue-router (MIT), topojson-client (ISC), satellite.js 6 (MIT, SGP4 orbit propagation). Fonts: none bundled (system stacks).
 - Each tool's *Sources & references* panel names the handbooks used for the **methods**; no text was copied.
 
 ## Security & privacy notes

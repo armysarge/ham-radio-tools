@@ -51,3 +51,9 @@ Limits to be aware of (also listed per source in `sources.json`):
 1. Find the regulator's **own** text (law, notification or licence conditions). Avoid forum posts, club summaries and wikis; where only a third-party copy exists, say so in `gaps`.
 2. Add its entry to `sources.json` (leave `sha256` out), add a block to `build-packs.mjs`, add tests with a few boundary frequencies you checked by hand, run `npm run check:sources -- --update`, and add a row to the tables here and in the README.
 3. Say what the table does **not** cover (licence classes, bandwidth limits, sub-band modes) in the pack's `notes`.
+
+## Other bundled reference data
+
+- **Toroid AL values** (`src/data/cores.ts`): typical catalogue figures for Amidon / Micrometals iron-powder (T-xx-2, -6) and ferrite (FT-xx-43, -61) cores, rounded; tolerance ±10–25 %. Not compiled from a single document: check a supplier datasheet when buying a core.
+- **Cable loss presets** (`src/tools/FeedlineLoss.vue`): approximate dB per 100 ft at 100 MHz for RG-174, RG-58, RG-8X, RG-213 and LMR-400 types; users should enter their datasheet value.
+- **Satellite elements** are never bundled; users paste a TLE from CelesTrak, AMSAT or Space-Track.

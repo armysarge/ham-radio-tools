@@ -24,7 +24,7 @@ button:hover { border-color: var(--accent); }
 button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
 button.ghost { border-color: transparent; background: transparent; }
 button[aria-pressed='true'] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-input[type='text'], select { min-height: 44px; padding: .35rem .6rem; border: 1.5px solid var(--line); border-radius: 8px; background: var(--panel); width: 100%; }
+input[type='text'], input:not([type]), input[type='date'], input[type='time'], input[type='datetime-local'], select, textarea { min-height: 44px; padding: .35rem .6rem; border: 1.5px solid var(--line); border-radius: 8px; background: var(--panel); width: 100%; }
 input[type='text'].mono { font-family: var(--mono); }
 input[aria-invalid='true'] { border-color: var(--bad); }
 input[type='range'] { width: 100%; height: 32px; accent-color: var(--accent); }

@@ -35,3 +35,19 @@ describe('logbook, clock and trainer', () => {
     await w.find('button[aria-label="Delete DL1ABC"]').trigger('click'); expect(w.text()).toContain('No contacts yet')
   })
 })
+
+describe('propagation and satellites', () => {
+  it('propagation opens on the band table and switches to MUF', async () => {
+    const w = await open('propagation'); expect(w.text()).toContain('Usually best'); await w.findAll('button').find((b) => b.text() === 'MUF estimate')!.trigger('click'); await flushPromises()
+    expect(w.text()).toContain('Maximum usable frequency')
+  })
+  it('sun tab gives sunrise and a day part', async () => {
+    const w = await open('propagation'); await w.findAll('button').find((b) => b.text().startsWith('Sun'))!.trigger('click'); await flushPromises()
+    expect(w.text()).toContain('Sunrise'); expect(w.text()).toMatch(/day|night|grey line/)
+  })
+  it('satellite tool lists passes for the sample and explains a bad TLE', async () => {
+    const w = await open('satellite-passes'); expect(w.text()).toContain('Paste an element set')
+    await w.find('textarea').setValue('1 garbage'); await flushPromises(); expect(w.text()).toContain('two lines')
+    await w.findAll('button').find((b) => b.text().startsWith('Insert'))!.trigger('click'); await flushPromises(); expect(w.text()).toContain('ISS (ZARYA)'); expect(w.text()).toContain('days away')
+  })
+})
