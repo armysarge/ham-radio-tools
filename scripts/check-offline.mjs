@@ -91,7 +91,7 @@ await step('content pack: import a band plan into IndexedDB, survives reload, dr
 await step('no uncaught errors', async () => { if (errors.length) throw new Error(errors.join(' | ')) })
 await step('phone width (375px): no horizontal overflow on any page, menu drawer opens', async () => {
   const m = await ctx.newPage(); await m.setViewportSize({ width: 375, height: 812 })
-  const routes = ['', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/vertical', 'tool/loop', 'tool/maidenhead', 'tool/q-codes', 'tool/band-plans', 'tool/ctcss', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/phonetic', 'settings', 'saved']
+  const routes = ['', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/vertical', 'tool/loop', 'tool/maidenhead', 'tool/q-codes', 'tool/band-plans', 'tool/ctcss', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/phonetic', 'settings', 'saved']
   const bad = []
   for (const r of routes) { await m.goto(base + '#/' + r); await m.waitForTimeout(400); const w = await m.evaluate(() => [document.documentElement.scrollWidth, innerWidth]); if (w[0] > w[1]) bad.push(r + ' ' + w.join('>')) }
   if (bad.length) throw new Error('overflow: ' + bad.join(', '))

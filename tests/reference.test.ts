@@ -84,3 +84,17 @@ describe('CW tool', () => {
     expect(w.text()).toMatch(/cannot access a microphone|refused or no microphone/) // jsdom has no microphone: a readable error, not a crash
   })
 })
+
+import CallsignLookup from '../src/tools/CallsignLookup.vue'
+describe('callsign tool', () => {
+  it('shows the issuing country, operating country and notes, and handles bad input', async () => {
+    const w = mount(CallsignLookup, { global })
+    expect(w.text()).toContain('South Africa'); expect(w.text()).toContain('Germany'); expect(w.text()).toContain('portable')
+    await w.find('input[type=text]').setValue('kh6abc'); await flushPromises()
+    expect(w.text()).toContain('United States'); expect(w.text()).toContain('Hawaii')
+    await w.find('input[type=text]').setValue('QA1ABC'); await flushPromises()
+    expect(w.text()).toContain('not in any allocated')
+    await w.find('input[type=text]').setValue('W1AW!'); await flushPromises()
+    expect(w.text()).toContain('only letters, digits')
+  })
+})
