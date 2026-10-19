@@ -52,6 +52,9 @@ export const tools: ToolDef[] = [
   { id: 'feedline-length', title: 'Feedline Electrical Length', category: 'rf', kind: 'analytical',
     summary: 'Physical cable length for a quarter-wave, half-wave or custom electrical length.',
     keywords: ['coax', 'velocity factor', 'stub', 'phasing', 'quarter wave', 'cable'], component: load(() => import('../tools/Feedline.vue')) },
+  { id: 'components', title: 'Components: Colour Codes & Values', category: 'rf', kind: 'reference',
+    summary: 'Resistor colour codes both ways, capacitor and SMD codes, standard E-series values, series/parallel, divider and LED resistor.',
+    keywords: ['resistor', 'colour code', 'color code', 'capacitor', 'smd', 'e12', 'e24', 'e96', 'parallel', 'voltage divider', 'led', 'preferred values'], component: load(() => import('../tools/ComponentCodes.vue')) },
   { id: 'dipole', title: 'Half-wave Dipole', category: 'antenna', kind: 'empirical',
     summary: 'Wire lengths for a centre-fed dipole, with a live drawing and trimming guide.',
     keywords: ['wire', 'antenna', '468', 'hf', 'cut', 'trim'], component: load(() => import('../tools/Dipole.vue')) },
@@ -107,7 +110,7 @@ export const tools: ToolDef[] = [
 
 export const CATEGORY_ICON: Record<string, string> = { rf: 'rf', antenna: 'antenna', maps: 'map', ops: 'ops' }
 const TOOL_ICON: Record<string, string> = {
-  'frequency-wavelength': 'wave', 'ohms-law': 'resistor', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
+  'frequency-wavelength': 'wave', 'ohms-law': 'resistor', components: 'chip', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
   dipole: 'dipole', efhw: 'endfed', 'inverted-v': 'invertedv', vertical: 'vertical', loop: 'loop', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
   'band-plans': 'plan', 'itu-regulations': 'scale', ctcss: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'q-codes': 'q', phonetic: 'letterA',
 }
