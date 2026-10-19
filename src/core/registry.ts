@@ -126,6 +126,15 @@ export const tools: ToolDef[] = [
   { id: 'constants', title: 'Constants & Rules of Thumb', category: 'ops', kind: 'reference',
     summary: 'Physical constants, exact unit conversions and the antenna rules of thumb, with their precision.',
     keywords: ['speed of light', 'boltzmann', 'noise', 'free space', 'impedance', 'codata', '468', 'permittivity'], component: withProps(() => import('../tools/RefLists.vue'), { which: 'constants' }) },
+  { id: 'logbook', title: 'Logbook & ADIF', category: 'station', kind: 'reference',
+    summary: 'Log contacts on this device with duplicate warning, then export or import standard ADIF files.',
+    keywords: ['log', 'adif', 'adi', 'qso', 'contacts', 'lotw', 'eqsl', 'club log', 'contest'], component: load(() => import('../tools/Logbook.vue')) },
+  { id: 'clock', title: 'UTC Clock & Timers', category: 'ops', kind: 'reference',
+    summary: 'UTC and local time, extra time zones, a station-ID reminder and a UTC countdown for contests and nets.',
+    keywords: ['utc', 'time', 'zulu', 'id', 'identification', 'timer', 'countdown', 'contest', 'net', 'world clock'], component: load(() => import('../tools/Clock.vue')) },
+  { id: 'morse-trainer', title: 'Morse Practice Trainer (Koch)', category: 'ops', kind: 'reference',
+    summary: 'Learn Morse by the Koch method: random groups at full character speed with Farnsworth spacing, scored by copy accuracy.',
+    keywords: ['morse', 'cw', 'koch', 'farnsworth', 'learn', 'practice', 'training', 'copy', 'g4fon'], component: load(() => import('../tools/MorseTrainer.vue')) },
   { id: 'cw', title: 'CW (Morse): Send, Decode & Listen', category: 'ops', kind: 'reference',
     summary: 'Morse chart, text-to-Morse player with WAV download, tap or typed decoder, and an experimental microphone decoder.',
     keywords: ['morse', 'code', 'encoder', 'decoder', 'player', 'dit', 'dah', 'farnsworth', 'wpm', 'paris'], component: load(() => import('../tools/Cw.vue')) },
@@ -145,7 +154,7 @@ const TOOL_ICON: Record<string, string> = {
   'frequency-wavelength': 'wave', 'ohms-law': 'resistor', components: 'chip', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
   dipole: 'dipole', efhw: 'endfed', 'inverted-v': 'invertedv', vertical: 'vertical', jpole: 'jpole', loop: 'loop', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
   'band-plans': 'plan', 'itu-regulations': 'scale', ctcss: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'q-codes': 'q', phonetic: 'letterA',
-  'feedline-loss': 'cable', 'link-budget': 'link', 'l-network': 'match', 'low-pass-filter': 'filter', coils: 'toroid', 'power-planner': 'battery', yagi: 'yagi', quad: 'loop', 'radial-planner': 'vertical',
+  'feedline-loss': 'cable', 'link-budget': 'link', 'l-network': 'match', 'low-pass-filter': 'filter', coils: 'toroid', 'power-planner': 'battery', yagi: 'yagi', quad: 'loop', 'radial-planner': 'vertical', logbook: 'book', clock: 'clock', 'morse-trainer': 'morse',
 }
 export const iconFor = (id: string) => TOOL_ICON[id] ?? 'wave'
 export const toolById = (id: string) => tools.find((t) => t.id === id)

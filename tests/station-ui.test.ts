@@ -19,3 +19,19 @@ describe('beam and radial tools', () => {
   it('quad shows loop perimeters', async () => { const w = await open('quad'); expect(w.text()).toContain('Perimeter'); expect(w.text()).toContain('driven') })
   it('radial planner', async () => { const w = await open('radial-planner'); expect(w.text()).toContain('Number of radials'); expect(w.text()).toContain('40 m') })
 })
+
+describe('logbook, clock and trainer', () => {
+  it('clock shows UTC and rejects a bad zone', async () => {
+    const w = await open('clock'); expect(w.text()).toContain('UTC'); await w.find('input[placeholder^="e.g."]').setValue('Nowhere/Land'); await w.findAll('button').find((b) => b.text() === 'Add')!.trigger('click')
+    expect(w.text()).toContain('not a time zone name')
+  })
+  it('trainer shows the lesson characters', async () => { const w = await open('morse-trainer'); expect(w.text()).toContain('K M'); expect(w.text()).toContain('Play') })
+  it('logbook validates a call, logs it, warns on a duplicate and can delete', async () => {
+    localStorage.removeItem('hrt:log'); const w = await open('logbook')
+    await w.findAll('button').find((b) => b.text() === 'Log contact')!.trigger('click'); expect(w.text()).toContain('Enter a call sign')
+    await w.find('input[autocapitalize="characters"]').setValue('dl1abc'); await w.findAll('button').find((b) => b.text() === 'Log contact')!.trigger('click'); await flushPromises()
+    expect(w.text()).toContain('1 contact'); expect(w.text()).toContain('DL1ABC')
+    await w.find('input[autocapitalize="characters"]').setValue('DL1ABC'); expect(w.text()).toContain('already have this call')
+    await w.find('button[aria-label="Delete DL1ABC"]').trigger('click'); expect(w.text()).toContain('No contacts yet')
+  })
+})
