@@ -70,6 +70,9 @@ export const tools: ToolDef[] = [
   { id: 'broadcast-schedules', title: 'Broadcast Schedules & Time Stations', category: 'ops', kind: 'reference',
     summary: 'What is on air now on shortwave: bundled time stations plus dated, installable schedule packs.',
     keywords: ['shortwave', 'swl', 'wwv', 'chu', 'time signal', 'broadcast', 'schedule', 'eibi', 'on air'], component: load(() => import('../tools/BroadcastSchedules.vue')) },
+  { id: 'itu-regulations', title: 'ITU Radio Regulations Explained', category: 'ops', kind: 'reference',
+    summary: 'What the ITU Radio Regulations are, who changes them, the three Regions, primary vs secondary, and Article 25 for amateurs.',
+    keywords: ['itu', 'treaty', 'wrc', 'region', 'article 5', 'article 25', 'allocation', 'primary', 'secondary', 'iaru', 'regulations'], component: load(() => import('../tools/ItuRegulations.vue')) },
   { id: 'band-plans', title: 'Band Plans', category: 'ops', kind: 'reference',
     summary: 'ITU region amateur allocations, a “what is at this frequency?” lookup, and installable national plans.',
     keywords: ['allocation', 'region', 'frequency', 'iaru', 'itu', 'license', 'sub-band'], component: load(() => import('../tools/BandPlans.vue')) },
@@ -100,7 +103,7 @@ export const CATEGORY_ICON: Record<string, string> = { rf: 'rf', antenna: 'anten
 const TOOL_ICON: Record<string, string> = {
   'frequency-wavelength': 'wave', 'ohms-law': 'resistor', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
   dipole: 'dipole', efhw: 'endfed', 'inverted-v': 'invertedv', vertical: 'vertical', loop: 'loop', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
-  'band-plans': 'plan', ctcss: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'q-codes': 'q', phonetic: 'letterA',
+  'band-plans': 'plan', 'itu-regulations': 'scale', ctcss: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'q-codes': 'q', phonetic: 'letterA',
 }
 export const iconFor = (id: string) => TOOL_ICON[id] ?? 'wave'
 export const toolById = (id: string) => tools.find((t) => t.id === id)

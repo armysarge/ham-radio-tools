@@ -56,6 +56,10 @@ Fixing a bad release: do not move a published tag. Fix forward with the next pat
 
 > The two workflows in `.github/workflows` were written but have **not been run** yet (they need the repository on GitHub). Expect to fix small things on the first run, and try it first with a throw-away tag such as `v0.2.0-rc.1`.
 
+## Demo page
+
+The web build is served as a demo at **https://armysarge.co.za/ham-radio-tools**. After each release, download `ham-radio-tools-web-<version>.zip` and extract its contents into that folder on the web host (replace the old files, including the `assets/` folder, so no stale hashed files are served). The build uses relative paths (`base: './'`) and hash routing, so no rewrite rules or special configuration are needed. Serve it over HTTPS if you want the microphone feature to work. The demo makes no requests to any other host.
+
 ## Adding the Windows and Linux apps (same repo)
 
 Suggested layout:

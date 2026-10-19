@@ -11,7 +11,7 @@ const rows = computed(() => {
 </script>
 
 <template>
-  <ToolLayout id="q-codes" :references="['ITU Radio Regulations, Appendix 14.', 'ARRL Operating Manual — Q signals in amateur use.']">
+  <ToolLayout id="q-codes" :references="['ITU-R Recommendation M.1172, miscellaneous abbreviations and signals for radiotelegraph communications (the Q code).', 'ARRL Operating Manual — Q signals in amateur use.']">
     <div class="card stack">
       <label class="field"><span class="lbl">Filter</span><input v-model="q" type="text" placeholder="e.g. QTH, power, frequency" autocomplete="off" /></label>
       <p class="hint" style="margin:0">{{ Q_CODES_REVISION }}. A trailing “?” turns a code into a question.</p>

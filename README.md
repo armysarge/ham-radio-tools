@@ -17,6 +17,8 @@
   <a href="https://www.buymeacoffee.com/armysarge"><img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=flat-square&logo=buymeacoffee&logoColor=black" alt="Buy Me A Coffee"/></a>
 </p>
 
+<p align="center"><b>Live demo: <a href="https://armysarge.co.za/ham-radio-tools">armysarge.co.za/ham-radio-tools</a></b></p>
+
 ---
 
 > ## ⚠️ Alpha Software
@@ -243,6 +245,8 @@ Recommendation: **Tauri**, because size, memory and a narrow permission model ma
 - Antenna voltages are high at wire ends — keep them insulated and out of reach (the inverted-V tool warns about low ends).
 
 ## Releases and versions
+
+**Demo page:** the web build is published at <https://armysarge.co.za/ham-radio-tools>. It is the same static `dist/` bundle as the release zip (relative asset paths and hash routing, so it works from a sub-folder with no server rewrite rules). To publish a new version, unzip `ham-radio-tools-web-<version>.zip` over that folder. The demo needs HTTPS for the microphone CW decoder; everything else runs without network access once the page has loaded.
 
 One repository, one version (`package.json`), one GitHub release per version with several assets (web zip, later Windows and Linux installers). See [docs/RELEASING.md](docs/RELEASING.md) for the step-by-step process, how a desktop shell is added in the same repo, and how opt-in updating works without breaking the offline rules. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 

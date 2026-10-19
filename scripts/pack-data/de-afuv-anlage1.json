@@ -1,0 +1,317 @@
+[
+ {
+  "n": 1,
+  "from": 135.7,
+  "to": 137.8,
+  "unit": "kHz",
+  "status": "S",
+  "A": "1 W ERP",
+  "E": "",
+  "N": "",
+  "notes": [
+   1,
+   2,
+   10
+  ]
+ },
+ {
+  "n": 2,
+  "from": 472,
+  "to": 479,
+  "unit": "kHz",
+  "status": "S",
+  "A": "1 W ERP",
+  "E": "",
+  "N": "",
+  "notes": [
+   1
+  ]
+ },
+ {
+  "n": 14,
+  "from": 28,
+  "to": 29.7,
+  "unit": "MHz",
+  "status": "P",
+  "A": "750 W PEP",
+  "E": "100 W PEP",
+  "N": "10 W ERP",
+  "notes": [
+   4,
+   13
+  ]
+ },
+ {
+  "n": 15,
+  "from": 50,
+  "to": 50.4,
+  "unit": "MHz",
+  "status": "S",
+  "A": "750 W PEP",
+  "E": "",
+  "N": "",
+  "notes": [
+   5,
+   16
+  ]
+ },
+ {
+  "n": 16,
+  "from": 50.4,
+  "to": 52,
+  "unit": "MHz",
+  "status": "S",
+  "A": "25 W PEP",
+  "E": "",
+  "N": "",
+  "notes": [
+   5,
+   16
+  ]
+ },
+ {
+  "n": 17,
+  "from": 144,
+  "to": 146,
+  "unit": "MHz",
+  "status": "P",
+  "A": "750 W PEP",
+  "E": "75 W PEP",
+  "N": "6,1 W ERP",
+  "notes": [
+   6,
+   13
+  ]
+ },
+ {
+  "n": 18,
+  "from": 430,
+  "to": 440,
+  "unit": "MHz",
+  "status": "P",
+  "A": "750 W PEP",
+  "E": "75 W PEP",
+  "N": "6,1 W ERP",
+  "notes": [
+   7,
+   13
+  ]
+ },
+ {
+  "n": 30,
+  "from": 10,
+  "to": 10.4,
+  "unit": "GHz",
+  "status": "S",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   9,
+   17
+  ]
+ },
+ {
+  "n": 31,
+  "from": 10.4,
+  "to": 10.45,
+  "unit": "GHz",
+  "status": "S",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   9,
+   17
+  ]
+ },
+ {
+  "n": 32,
+  "from": 10.45,
+  "to": 10.5,
+  "unit": "GHz",
+  "status": "S",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   9,
+   13,
+   17
+  ]
+ },
+ {
+  "n": 33,
+  "from": 24,
+  "to": 24.05,
+  "unit": "GHz",
+  "status": "P",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   13,
+   17
+  ]
+ },
+ {
+  "n": 34,
+  "from": 24.05,
+  "to": 24.25,
+  "unit": "GHz",
+  "status": "S",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   9,
+   17
+  ]
+ },
+ {
+  "n": 35,
+  "from": 47,
+  "to": 47.2,
+  "unit": "GHz",
+  "status": "P",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   13,
+   17
+  ]
+ },
+ {
+  "n": 36,
+  "from": 76,
+  "to": 77.5,
+  "unit": "GHz",
+  "status": "S",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   9,
+   13,
+   17
+  ]
+ },
+ {
+  "n": 37,
+  "from": 77.5,
+  "to": 78,
+  "unit": "GHz",
+  "status": "S",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   9,
+   13,
+   17
+  ]
+ },
+ {
+  "n": 38,
+  "from": 78,
+  "to": 79,
+  "unit": "GHz",
+  "status": "S",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   9,
+   13,
+   17
+  ]
+ },
+ {
+  "n": 39,
+  "from": 79,
+  "to": 81,
+  "unit": "GHz",
+  "status": "S",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   9,
+   13,
+   17
+  ]
+ },
+ {
+  "n": 40,
+  "from": 122.25,
+  "to": 123,
+  "unit": "GHz",
+  "status": "S",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   9,
+   17
+  ]
+ },
+ {
+  "n": 41,
+  "from": 134,
+  "to": 136,
+  "unit": "GHz",
+  "status": "P",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   9,
+   13,
+   17
+  ]
+ },
+ {
+  "n": 42,
+  "from": 136,
+  "to": 141,
+  "unit": "GHz",
+  "status": "S",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   9,
+   13,
+   17
+  ]
+ },
+ {
+  "n": 43,
+  "from": 241,
+  "to": 248,
+  "unit": "GHz",
+  "status": "S",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   13,
+   17
+  ]
+ },
+ {
+  "n": 44,
+  "from": 248,
+  "to": 250,
+  "unit": "GHz",
+  "status": "P",
+  "A": "75 W PEP",
+  "E": "5 W PEP",
+  "N": "",
+  "notes": [
+   13,
+   17
+  ]
+ }
+]

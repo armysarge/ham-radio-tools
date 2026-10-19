@@ -1,4 +1,4 @@
-// Reference data, kept apart from logic. Source: ITU Radio Regulations Appendix 14 (service abbreviations / Q code),
+// Reference data, kept apart from logic. Source basis: ITU-R Recommendation M.1172 (Q code and abbreviations),
 // plus common amateur usage as listed in the ARRL Operating Manual. Wording is paraphrased.
 export interface QCode { code: string; asks: string; says: string }
 export const Q_CODES_REVISION = 'Common amateur set, paraphrased (not a verbatim ITU list; no formal revision checked)'

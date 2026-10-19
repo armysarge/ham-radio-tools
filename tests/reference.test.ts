@@ -165,3 +165,20 @@ describe('QRM hunting', () => {
     expect(w.text()).toContain('schematic illustrations'); expect(w.findAll('svg[role=img]').length).toBeGreaterThanOrEqual(QRM_SOURCES.length)
   })
 })
+
+import ItuRegulations from '../src/tools/ItuRegulations.vue'
+import { ITU_GLOSSARY, ITU_SECTIONS } from '../src/data/ituInfo'
+describe('ITU primer', () => {
+  it('explains the treaty, covers the amateur article and filters by search', async () => {
+    const w = mount(ItuRegulations, { global })
+    expect(w.text()).toContain('international treaty'); expect(w.text()).toContain('Article 25'); expect(w.text()).toContain('Region 2')
+    await w.find('input[type=text]').setValue('primary'); await flushPromises()
+    expect(w.text()).toContain('How to read an allocation'); expect(w.text()).not.toContain('Where to read the real text')
+    await w.find('input[type=text]').setValue('zzzz'); await flushPromises()
+    expect(w.text()).toContain('Nothing on this page matches')
+  })
+  it('content is plain text (no markup in data) and complete', () => {
+    for (const s of ITU_SECTIONS) { expect(s.body.length).toBeGreaterThan(0); expect(JSON.stringify(s)).not.toMatch(/<\/?[a-z]/i) }
+    expect(ITU_GLOSSARY.length).toBeGreaterThan(8)
+  })
+})
