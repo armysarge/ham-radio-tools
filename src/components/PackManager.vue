@@ -2,6 +2,8 @@
 import { onMounted, ref } from 'vue'
 import { installPack, installedPacks, packsError, refreshPacks, removePack } from '../core/packs'
 import { ageDays, parsePack, type Pack } from '../lib/packs'
+import { parseScheduleText } from '../lib/scheduleImport'
+import { platform } from '../platform'
 
 const err = ref(''), msg = ref('')
 const pending = ref<{ pack: Pack; rows: number; skipped: string[]; file: string } | null>(null)
@@ -23,6 +25,36 @@ async function confirm() {
 }
 const existing = () => installedPacks.value.find((p) => p.id === pending.value?.pack.id)
 const age = (rev: string) => ageDays(rev)
+
+// ---- convert a plain schedule file into a pack ----
+const conv = ref<{ entries: ReturnType<typeof parseScheduleText>['entries']; skipped: string[]; layout: string; file: string } | null>(null)
+const meta = ref({ title: '', source: '', revision: '', license: '' })
+const convErr = ref('')
+async function onSchedule(e: Event) {
+  const input = e.target as HTMLInputElement, file = input.files?.[0]
+  conv.value = null; convErr.value = ''
+  if (!file) return
+  try {
+    const r = await file.text().then(parseScheduleText)
+    conv.value = { ...r, file: file.name }
+    meta.value = { title: r.layout === 'eibi' ? 'EiBi shortwave schedule' : file.name.replace(/\.[^.]+$/, ''), source: r.layout === 'eibi' ? 'EiBi (eibispace.de) shortwave schedule' : '', revision: '', license: '' }
+  } catch (x) { convErr.value = (x as Error).message }
+  input.value = ''
+}
+function buildPack() {
+  if (!conv.value) throw new Error('No file loaded.')
+  const id = meta.value.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'schedule'
+  return JSON.stringify({ format: 'ham-radio-tools-pack', version: 1, kind: 'broadcast-schedule', id, title: meta.value.title, source: meta.value.source, revision: meta.value.revision, license: meta.value.license, data: { entries: conv.value.entries } })
+}
+async function installConverted() {
+  convErr.value = ''
+  try { const p = parsePack(buildPack()); await installPack(p.pack, p.rows); msg.value = `Installed “${p.pack.title}” (${p.rows} rows).`; conv.value = null }
+  catch (x) { convErr.value = (x as Error).message }
+}
+function saveConverted() {
+  convErr.value = ''
+  try { const p = parsePack(buildPack()); platform.saveFile(`${p.pack.id}-${p.pack.revision}.json`, JSON.stringify(p.pack), 'application/json') } catch (x) { convErr.value = (x as Error).message }
+}
 </script>
 
 <template>
@@ -56,6 +88,23 @@ const age = (rev: string) => ageDays(rev)
       <button class="primary" style="margin-top:.6rem" @click="confirm">Install pack</button>
     </div>
     <p v-if="msg" class="notice" role="status">{{ msg }}</p>
+
+    <details class="explain" style="margin:0">
+      <summary>Convert a shortwave schedule text file into a pack</summary>
+      <p class="muted">Understands the semicolon-separated layout used by the EiBi shortwave schedule, and a simple CSV (<span class="mono">freq_khz,start_utc,end_utc,days,station,language,target,country,note</span>). Get the file yourself, check its licence, and say where it came from below.</p>
+      <label class="btn" style="display:inline-flex;align-items:center">Choose a schedule file…<input type="file" accept=".txt,.csv,text/plain,text/csv" class="sr-only" aria-label="Choose schedule text file" @change="onSchedule" /></label>
+      <p v-if="convErr" class="err" role="alert">{{ convErr }}</p>
+      <div v-if="conv" class="stack" style="margin-top:.6rem">
+        <p style="margin:0"><strong>{{ conv.file }}</strong>: {{ conv.entries.length }} transmissions ({{ conv.layout }} layout){{ conv.skipped.length ? `, ${conv.skipped.length} line(s) skipped` : '' }}.</p>
+        <ul v-if="conv.skipped.length" style="margin:0"><li v-for="m in conv.skipped.slice(0, 4)" :key="m">Skipped: {{ m }}</li></ul>
+        <label class="field"><span class="lbl">Pack name</span><input v-model="meta.title" type="text" /></label>
+        <label class="field"><span class="lbl">Source (where the file came from)</span><input v-model="meta.source" type="text" /></label>
+        <label class="field"><span class="lbl">Schedule date (YYYY-MM-DD)</span><input v-model="meta.revision" type="text" placeholder="e.g. 2026-10-26" inputmode="numeric" />
+          <span class="hint">The date the schedule was issued, as stated by the source — this is what the age warning counts from.</span></label>
+        <label class="field"><span class="lbl">Licence / terms of use</span><input v-model="meta.license" type="text" placeholder="e.g. free for private use, per the publisher" /></label>
+        <div class="seg"><button class="primary" @click="installConverted">Install on this device</button><button @click="saveConverted">Save as pack file (.json)</button></div>
+      </div>
+    </details>
     <p class="muted" style="margin:0">Packs are plain JSON files you copy over yourself (USB stick, download on another computer). The app never fetches them and makes no update checks.</p>
   </div>
 </template>

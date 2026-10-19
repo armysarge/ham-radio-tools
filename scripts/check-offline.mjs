@@ -88,10 +88,25 @@ await step('content pack: import a band plan into IndexedDB, survives reload, dr
   await page.getByText('CW and narrow digital').first().waitFor()
   await page.goto(base + '#/settings'); await page.getByRole('button', { name: 'Remove Testland plan' }).click(); await page.getByText('Import a pack file below').waitFor()
 })
+await step('schedule: convert a text file to a pack, install it, find it in Broadcast Schedules', async () => {
+  const { writeFile } = await import('node:fs/promises'); const { tmpdir } = await import('node:os')
+  const file = join(tmpdir(), 'hrt-test-schedule.txt')
+  await writeFile(file, ['kHz;Time(UTC);Days;ITU;Station;Lng;Target;Remarks;P;Start;Stop', '5950;0000-2400;;USA;Radio Offline Check;E;NAm;;;;', '6070;2200-0200;1234567;CAN;CFRX;E;NAm;;;;'].join("\n"))
+  await page.goto(base + '#/settings')
+  await page.getByText('Convert a shortwave schedule text file into a pack').click()
+  await page.getByLabel('Choose schedule text file').setInputFiles(file)
+  await page.getByText('2 transmissions').waitFor()
+  await page.getByLabel('Schedule date (YYYY-MM-DD)').fill('2026-01-01'); await page.getByLabel('Licence / terms of use').fill('offline check')
+  await page.getByRole('button', { name: 'Install on this device' }).click(); await page.getByText(/Installed “EiBi shortwave schedule”/).waitFor()
+  await page.goto(base + '#/tool/broadcast-schedules'); await page.locator('main select').first().selectOption('eibi-shortwave-schedule')
+  await page.getByRole('button', { name: 'Everything' }).click(); await page.getByText('Radio Offline Check').waitFor()
+  await page.getByRole('status').getByText(/more than 45 days old/).waitFor() // revision 2026-01-01 is well over 45 days old
+  await page.goto(base + '#/settings'); await page.getByRole('button', { name: /Remove EiBi shortwave schedule/ }).click()
+})
 await step('no uncaught errors', async () => { if (errors.length) throw new Error(errors.join(' | ')) })
 await step('phone width (375px): no horizontal overflow on any page, menu drawer opens', async () => {
   const m = await ctx.newPage(); await m.setViewportSize({ width: 375, height: 812 })
-  const routes = ['', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/vertical', 'tool/loop', 'tool/maidenhead', 'tool/q-codes', 'tool/band-plans', 'tool/ctcss', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/phonetic', 'settings', 'saved']
+  const routes = ['', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/vertical', 'tool/loop', 'tool/maidenhead', 'tool/q-codes', 'tool/band-plans', 'tool/ctcss', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'settings', 'saved']
   const bad = []
   for (const r of routes) { await m.goto(base + '#/' + r); await m.waitForTimeout(400); const w = await m.evaluate(() => [document.documentElement.scrollWidth, innerWidth]); if (w[0] > w[1]) bad.push(r + ' ' + w.join('>')) }
   if (bad.length) throw new Error('overflow: ' + bad.join(', '))
