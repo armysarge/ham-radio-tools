@@ -1,0 +1,60 @@
+import { describe, it, expect } from 'vitest'
+import { mount, flushPromises } from '@vue/test-utils'
+import { CONSTANTS, CTCSS, ITU_BANDS } from '../src/data/reference'
+import BandPlans from '../src/tools/BandPlans.vue'
+import RefLists from '../src/tools/RefLists.vue'
+
+const global = { stubs: { RouterLink: true } }
+const c = (sym: string) => CONSTANTS.find((x) => x.symbol === sym)!.value
+
+describe('reference data sanity', () => {
+  it('CTCSS: 50 unique ascending tones, 38 of them standard EIA', () => {
+    const hz = CTCSS.map((t) => t[0])
+    expect(hz).toHaveLength(50)
+    expect(new Set(hz).size).toBe(50)
+    expect([...hz].sort((a, b) => a - b)).toEqual(hz)
+    expect(CTCSS.filter((t) => t[1])).toHaveLength(38)
+    expect(hz[0]).toBe(67.0); expect(hz.at(-1)).toBe(254.1)
+  })
+  it('constants are mutually consistent', () => {
+    expect(c('ε₀') * c('μ₀') * c('c') ** 2).toBeCloseTo(1, 8)
+    expect(c('μ₀') * c('c')).toBeCloseTo(c('Z₀'), 5)
+    expect(10 * Math.log10((c('k') * c('T₀')) / 1e-3)).toBeCloseTo(c('kT₀'), 2)
+    expect(20 * Math.log10(Math.E)).toBeCloseTo(c('Np'), 8)
+    expect(c('300/f')).toBeCloseTo(c('c') / 1e6, 5)
+    expect((c('468/f') * 0.3048) / ((0.95 * c('c')) / 2 / 1e6)).toBeCloseTo(1, 2) // the 468 ft rule is k = 0.95 within 0.2%
+  })
+  it('ITU bands are well-formed and cover every region', () => {
+    for (const b of ITU_BANDS) { expect(b.fromHz).toBeLessThan(b.toHz); expect([1, 2, 3]).toContain(b.region) }
+    for (const r of [1, 2, 3]) expect(ITU_BANDS.filter((b) => b.region === r).map((b) => b.band)).toContain('20 m')
+    const r1 = ITU_BANDS.find((b) => b.band === '40 m' && b.region === 1)!, r2 = ITU_BANDS.find((b) => b.band === '40 m' && b.region === 2)!
+    expect(r1.toHz).toBe(7.2e6); expect(r2.toHz).toBe(7.3e6)
+  })
+})
+
+describe('reference tools', () => {
+  it('band plan lookup finds 20 m at 14.2 MHz and reports a gap at 13 MHz', async () => {
+    const w = mount(BandPlans, { global })
+    await flushPromises()
+    expect(w.text()).toContain('20 m · 14–14.35 MHz')
+    await w.find('input[type=text]').setValue('13'); await flushPromises()
+    expect(w.text()).toContain('Not inside any amateur allocation')
+  })
+  it('region matters: 7.25 MHz is inside Region 2 but outside Region 1', async () => {
+    const w = mount(BandPlans, { global })
+    await w.find('input[type=text]').setValue('7.25')
+    expect(w.text()).toContain('Not inside any amateur allocation') // default Region 1
+    await w.findAll('button').find((b) => b.text() === 'Region 2')!.trigger('click')
+    expect(w.text()).toContain('40 m · 7–7.3 MHz')
+  })
+  it('CTCSS, abbreviation and constant filters work and show empty states', async () => {
+    const t = mount(RefLists, { props: { which: 'ctcss' }, global })
+    expect(t.text()).toContain('88.5')
+    await t.find('input[type=text]').setValue('extended'); expect(t.text()).toContain('69.3'); expect(t.text()).not.toContain('88.5')
+    await t.find('input[type=text]').setValue('zzz'); expect(t.text()).toContain('No tone matches')
+    const a = mount(RefLists, { props: { which: 'abbreviations' }, global })
+    await a.find('input[type=text]').setValue('fine business'); expect(a.text()).toContain('FB')
+    const k = mount(RefLists, { props: { which: 'constants' }, global })
+    await k.find('input[type=text]').setValue('boltzmann'); expect(k.text()).toContain('1.380 649')
+  })
+})

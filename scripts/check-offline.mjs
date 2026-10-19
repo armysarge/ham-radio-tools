@@ -72,9 +72,21 @@ await step('project export, delete, re-import restores the saved design', async 
   const json = JSON.parse(await rf(path, 'utf8'))
   if (json.format !== 'ham-radio-tools-project' || !json.designs.length) throw new Error('export missing designs')
   await page.goto(base + '#/saved'); await page.getByRole('button', { name: /Delete Dipole 7.1 MHz/ }).click(); await page.getByText('No saved designs yet').waitFor()
-  await page.goto(base + '#/settings'); await page.locator('input[type=file]').setInputFiles(path)
+  await page.goto(base + '#/settings'); await page.getByLabel('Import project file').setInputFiles(path)
   await page.getByRole('button', { name: 'Import', exact: true }).click(); await page.getByText(/Imported 0 location\(s\) and 1 design/).waitFor()
   await page.goto(base + '#/saved'); await page.getByText('Dipole 7.1 MHz').waitFor()
+})
+await step('content pack: import a band plan into IndexedDB, survives reload, drives the lookup', async () => {
+  const { writeFile } = await import('node:fs/promises'); const { tmpdir } = await import('node:os')
+  const file = join(tmpdir(), 'hrt-test-pack.json')
+  await writeFile(file, JSON.stringify({ format: 'ham-radio-tools-pack', version: 1, kind: 'band-plan', id: 'test-land', title: 'Testland plan', jurisdiction: 'Testland', source: 'Offline check', license: 'CC0', revision: '2026-10-01',
+    data: { segments: [{ band: '20 m', fromHz: 14000000, toHz: 14070000, use: 'CW and narrow digital', modes: 'CW, RTTY' }, { band: '20 m', fromHz: 14070000, toHz: 14350000, use: 'All modes' }] } }))
+  await page.goto(base + '#/settings'); await page.getByLabel('Import content pack').setInputFiles(file)
+  await page.getByRole('button', { name: 'Install pack' }).click(); await page.getByText('Installed “Testland plan”').waitFor()
+  await page.reload(); await page.getByText('Testland plan').first().waitFor()
+  await page.goto(base + '#/tool/band-plans'); await page.getByLabel('Band plan').selectOption('test-land')
+  await page.getByText('CW and narrow digital').first().waitFor()
+  await page.goto(base + '#/settings'); await page.getByRole('button', { name: 'Remove Testland plan' }).click(); await page.getByText('Import a pack file below').waitFor()
 })
 await step('no uncaught errors', async () => { if (errors.length) throw new Error(errors.join(' | ')) })
 await step('phone width (375px): no horizontal overflow on any page, menu drawer opens', async () => {

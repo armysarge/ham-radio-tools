@@ -1,4 +1,4 @@
-import type { Component } from 'vue'
+import { defineComponent, h, type Component } from 'vue'
 
 export type Kind = 'analytical' | 'empirical' | 'reference'
 export const KIND_LABEL: Record<Kind, string> = { analytical: 'Analytical', empirical: 'Design estimate', reference: 'Reference' }
@@ -22,6 +22,9 @@ export interface ToolDef {
 }
 
 const load = (f: () => Promise<{ default: Component }>) => f as () => Promise<Component>
+// One shared page, several tools: bind a prop to it.
+const withProps = (f: () => Promise<{ default: Component }>, props: Record<string, unknown>) => () =>
+  f().then((m) => defineComponent({ render: () => h(m.default, props) }) as Component)
 
 // To add a tool: create src/tools/MyTool.vue (wrap it in <ToolLayout>) and add one entry here.
 export const tools: ToolDef[] = [
@@ -58,6 +61,18 @@ export const tools: ToolDef[] = [
   { id: 'maidenhead', title: 'Grid Squares, Distance & Bearing', category: 'maps', kind: 'analytical',
     summary: 'Coordinates ↔ Maidenhead locators on an offline world map, with beam heading.',
     keywords: ['locator', 'qth', 'grid', 'bearing', 'distance', 'great circle', 'map', 'latitude'], component: load(() => import('../tools/Maidenhead.vue')) },
+  { id: 'band-plans', title: 'Band Plans', category: 'ops', kind: 'reference',
+    summary: 'ITU region amateur allocations, a “what is at this frequency?” lookup, and installable national plans.',
+    keywords: ['allocation', 'region', 'frequency', 'iaru', 'itu', 'license', 'sub-band'], component: load(() => import('../tools/BandPlans.vue')) },
+  { id: 'ctcss', title: 'CTCSS Tones', category: 'ops', kind: 'reference',
+    summary: 'The 38 standard sub-audible repeater tones plus common extended tones.',
+    keywords: ['pl', 'tone squelch', 'repeater', 'subaudible', 'dcs'], component: withProps(() => import('../tools/RefLists.vue'), { which: 'ctcss' }) },
+  { id: 'abbreviations', title: 'Abbreviations', category: 'ops', kind: 'reference',
+    summary: 'Common CW, operating and technical abbreviations, searchable.',
+    keywords: ['73', 'cq', 'dx', 'rst', 'cw', 'shorthand', 'glossary'], component: withProps(() => import('../tools/RefLists.vue'), { which: 'abbreviations' }) },
+  { id: 'constants', title: 'Constants & Rules of Thumb', category: 'ops', kind: 'reference',
+    summary: 'Physical constants, exact unit conversions and the antenna rules of thumb, with their precision.',
+    keywords: ['speed of light', 'boltzmann', 'noise', 'free space', 'impedance', 'codata', '468', 'permittivity'], component: withProps(() => import('../tools/RefLists.vue'), { which: 'constants' }) },
   { id: 'q-codes', title: 'Q Codes', category: 'ops', kind: 'reference',
     summary: 'Common Q signals as questions and answers, with a quick filter.',
     keywords: ['qth', 'qsl', 'qrm', 'qrp', 'qsy', 'abbreviation'], component: load(() => import('../tools/QCodes.vue')) },

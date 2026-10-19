@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { deleteLocation, projectData, setProjectData, state, storageOk } from '../core/store'
 import { tools } from '../core/registry'
 import { platform } from '../platform'
+import PackManager from '../components/PackManager.vue'
 import { applyImport, exportProject, parseProject, type ImportReport } from '../lib/project'
 import { fmt } from '../lib/units'
 import { encode } from '../lib/maidenhead'
@@ -86,20 +87,6 @@ function doImport() {
       <p v-if="report" class="notice" role="status">Imported {{ report.addedLocations }} location(s) and {{ report.addedDesigns }} design(s); {{ report.skippedExisting }} already existed and were left unchanged{{ report.skippedInvalid.length ? `; ${report.skippedInvalid.length} invalid item(s) skipped` : '' }}.</p>
     </div>
 
-    <div class="card">
-      <h2>Content on this device</h2>
-      <div class="table-wrap"><table class="table">
-        <thead><tr><th>Content</th><th>Status</th><th>Notes</th></tr></thead>
-        <tbody>
-          <tr><td>Application, calculators, diagrams</td><td>Bundled</td><td>Included in the install; no downloads.</td></tr>
-          <tr><td>World basemap (Natural Earth, 1:110m)</td><td>Bundled</td><td>Country outlines only; public domain. Good to roughly continent/country scale.</td></tr>
-          <tr><td>Detailed regional map packs</td><td>Unavailable</td><td>Planned. Will be imported from a file or USB stick.</td></tr>
-          <tr><td>Regional band plans</td><td>Unavailable</td><td>Planned as dated, per-jurisdiction packs.</td></tr>
-          <tr><td>Radio manual library</td><td>Unavailable</td><td>Planned. You will import your own PDFs.</td></tr>
-          <tr><td>Offline AI assistant</td><td>Unavailable</td><td>Planned and optional.</td></tr>
-        </tbody>
-      </table></div>
-      <p class="muted">This app makes no network requests: no telemetry, update checks or online map tiles.</p>
-    </div>
+    <PackManager />
   </div>
 </template>
