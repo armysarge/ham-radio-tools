@@ -71,3 +71,12 @@ describe('pack storage (IndexedDB)', () => {
     expect(await getPack('test-plan')).toBeNull()
   })
 })
+
+describe('pack source links', () => {
+  const withUrl = (u: unknown) => parsePack(JSON.stringify({ ...JSON.parse(plan([{ band: '40 m', fromHz: 7e6, toHz: 7.2e6, use: 'x' }])), sourceUrl: u })).pack.sourceUrl
+  it('keeps http(s) links and drops every other scheme', () => {
+    expect(withUrl('https://example.org/plan')).toBe('https://example.org/plan')
+    expect(withUrl('http://example.org/')).toBe('http://example.org/')
+    for (const bad of ['javascript:alert(1)', ' JavaScript:alert(1)', 'data:text/html,<script>1</script>', 'file:///etc/passwd', 'vbscript:x', '//example.org', 'not a url', '', 42, null]) expect(withUrl(bad), String(bad)).toBeUndefined()
+  })
+})

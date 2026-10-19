@@ -62,7 +62,7 @@ const colour = (s?: string) => (s?.startsWith('primary') || s?.startsWith('co-pr
         <p v-if="source === 'itu'" class="hint" style="margin:0">Region 1: Europe, Africa, Middle East. Region 2: the Americas. Region 3: most of Asia and Oceania. <router-link to="/tool/itu-regulations">What are the ITU Radio Regulations?</router-link></p>
         <div v-else-if="meta" class="hint" style="margin:0">
           <strong>{{ meta.title }}</strong><br />{{ meta.source }}<br />Revision {{ meta.revision }} ({{ ageDays(meta.revision) }} days old) · Licence: {{ 'license' in meta ? meta.license : '' }}
-          <template v-if="meta.sourceUrl"><br /><a :href="meta.sourceUrl" target="_blank" rel="noopener noreferrer">Open the official source</a> (opens the web; the app itself stays offline)</template>
+          <template v-if="meta.sourceUrl && /^https?:\/\//i.test(meta.sourceUrl)"><br /><a :href="meta.sourceUrl" target="_blank" rel="noopener noreferrer">Open the official source</a> (opens the web; the app itself stays offline)</template>
         </div>
         <details v-if="meta?.notes" class="explain" style="margin:0"><summary>Read first: scope and limits of this table</summary><p>{{ meta.notes }}</p></details>
         <p v-if="packErr" class="err" role="alert">{{ packErr }}</p>

@@ -18,6 +18,11 @@ const MAX_BYTES = 25 * 1024 * 1024, MAX_ROWS = 200_000
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 const s = (v: unknown, max = 600) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null)
 const optS = (v: unknown, max = 300) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : undefined)
+/** Keep a link only if it is a plain http(s) URL, so a pack file can never smuggle in a javascript: or data: link. */
+export function safeHttpUrl(v: unknown): string | undefined {
+  if (typeof v !== 'string') return undefined
+  try { const u = new URL(v.trim()); return u.protocol === 'https:' || u.protocol === 'http:' ? u.href : undefined } catch { return undefined }
+}
 const DATE = /^\d{4}-\d{2}-\d{2}$/
 
 export const ageDays = (revision: string, now = new Date()) => Math.floor((now.getTime() - Date.parse(revision + 'T00:00:00Z')) / 86_400_000)
@@ -62,7 +67,7 @@ export function parsePack(text: string): { pack: Pack; skipped: string[]; rows: 
     if (!entries.length) throw new Error('The pack contains no usable schedule entries.')
     data = { entries }; rows = entries.length
   }
-  const pack: Pack = { format: PACK_FORMAT, version: PACK_VERSION, kind: raw.kind, id, title, jurisdiction: optS(raw.jurisdiction, 80), source, sourceUrl: optS(raw.sourceUrl, 300), notes: optS(raw.notes, 3000), revision: raw.revision, license, data }
+  const pack: Pack = { format: PACK_FORMAT, version: PACK_VERSION, kind: raw.kind, id, title, jurisdiction: optS(raw.jurisdiction, 80), source, sourceUrl: safeHttpUrl(raw.sourceUrl)?.slice(0, 300), notes: optS(raw.notes, 3000), revision: raw.revision, license, data }
   return { pack, skipped, rows }
 }
 
