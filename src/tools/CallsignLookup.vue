@@ -3,8 +3,9 @@ import { computed, ref } from 'vue'
 import ToolLayout from '../components/ToolLayout.vue'
 import { lookup } from '../lib/callsign'
 import { CALLSIGN_META } from '../data/callsigns'
+import { state } from '../core/store'
 
-const input = ref('DL/ZS6ABC/P')
+const input = ref(state.callsign.trim() || 'DL/ZS6ABC/P')
 const r = computed(() => lookup(input.value))
 const EXAMPLES = ['W1AW', 'JA1ABC', 'ZS6ABC', 'VK9XX', 'KH6ABC', 'DL/W1AW', '3DA0RU', 'G4ABC/MM']
 </script>

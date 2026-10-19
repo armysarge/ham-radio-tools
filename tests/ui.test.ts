@@ -170,3 +170,20 @@ describe('project backup', () => {
     expect(state.locations).toHaveLength(0)
   })
 })
+
+import pkg from '../package.json'
+import CallsignLookup from '../src/tools/CallsignLookup.vue'
+describe('about and callsign setting', () => {
+  it('shows the package.json version and the author credit', () => {
+    const w = mount(Settings, { global })
+    expect(w.text()).toContain(`version ${pkg.version}`); expect(w.text()).toContain('ZS6SHZ')
+    expect(w.text()).toContain('never checks for updates')
+  })
+  it('pre-fills the callsign lookup from the setting', () => {
+    state.callsign = 'ZS6SHZ'
+    const w = mount(CallsignLookup, { global })
+    expect((w.find('input[type=text]').element as HTMLInputElement).value).toBe('ZS6SHZ')
+    expect(w.text()).toContain('South Africa')
+    state.callsign = ''
+  })
+})

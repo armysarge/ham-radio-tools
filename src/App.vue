@@ -6,6 +6,7 @@ import { state } from './core/store'
 
 const route = useRoute(), router = useRouter()
 const q = ref(typeof route.query.q === 'string' ? route.query.q : '')
+const version = __APP_VERSION__
 const menu = ref(false)
 const searchEl = ref<HTMLInputElement>()
 const favTools = computed(() => tools.filter((t) => state.favorites.includes(t.id)))
@@ -57,6 +58,7 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
         <div class="group-title">Your data</div>
         <router-link to="/saved">Saved designs</router-link>
         <router-link to="/settings">Settings &amp; content</router-link>
+        <p class="muted" style="font-size:.8rem;margin:.8rem .6rem">Ham Radio Tools v{{ version }} · by ZS6SHZ</p>
       </nav>
     </aside>
 

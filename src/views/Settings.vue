@@ -9,6 +9,7 @@ import { fmt } from '../lib/units'
 import { encode } from '../lib/maidenhead'
 
 // ---- project backup ----
+const version = __APP_VERSION__
 const hasData = computed(() => state.locations.length + state.designs.length > 0)
 const exportProjectFile = () => platform.saveFile(`ham-radio-tools-project-${new Date().toISOString().slice(0, 10)}.json`, exportProject(projectData()), 'application/json')
 const pending = ref<ReturnType<typeof parseProject> | null>(null)
@@ -43,6 +44,7 @@ function doImport() {
           <select v-model="state.theme"><option value="system">Match system</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
         <label class="field"><span class="lbl">Text size</span>
           <select v-model="state.textSize"><option value="normal">Normal</option><option value="large">Large</option><option value="xlarge">Extra large</option></select></label>
+        <label class="field"><span class="lbl">Your callsign (optional)</span><input v-model="state.callsign" type="text" class="mono" style="text-transform:uppercase" maxlength="16" autocomplete="off" spellcheck="false" placeholder="e.g. ZS6SHZ" /><span class="hint">Used to pre-fill the callsign lookup. Stays on this device.</span></label>
         <label class="field"><span class="lbl">Measurement system</span>
           <select v-model="state.units"><option value="metric">Metric (m, km)</option><option value="imperial">Imperial (ft, in, miles)</option></select></label>
       </div>
@@ -88,5 +90,12 @@ function doImport() {
     </div>
 
     <PackManager />
+
+    <div class="card stack">
+      <h2>About</h2>
+      <p style="margin:0"><strong>Ham Radio Tools</strong> version <span class="mono">{{ version }}</span> · MIT licence</p>
+      <p style="margin:0">Made by <strong class="mono">ZS6SHZ</strong>. 73!</p>
+      <p class="muted" style="margin:0">This app never checks for updates or contacts any server. To update, install the newer release you downloaded yourself.</p>
+    </div>
   </div>
 </template>

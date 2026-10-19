@@ -241,6 +241,10 @@ Recommendation: **Tauri**, because size, memory and a narrow permission model ma
 - If the browser blocks storage, the app still works and says so in **Settings**.
 - Antenna voltages are high at wire ends — keep them insulated and out of reach (the inverted-V tool warns about low ends).
 
+## Releases and versions
+
+One repository, one version (`package.json`), one GitHub release per version with several assets (web zip, later Windows and Linux installers). See [docs/RELEASING.md](docs/RELEASING.md) for the step-by-step process, how a desktop shell is added in the same repo, and how opt-in updating works without breaking the offline rules. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
+
 ## Contributing
 
 1. Fork the repository
@@ -252,7 +256,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE). Made by **ZS6SHZ**. 73!
 
 ## ☕ Buy me a coffee
 

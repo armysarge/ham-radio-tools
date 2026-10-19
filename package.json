@@ -1,6 +1,6 @@
 {
   "name": "ham-radio-tools",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "check:offline": "node scripts/check-offline.mjs",
-    "screenshots": "node scripts/screenshots.mjs"
+    "screenshots": "node scripts/screenshots.mjs",
+    "preversion": "npm test"
   },
   "dependencies": {
     "topojson-client": "^3.1.0",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@types/geojson": "^7946.0.16",
+    "@types/node": "^26.6.5",
     "@types/topojson-client": "^3.1.5",
     "@vitejs/plugin-vue": "^6.0.10",
     "@vue/test-utils": "^2.5.1",
@@ -30,5 +32,12 @@
     "vite": "^8.3.4",
     "vitest": "^5.0.5",
     "vue-tsc": "^3.3.13"
-  }
+  },
+  "author": "ZS6SHZ",
+  "description": "Offline-first amateur radio workbench: RF calculators, antenna designers, grid squares, CW and reference tools.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/armysarge/ham-radio-tools.git"
+  },
+  "homepage": "https://github.com/armysarge/ham-radio-tools#readme"
 }

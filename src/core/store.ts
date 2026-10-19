@@ -7,6 +7,7 @@ interface State {
   theme: 'system' | 'light' | 'dark'
   units: 'metric' | 'imperial'
   textSize: 'normal' | 'large' | 'xlarge'
+  callsign: string
   favorites: string[]
   locations: SavedLocation[]
   stationId: string | null
@@ -14,7 +15,7 @@ interface State {
 }
 
 const KEY = 'hrt:v1'
-const defaults = (): State => ({ theme: 'system', units: 'metric', textSize: 'normal', favorites: [], locations: [], stationId: null, designs: [] })
+const defaults = (): State => ({ theme: 'system', units: 'metric', textSize: 'normal', callsign: '', favorites: [], locations: [], stationId: null, designs: [] })
 
 // localStorage can be missing or throw (private windows, blocked storage); the app must still work without it.
 function load(): State {
