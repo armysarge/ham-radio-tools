@@ -3,7 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { tools } from '../src/core/registry'
 
 const global = { stubs: { RouterLink: true }, mocks: { $route: { query: {} } } }
-const open = async (id: string) => { const c = ((await tools.find((t) => t.id === id)!.component()) as any).default; const w = mount(c, { global }); await flushPromises(); return w }
+const open = async (id: string) => { const m = (await tools.find((t) => t.id === id)!.component()) as any; const c = m.default ?? m; const w = mount(c, { global }); await flushPromises(); return w }
 
 describe('station tools render with their defaults', () => {
   it('feedline loss: 20 m of RG-58 at 14.2 MHz, SWR 1.5', async () => { const w = await open('feedline-loss'); expect(w.text()).toContain('Total feedline loss'); expect(w.text()).not.toContain('NaN') })
