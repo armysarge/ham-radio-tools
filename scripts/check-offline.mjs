@@ -1,0 +1,71 @@
+// Offline acceptance check. Serves dist/ from localhost, blocks EVERY other host, and drives the real app
+// in a system browser (Edge or Chrome; no browser download). Fails if any external request is attempted.
+// Run: npm run build && npm run check:offline
+import { createServer } from 'node:http'
+import { readFile, readdir } from 'node:fs/promises'
+import { extname, join, resolve } from 'node:path'
+import { chromium } from 'playwright-core'
+
+const dist = resolve('dist')
+const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' }
+const fail = (m) => { console.error('FAIL:', m); process.exitCode = 1 }
+const ok = (m) => console.log('ok  :', m)
+
+// 1. Static scan: no external URLs in shipped files (XML namespace URIs are identifiers, not requests).
+async function* walk(d) { for (const e of await readdir(d, { withFileTypes: true })) e.isDirectory() ? yield* walk(join(d, e.name)) : yield join(d, e.name) }
+const allowed = /^https?:\/\/(www\.w3\.org\/|localhost|vuejs\.org|github\.com\/vuejs|vue-router|router\.vuejs\.org)/
+let found = 0
+for await (const f of walk(dist)) {
+  const t = await readFile(f, 'utf8').catch(() => '')
+  for (const u of t.match(/https?:\/\/[^\s"'`)<>\\]+/g) ?? []) if (!allowed.test(u)) { found++; console.log('  external URL in', f.replace(dist, ''), u) }
+}
+found ? fail(`${found} external URL(s) referenced in dist (review above)`) : ok('no external URLs in dist')
+
+// 2. Serve dist
+const server = createServer(async (q, r) => {
+  const p = q.url.split('?')[0]
+  try { const b = await readFile(join(dist, p === '/' ? 'index.html' : p)); r.writeHead(200, { 'content-type': types[extname(p || '.html')] ?? 'text/html' }); r.end(b) }
+  catch { r.writeHead(404); r.end() }
+})
+await new Promise((res) => server.listen(4173, '127.0.0.1', res))
+const base = 'http://127.0.0.1:4173/'
+
+let browser
+for (const channel of ['msedge', 'chrome']) { try { browser = await chromium.launch({ channel }); ok(`browser: ${channel}`); break } catch { /* try next */ } }
+if (!browser) { fail('no Edge/Chrome found for playwright-core'); server.close(); process.exit(1) }
+
+const blocked = []
+const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } })
+await ctx.route('**/*', (route) => { const u = new URL(route.request().url()); if (u.hostname === '127.0.0.1' || u.protocol === 'data:' || u.protocol === 'blob:') return route.continue(); blocked.push(route.request().url()); return route.abort() })
+const page = await ctx.newPage()
+const errors = []
+page.on('pageerror', (e) => errors.push(e.message))
+page.on('console', (m) => m.type() === 'error' && errors.push(m.text()))
+
+const step = async (name, fn) => { try { await fn(); ok(name) } catch (e) { fail(`${name}: ${e.message.split('\n')[0]}`) } }
+const expectText = async (sel, re) => { const t = await page.locator(sel).first().innerText(); if (!re.test(t)) throw new Error(`"${t.slice(0, 80)}" !~ ${re}`) }
+
+await step('app starts', async () => { await page.goto(base); await page.getByRole('heading', { name: 'Ham Radio Tools' }).waitFor() })
+await step('search filters tools', async () => { await page.getByLabel('Search tools').fill('swr'); await page.getByRole('heading', { name: 'SWR & Return Loss' }).waitFor(); await page.getByLabel('Search tools').fill('') })
+await step('frequency converter: 14.2 MHz = 21.11 m', async () => { await page.goto(base + '#/tool/frequency-wavelength'); await page.getByText('21.11').first().waitFor() })
+await step('SWR 2 -> 9.542 dB', async () => { await page.goto(base + '#/tool/swr'); await page.getByLabel('SWR', { exact: true }).fill('2'); await page.getByText('9.542').first().waitFor() })
+await step('dBm: 100 W = 50 dBm', async () => { await page.goto(base + '#/tool/dbm-watts'); await page.getByText('50', { exact: true }).first().waitFor() })
+await step('dipole 7.1 MHz = 20.06 m; save design', async () => {
+  await page.goto(base + '#/tool/dipole'); await page.getByText('20.06 m').first().waitFor()
+  await page.getByRole('button', { name: 'Save design' }).click(); await page.getByText('Saved —').waitFor()
+})
+await step('map renders land + grid and locator converts', async () => {
+  await page.goto(base + '#/tool/maidenhead'); await page.getByText('JN58td').first().waitFor()
+  const len = await page.locator('.map path.land').getAttribute('d'); if (!len || len.length < 20000) throw new Error('basemap path too short')
+  await page.locator('input.mono').first().fill('FN31pr'); await page.getByText('FN31pr').first().waitFor()
+})
+await step('saved design + favorite persist across reload', async () => {
+  await page.goto(base + '#/tool/swr'); await page.getByRole('button', { name: /Add to favorites/ }).click(); await page.reload()
+  await page.getByRole('button', { name: /Remove from favorites/ }).waitFor()
+  await page.goto(base + '#/saved'); await page.getByText('Dipole 7.1 MHz').waitFor()
+})
+await step('no uncaught errors', async () => { if (errors.length) throw new Error(errors.join(' | ')) })
+blocked.length ? fail(`attempted external requests: ${blocked.join(', ')}`) : ok('zero external requests attempted (all non-localhost blocked)')
+
+await browser.close(); server.close()
+console.log(process.exitCode ? '\nOFFLINE CHECK FAILED' : '\nOFFLINE CHECK PASSED')
