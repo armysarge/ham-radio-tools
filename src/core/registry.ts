@@ -93,6 +93,13 @@ export const tools: ToolDef[] = [
     keywords: ['nato', 'alpha', 'bravo', 'spelling', 'callsign'], component: load(() => import('../tools/Phonetic.vue')) },
 ]
 
+export const CATEGORY_ICON: Record<string, string> = { rf: 'rf', antenna: 'antenna', maps: 'map', ops: 'ops' }
+const TOOL_ICON: Record<string, string> = {
+  'frequency-wavelength': 'wave', 'ohms-law': 'resistor', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
+  dipole: 'dipole', 'inverted-v': 'invertedv', vertical: 'vertical', loop: 'loop', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
+  'band-plans': 'plan', ctcss: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'q-codes': 'q', phonetic: 'letterA',
+}
+export const iconFor = (id: string) => TOOL_ICON[id] ?? 'wave'
 export const toolById = (id: string) => tools.find((t) => t.id === id)
 
 export function searchTools(q: string): ToolDef[] {

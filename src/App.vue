@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { CATEGORIES, tools } from './core/registry'
+import { CATEGORIES, CATEGORY_ICON, iconFor, tools } from './core/registry'
 import { state } from './core/store'
+import NavIcon from './components/NavIcon.vue'
 
 const route = useRoute(), router = useRouter()
 const q = ref(typeof route.query.q === 'string' ? route.query.q : '')
@@ -46,18 +47,18 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
     <aside class="sidebar" :class="{ open: menu }" aria-label="Main navigation">
       <button class="drawer-close" @click="menu = false">✕ Close</button>
       <nav>
-        <router-link to="/">All tools</router-link>
+        <router-link to="/"><NavIcon name="home" />All tools</router-link>
         <template v-if="favTools.length">
           <div class="group-title">Favorites</div>
-          <router-link v-for="t in favTools" :key="'f' + t.id" :to="`/tool/${t.id}`">★ {{ t.title }}</router-link>
+          <router-link v-for="t in favTools" :key="'f' + t.id" :to="`/tool/${t.id}`"><NavIcon name="star" />{{ t.title }}</router-link>
         </template>
         <details v-for="c in CATEGORIES" :key="c.id" open>
-          <summary>{{ c.name }}</summary>
-          <router-link v-for="t in tools.filter((x) => x.category === c.id)" :key="t.id" :to="`/tool/${t.id}`">{{ t.title }}</router-link>
+          <summary><NavIcon :name="CATEGORY_ICON[c.id]" />{{ c.name }}</summary>
+          <router-link v-for="t in tools.filter((x) => x.category === c.id)" :key="t.id" :to="`/tool/${t.id}`"><NavIcon :name="iconFor(t.id)" />{{ t.title }}</router-link>
         </details>
         <div class="group-title">Your data</div>
-        <router-link to="/saved">Saved designs</router-link>
-        <router-link to="/settings">Settings &amp; content</router-link>
+        <router-link to="/saved"><NavIcon name="saved" />Saved designs</router-link>
+        <router-link to="/settings"><NavIcon name="settings" />Settings &amp; content</router-link>
         <p class="muted" style="font-size:.8rem;margin:.8rem .6rem">Ham Radio Tools v{{ version }} · by ZS6SHZ</p>
       </nav>
     </aside>

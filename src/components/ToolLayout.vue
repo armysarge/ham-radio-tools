@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { KIND_LABEL, toolById } from '../core/registry'
+import { KIND_LABEL, iconFor, toolById } from '../core/registry'
+import NavIcon from './NavIcon.vue'
 import { isFavorite, toggleFavorite } from '../core/store'
 
 const props = defineProps<{ id: string; references?: string[] }>()
@@ -13,7 +14,7 @@ const fav = computed(() => isFavorite(props.id))
     <header class="tool-head">
       <div style="display:flex;gap:.75rem;align-items:flex-start;justify-content:space-between">
         <div>
-          <h1>{{ tool.title }}</h1>
+          <h1 style="display:flex;gap:.6rem;align-items:center"><NavIcon :name="iconFor(id)" style="color:var(--accent);width:1.1em;height:1.1em;flex:none" />{{ tool.title }}</h1>
           <p class="muted" style="margin:0 0 .4rem">{{ tool.summary }}</p>
           <span class="kind" :class="tool.kind" :title="tool.kind === 'empirical' ? 'Rule-of-thumb design estimate; not a simulation' : ''">{{ KIND_LABEL[tool.kind] }}</span>
         </div>

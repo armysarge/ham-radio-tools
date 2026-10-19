@@ -5,7 +5,7 @@
   --wire: #b4540a; --dim: #0b6e6e; --land: #d9d3c0; --sea: #e8f0f2; --grid: #8a8f94;
   --font: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace;
-  --radius: 10px; --base: 17px;
+  --radius: 10px; --base: 16px;
 }
 :root[data-resolved='dark'] {
   --bg: #11161b; --panel: #1a2129; --panel2: #232c36; --ink: #e8e6df; --muted: #a2adb6;
@@ -140,3 +140,18 @@ svg.diagram { width: 100%; height: auto; display: block; }
 .unit-select { width: auto; min-width: 6.5rem; }
 @media (max-width: 480px) { .unit-select { min-width: 0; padding: .3rem .3rem; } }
 .cols > * { min-width: 0; }
+
+/* icons */
+.nav-icon { width: 1.25em; height: 1.25em; flex: none; }
+.sidebar summary .nav-icon { margin-right: .55rem; color: var(--accent); }
+.sidebar nav a .nav-icon { color: var(--muted); }
+.sidebar nav a.router-link-exact-active .nav-icon { color: inherit; }
+
+/* scrollbars: thin, themed, everywhere (Firefox uses the standard properties, Chromium/Edge/Electron the -webkit- ones) */
+* { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; border: 2px solid transparent; background-clip: content-box; min-height: 36px; }
+*::-webkit-scrollbar-thumb:hover { background: var(--muted); background-clip: content-box; }
+*::-webkit-scrollbar-thumb:active { background: var(--accent); background-clip: content-box; }
+*::-webkit-scrollbar-corner { background: transparent; }

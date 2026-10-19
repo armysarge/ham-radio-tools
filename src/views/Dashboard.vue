@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { CATEGORIES, KIND_LABEL, searchTools } from '../core/registry'
+import { CATEGORIES, KIND_LABEL, iconFor, searchTools } from '../core/registry'
+import NavIcon from '../components/NavIcon.vue'
 import { isFavorite, toggleFavorite } from '../core/store'
 
 const route = useRoute()
@@ -25,7 +26,7 @@ const groups = computed(() => [
     <div class="grid">
       <div v-for="t in g.items" :key="g.id + t.id" class="card tool-card">
         <router-link :to="`/tool/${t.id}`" style="text-decoration:none;color:inherit">
-          <h3>{{ t.title }}</h3><p>{{ t.summary }}</p>
+          <h3 style="display:flex;gap:.5rem;align-items:center"><NavIcon :name="iconFor(t.id)" style="color:var(--accent);width:1.4em;height:1.4em" />{{ t.title }}</h3><p>{{ t.summary }}</p>
           <span class="kind" :class="t.kind" style="margin-top:.5rem">{{ KIND_LABEL[t.kind] }}</span>
         </router-link>
         <button class="star ghost" :aria-pressed="isFavorite(t.id)" :aria-label="`${isFavorite(t.id) ? 'Remove' : 'Add'} ${t.title} ${isFavorite(t.id) ? 'from' : 'to'} favorites`" @click="toggleFavorite(t.id)">

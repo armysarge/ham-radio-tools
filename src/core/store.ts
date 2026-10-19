@@ -54,7 +54,7 @@ export function deleteDesign(id: string) { state.designs = state.designs.filter(
 export function applyAppearance() {
   const dark = state.theme === 'dark' || (state.theme === 'system' && matchMedia?.('(prefers-color-scheme: dark)').matches)
   document.documentElement.dataset.resolved = dark ? 'dark' : 'light'
-  document.documentElement.style.setProperty('--base', { normal: '17px', large: '19px', xlarge: '22px' }[state.textSize])
+  document.documentElement.style.setProperty('--base', { normal: '16px', large: '18px', xlarge: '21px' }[state.textSize])
 }
 
 /** Parameters of the saved design named by `?load=<id>` for this tool, if any. */
