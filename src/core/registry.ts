@@ -14,6 +14,7 @@ export const CATEGORIES = [
   { id: 'antenna', name: 'Antenna Design', blurb: 'Dimensioned designs with cut-and-trim guidance' },
   { id: 'maps', name: 'Maps & Grid Squares', blurb: 'Maidenhead locators, distance and bearing' },
   { id: 'station', name: 'Station & Logging', blurb: 'Feedlines, links, matching, filters, coils, power and your log' },
+  { id: 'diy', name: 'DIY Components', blurb: 'Build coils, capacitors, loads and chokes from everyday items' },
   { id: 'prop', name: 'Propagation & Satellites', blurb: 'Skip, grey line and satellite passes' },
   { id: 'ops', name: 'Operating References', blurb: 'Quick lookups for on-air use' },
 ] as const
@@ -102,6 +103,9 @@ export const tools: ToolDef[] = [
   { id: 'radial-planner', title: 'Radial & Site Planner', category: 'antenna', kind: 'empirical',
     summary: 'Radial length, count and wire for a vertical, and which bands a quarter-wave radial fits in your garden.',
     keywords: ['radials', 'ground plane', 'garden', 'site', 'vertical', 'counterpoise', 'ground system'], component: load(() => import('../tools/RadialPlanner.vue')) },
+  { id: 'diy-components', title: 'DIY Components from Everyday Items', category: 'diy', kind: 'empirical',
+    summary: 'How to make an air coil, toroid, foil capacitor, air-variable capacitor, dummy load and ferrite choke, with sizes, drawings, tests and safety notes.',
+    keywords: ['diy', 'homebrew', 'build', 'capacitor', 'coil', 'inductor', 'toroid', 'dummy load', 'choke', 'balun', 'foil', 'variable capacitor', 'everyday', 'scrap'], component: load(() => import('../tools/DiyComponents.vue')) },
   { id: 'maidenhead', title: 'Grid Squares, Distance & Bearing', category: 'maps', kind: 'analytical',
     summary: 'Coordinates ↔ Maidenhead locators on an offline world map, with beam heading.',
     keywords: ['locator', 'qth', 'grid', 'bearing', 'distance', 'great circle', 'map', 'latitude'], component: load(() => import('../tools/Maidenhead.vue')) },
@@ -155,12 +159,12 @@ export const tools: ToolDef[] = [
     keywords: ['nato', 'alpha', 'bravo', 'spelling', 'callsign'], component: load(() => import('../tools/Phonetic.vue')) },
 ]
 
-export const CATEGORY_ICON: Record<string, string> = { rf: 'rf', antenna: 'antenna', maps: 'map', station: 'station', prop: 'sun', ops: 'ops' }
+export const CATEGORY_ICON: Record<string, string> = { rf: 'rf', antenna: 'antenna', maps: 'map', station: 'station', prop: 'sun', diy: 'diy', ops: 'ops' }
 const TOOL_ICON: Record<string, string> = {
   'frequency-wavelength': 'wave', 'ohms-law': 'resistor', components: 'chip', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
   dipole: 'dipole', efhw: 'endfed', 'inverted-v': 'invertedv', vertical: 'vertical', jpole: 'jpole', loop: 'loop', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
   'band-plans': 'plan', 'itu-regulations': 'scale', ctcss: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'q-codes': 'q', phonetic: 'letterA',
-  'feedline-loss': 'cable', 'link-budget': 'link', 'l-network': 'match', 'low-pass-filter': 'filter', coils: 'toroid', 'power-planner': 'battery', yagi: 'yagi', quad: 'loop', 'radial-planner': 'vertical', logbook: 'book', clock: 'clock', 'morse-trainer': 'morse', propagation: 'sun', 'satellite-passes': 'sat',
+  'feedline-loss': 'cable', 'link-budget': 'link', 'l-network': 'match', 'low-pass-filter': 'filter', coils: 'toroid', 'power-planner': 'battery', yagi: 'yagi', quad: 'loop', 'radial-planner': 'vertical', logbook: 'book', clock: 'clock', 'morse-trainer': 'morse', propagation: 'sun', 'satellite-passes': 'sat', 'diy-components': 'diy',
 }
 export const iconFor = (id: string) => TOOL_ICON[id] ?? 'wave'
 export const toolById = (id: string) => tools.find((t) => t.id === id)

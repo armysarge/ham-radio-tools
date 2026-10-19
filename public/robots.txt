@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hamradiotools.armysarge.co.za/sitemap.xml

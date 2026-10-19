@@ -4,10 +4,60 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'" />
-    <title>Ham Radio Tools</title>
+    <title>Ham Radio Tools — offline calculators, antenna designs and references for amateur radio</title>
+    <meta name="description" content="Free, open-source, offline-first toolkit for radio amateurs: antenna designers (dipole, EFHW, vertical, J-pole, Yagi, quad), SWR and feedline loss, link budgets, filters, grid squares, band plans, Morse trainer, logbook with ADIF and satellite passes." />
+    <meta name="keywords" content="ham radio, amateur radio, antenna calculator, dipole calculator, SWR, band plans, Maidenhead grid square, Morse code trainer, ADIF logbook, satellite pass predictor, QRM, offline" />
+    <meta name="application-name" content="Ham Radio Tools" />
+    <meta name="author" content="ZS6SHZ" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f3f0e8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#11161b" media="(prefers-color-scheme: dark)" />
+    <meta name="apple-mobile-web-app-title" content="Ham Radio Tools" />
+    <link rel="canonical" href="https://hamradiotools.armysarge.co.za/" />
+    <link rel="license" href="https://opensource.org/licenses/MIT" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Ham Radio Tools" />
+    <meta property="og:title" content="Ham Radio Tools — offline calculators and references for amateur radio" />
+    <meta property="og:description" content="Antenna designs, SWR and feedline loss, link budgets, filters, grid squares, band plans, Morse trainer, logbook and satellite passes. Free, open source, works offline." />
+    <meta property="og:url" content="https://hamradiotools.armysarge.co.za/" />
+    <meta property="og:locale" content="en" />
+    <meta property="og:image" content="https://hamradiotools.armysarge.co.za/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Ham Radio Tools: offline-first calculators, antenna designs and references for amateur radio" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ham Radio Tools — offline calculators and references for amateur radio" />
+    <meta name="twitter:description" content="Antenna designs, SWR and feedline loss, link budgets, filters, grid squares, band plans, Morse trainer, logbook and satellite passes. Free, open source, works offline." />
+    <meta name="twitter:image" content="https://hamradiotools.armysarge.co.za/og-image.png" />
+    <meta name="twitter:image:alt" content="Ham Radio Tools: offline-first calculators, antenna designs and references for amateur radio" />
+
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23f2b84b'/%3E%3Cpath d='M4 16h5l3-9 5 18 3-9h8' fill='none' stroke='%2311161b' stroke-width='2.5'/%3E%3C/svg%3E" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        { "@type": "WebSite", "@id": "https://hamradiotools.armysarge.co.za/#website", "url": "https://hamradiotools.armysarge.co.za/", "name": "Ham Radio Tools", "inLanguage": "en",
+          "description": "Offline-first calculators, antenna designs and references for amateur radio.", "publisher": { "@id": "https://hamradiotools.armysarge.co.za/#author" } },
+        { "@type": "WebApplication", "@id": "https://hamradiotools.armysarge.co.za/#app", "name": "Ham Radio Tools", "url": "https://hamradiotools.armysarge.co.za/",
+          "description": "Free, open-source toolkit for radio amateurs that runs entirely in the browser and works offline: antenna designers, SWR and feedline loss, link budget, filters, grid squares, band plans, Morse trainer, logbook with ADIF export and satellite pass prediction.",
+          "applicationCategory": "UtilitiesApplication", "applicationSubCategory": "Amateur radio", "operatingSystem": "Any (modern web browser)", "browserRequirements": "Requires JavaScript",
+          "softwareVersion": "%APP_VERSION%", "inLanguage": "en", "isAccessibleForFree": true, "license": "https://opensource.org/licenses/MIT",
+          "image": "https://hamradiotools.armysarge.co.za/og-image.png", "isPartOf": { "@id": "https://hamradiotools.armysarge.co.za/#website" }, "author": { "@id": "https://hamradiotools.armysarge.co.za/#author" },
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "sameAs": ["https://github.com/armysarge/ham-radio-tools"],
+          "featureList": ["Antenna designs: dipole, end-fed half-wave, inverted-V, vertical, J-pole, loop, Yagi and quad", "SWR, return loss, feedline loss and link budget", "Low-pass filter, L-network and coil designers", "Maidenhead grid squares, distance and bearing on an offline map", "National band tables, Q codes, CTCSS and callsign lookup", "Morse code trainer, player and decoder", "Logbook with ADIF import and export", "Propagation basics, grey line and satellite pass prediction", "DIY components built from everyday items"] },
+        { "@type": "SoftwareSourceCode", "name": "Ham Radio Tools source code", "codeRepository": "https://github.com/armysarge/ham-radio-tools", "programmingLanguage": "TypeScript", "license": "https://opensource.org/licenses/MIT", "author": { "@id": "https://hamradiotools.armysarge.co.za/#author" } },
+        { "@type": "Person", "@id": "https://hamradiotools.armysarge.co.za/#author", "name": "ZS6SHZ", "url": "https://github.com/armysarge" }
+      ]
+    }
+    </script>
   </head>
   <body>
+    <noscript><p style="font-family:system-ui,sans-serif;padding:1rem">Ham Radio Tools is a web app and needs JavaScript. It runs entirely on your device and works offline once loaded.</p></noscript>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

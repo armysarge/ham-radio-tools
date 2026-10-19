@@ -58,3 +58,12 @@ describe('satellite staleness', () => {
     expect(w.text()).toContain('too far for a meaningful prediction'); expect(w.text()).not.toContain('Rise (UTC)')
   })
 })
+
+describe('DIY components', () => {
+  it('shows each project with its calculator, diagram and safety notes', async () => {
+    const w = await open('diy-components'); expect(w.text()).toContain('Turns to wind'); expect(w.text()).toContain('What to gather'); expect(w.text()).toContain('Safety'); expect(w.find('svg.diagram').exists()).toBe(true)
+    for (const [label, expected] of [['Toroid inductor or transformer', 'Most turns that fit'], ['Foil-and-film capacitor', 'Area of each foil sheet'], ['Air-variable capacitor', 'Plates (rotor + stator)'], ['Dummy load (resistor array)', 'in series'], ['Common-mode choke (coax on a ferrite core)', 'Inductance from the AL value']] as const) {
+      await w.findAll('.seg button').find((b) => b.text() === label)!.trigger('click'); await flushPromises(); expect(w.text(), label).toContain(expected); expect(w.text()).not.toContain('NaN')
+    }
+  })
+})

@@ -5,6 +5,10 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 ## [0.2.0] - 2026-10-19
 
 ### Added
+- DIY Components page: air-core coil, toroid, foil-and-film capacitor, air-variable capacitor, dummy load and ferrite choke, each with a drawing, sizes, test steps and safety notes.
+- Search and social metadata: description, Open Graph and Twitter cards with a generated preview image, canonical link, JSON-LD (WebSite, WebApplication, SoftwareSourceCode), robots.txt and sitemap; per-tool title and description at run time.
+- Anti-framing: `frame-ancestors` headers (preview server and `_headers` file) plus an in-page guard; allowed embedding sites are set in `ALLOWED_FRAME_ANCESTORS` in `.env`.
+- Expandable sections now look expandable (chevron, Show/Hide) and the interface has reduced-motion-safe animations.
 - Opt-in Google Analytics for the public demo build only (`npm run build:demo`): consent banner and Settings switch, page paths only, no ad personalisation; absent from the default build, release zip and desktop app.
 - Station tools: feedline loss, link budget and path loss (with radio horizon and Fresnel clearance), L-network matching, low-pass filter designer, coils and toroids, battery and solar planner.
 - Yagi and quad starting designs and a radial and site planner.

@@ -19,9 +19,10 @@ async function* walk(d) { for (const e of await readdir(d, { withFileTypes: true
 const hostsFromSources = JSON.parse(await readFile('scripts/pack-data/sources.json', 'utf8')).sources.flatMap((x) => [x.officialUrl, ...x.check.map((c) => c.url)]).map((u) => new URL(u.replace(/\{[a-zA-Z]+\}/g, 'x')).hostname)
 const esc = (h) => h.replace(/\./g, '\\.')
 const repo = /REPO_URL = '([^']+)'/.exec(await readFile('src/core/meta.ts', 'utf8'))[1].replace(/^https?:\/\//, '')
-const allowed = new RegExp('^https?://(www\\.w3\\.org/|localhost|vuejs\\.org|github\\.com/vuejs|vue-router|router\\.vuejs\\.org|' + [...new Set(hostsFromSources)].map(esc).join('|') + '|' + esc(repo) + ')')
+const allowed = new RegExp('^https?://(www\\.w3\\.org/|www\\.sitemaps\\.org/|schema\\.org|opensource\\.org|hamradiotools\\.armysarge\\.co\\.za|github\\.com/armysarge|localhost|vuejs\\.org|github\\.com/vuejs|vue-router|router\\.vuejs\\.org|' + [...new Set(hostsFromSources)].map(esc).join('|') + '|' + esc(repo) + ')')
 let found = 0
 for await (const f of walk(dist)) {
+  if (/[\\/](frame-guard\.js|_headers)$/.test(f)) continue // lists the sites allowed to embed the app: configuration, never requested
   const t = await readFile(f, 'utf8').catch(() => '')
   for (const u of t.match(/https?:\/\/[^\s"'`)<>\\]+/g) ?? []) if (!allowed.test(u)) { found++; console.log('  external URL in', f.replace(dist, ''), u) }
 }
@@ -112,7 +113,7 @@ await step('schedule: convert a text file to a pack, install it, find it in Broa
 await step('no uncaught errors', async () => { if (errors.length) throw new Error(errors.join(' | ')) })
 await step('phone width (375px): no horizontal overflow on any page, menu drawer opens', async () => {
   const m = await ctx.newPage(); await m.setViewportSize({ width: 375, height: 812 })
-  const routes = ['', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/components', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/efhw', 'tool/jpole', 'tool/vertical', 'tool/loop', 'tool/maidenhead', 'tool/q-codes', 'tool/band-plans', 'tool/itu-regulations', 'tool/ctcss', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'tool/feedline-loss', 'tool/link-budget', 'tool/l-network', 'tool/low-pass-filter', 'tool/coils', 'tool/power-planner', 'tool/yagi', 'tool/quad', 'tool/radial-planner', 'tool/logbook', 'tool/clock', 'tool/morse-trainer', 'tool/propagation', 'tool/satellite-passes', 'settings', 'saved']
+  const routes = ['', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/components', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/efhw', 'tool/jpole', 'tool/vertical', 'tool/loop', 'tool/maidenhead', 'tool/q-codes', 'tool/band-plans', 'tool/itu-regulations', 'tool/ctcss', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'tool/feedline-loss', 'tool/link-budget', 'tool/l-network', 'tool/low-pass-filter', 'tool/coils', 'tool/power-planner', 'tool/yagi', 'tool/quad', 'tool/radial-planner', 'tool/logbook', 'tool/clock', 'tool/morse-trainer', 'tool/propagation', 'tool/satellite-passes', 'tool/diy-components', 'settings', 'saved']
   const bad = []
   for (const r of routes) { await m.goto(base + '#/' + r); await m.waitForTimeout(400); const w = await m.evaluate(() => [document.documentElement.scrollWidth, innerWidth]); if (w[0] > w[1]) bad.push(r + ' ' + w.join('>')) }
   if (bad.length) throw new Error('overflow: ' + bad.join(', '))

@@ -96,3 +96,15 @@ Tauri note: the earlier recommendation in the README still stands (far smaller i
 - [ ] Workflow green; release page lists the zip and `SHA256SUMS.txt`
 - [ ] Smoke test on a clean machine with the network disabled
 - [ ] Platforms tested are stated honestly in the release notes
+
+## Embedding (iframes)
+
+By default the built app refuses to be framed. To let specific sites embed it, put their origins in `.env` before building: `ALLOWED_FRAME_ANCESTORS=https://example.com,https://www.example.org`. Then make your web server send the matching header (the build writes the exact lines to `dist/_headers`):
+
+```nginx
+add_header Content-Security-Policy "frame-ancestors 'self' https://example.com" always;   # with an allow-list
+add_header Content-Security-Policy "frame-ancestors 'none'" always;                      # default
+add_header X-Frame-Options DENY always;                                                   # default only
+```
+
+`vite preview` sends these headers itself. `frame-guard.js` is a second layer that blanks the page when it is framed by an unlisted site.
