@@ -54,3 +54,13 @@ describe('satellite passes', () => {
     expect(() => S.passes(t, o, from, 0)).toThrow()
   })
 })
+
+describe('sunrise against published times (Southern Hemisphere, east of Greenwich)', () => {
+  it('Cape Town at the June solstice and Pretoria at the December solstice', () => {
+    const hm = (d: Date) => d.getUTCHours() * 60 + d.getUTCMinutes()
+    const c = P.sunriseSunset(-33.92, 18.42, new Date(Date.UTC(2026, 5, 21, 12))) as { rise: Date; set: Date }
+    expect(Math.abs(hm(c.rise) - (5 * 60 + 51))).toBeLessThanOrEqual(3); expect(Math.abs(hm(c.set) - (15 * 60 + 44))).toBeLessThanOrEqual(3) // 07:51 / 17:44 SAST
+    const t = P.sunriseSunset(-25.75, 28.19, new Date(Date.UTC(2026, 11, 21, 12))) as { rise: Date; set: Date }
+    expect(Math.abs(hm(t.rise) - (3 * 60 + 12))).toBeLessThanOrEqual(3); expect(Math.abs(hm(t.set) - (16 * 60 + 57))).toBeLessThanOrEqual(3)
+  })
+})

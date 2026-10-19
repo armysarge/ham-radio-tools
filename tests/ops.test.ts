@@ -21,6 +21,11 @@ describe('ADIF', () => {
     expect(other).toEqual([{ CALL: 'K1ABC', QSO_DATE: '20200101', TIME_ON: '0930', FREQ: '7.0740', MODE: 'FT8' }]); expect(L.fromAdif(other[0], 'y')!.time).toBe('09:30')
     expect(L.fromAdif({ CALL: 'X' }, 'z')).toBeNull(); expect(L.parseAdif('')).toEqual([])
   })
+  it('writes FT4 and PSK31 as submodes and reads them back', () => {
+    const a = L.toAdif([q({ mode: 'FT4' }), q({ mode: 'PSK31', call: 'K1ABC' })], 'zs6shz', '0.2.0')
+    expect(a).toContain('<MODE:4>MFSK <SUBMODE:3>FT4'); expect(a).toContain('<MODE:3>PSK <SUBMODE:6>BPSK31')
+    expect(L.parseAdif(a).map((r) => L.fromAdif(r, 'x')!.mode)).toEqual(['FT4', 'PSK31'])
+  })
   it('flags duplicates by call, band, mode and day', () => {
     const log = [q({ call: 'DL1ABC' })]
     expect(L.isDuplicate(log, { call: 'dl1abc', date: '2026-10-19', freqMHz: 14.25, mode: 'SSB' })).toBe(true)

@@ -33,6 +33,9 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 - App version shown in Settings, optional "your callsign" setting, About section.
 
 ### Fixed
+- Logbook: FT4 and PSK31 are exported as ADIF submodes (MFSK/FT4, PSK/BPSK31), as ADIF 3.1.4 has no such top-level modes; submodes such as USB no longer replace the mode on import.
+- Toroid table: FT50-61 AL corrected to 68 nH/turn².
+- Satellite passes: element sets more than 60 days from the start time are refused rather than extrapolated; the demo set opens at its own epoch.
 - Logo cropped to its content; phone screenshots removed from the README.
 - Basemap polygons that cross the antimeridian (Russia, Fiji) no longer streak across the map.
 - Content packs could not be stored from a reactive object (IndexedDB clone error).

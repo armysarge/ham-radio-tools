@@ -11,6 +11,9 @@ const BANDS: [string, number, number][] = [
   ['17m', 18.068, 18.168], ['15m', 21, 21.45], ['12m', 24.89, 24.99], ['10m', 28, 29.7], ['6m', 50, 54], ['4m', 70, 71], ['2m', 144, 148], ['1.25m', 222, 225],
   ['70cm', 420, 450], ['33cm', 902, 928], ['23cm', 1240, 1300],
 ]
+/** ADIF has no top-level FT4 or PSK31: they are submodes (MFSK/FT4, PSK/BPSK31). Everything else is written as its own mode. */
+const SUBMODE: Record<string, [string, string]> = { FT4: ['MFSK', 'FT4'], PSK31: ['PSK', 'BPSK31'] }
+const fromSub = (mode: string, sub: string) => Object.entries(SUBMODE).find(([, [m, s]]) => m === mode.toUpperCase() && s === sub.toUpperCase())?.[0]
 export const bandOf = (mhz: number | null) => (mhz == null ? '' : BANDS.find(([, lo, hi]) => mhz >= lo && mhz <= hi)?.[0] ?? '')
 
 const ascii = (s: string) => s.normalize('NFKD').replace(/[^\x20-\x7e]/g, '').replace(/[\r\n]+/g, ' ').trim()
@@ -24,7 +27,7 @@ export function toAdif(qsos: Qso[], station: string, version: string): string {
   const head = `Ham Radio Tools log export\n${field('ADIF_VER', '3.1.4')}${field('PROGRAMID', 'Ham Radio Tools')}${field('PROGRAMVERSION', version)}<EOH>\n`
   const rows = qsos.map((q) => [
     field('CALL', q.call.toUpperCase()), field('QSO_DATE', q.date.replace(/-/g, '')), field('TIME_ON', q.time.replace(':', '') + '00'),
-    field('BAND', bandOf(q.freqMHz)), field('FREQ', q.freqMHz), field('MODE', q.mode), field('RST_SENT', q.rstSent), field('RST_RCVD', q.rstRcvd),
+    field('BAND', bandOf(q.freqMHz)), field('FREQ', q.freqMHz), field('MODE', (SUBMODE[q.mode] ?? [q.mode])[0]), field('SUBMODE', SUBMODE[q.mode]?.[1]), field('RST_SENT', q.rstSent), field('RST_RCVD', q.rstRcvd),
     field('NAME', q.name), field('GRIDSQUARE', q.grid.toUpperCase()), field('COMMENT', q.comment), field('STATION_CALLSIGN', station.toUpperCase()), '<EOR>',
   ].join(''))
   return head + rows.join('\n') + '\n'
@@ -55,7 +58,7 @@ export function fromAdif(rec: Record<string, string>, id: string): Qso | null {
   if (!call || !/^\d{8}$/.test(d)) return null
   const hh = t.slice(0, 2) || '00', mm = t.slice(2, 4) || '00'
   const f = Number(rec.FREQ)
-  return { id, call, date: `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}`, time: `${hh}:${mm}`, freqMHz: Number.isFinite(f) && rec.FREQ ? f : null, mode: rec.MODE ?? '', rstSent: rec.RST_SENT ?? '', rstRcvd: rec.RST_RCVD ?? '', name: rec.NAME ?? '', grid: (rec.GRIDSQUARE ?? '').toUpperCase(), comment: rec.COMMENT ?? '' }
+  return { id, call, date: `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}`, time: `${hh}:${mm}`, freqMHz: Number.isFinite(f) && rec.FREQ ? f : null, mode: fromSub(rec.MODE ?? '', rec.SUBMODE ?? '') ?? rec.MODE ?? '', rstSent: rec.RST_SENT ?? '', rstRcvd: rec.RST_RCVD ?? '', name: rec.NAME ?? '', grid: (rec.GRIDSQUARE ?? '').toUpperCase(), comment: rec.COMMENT ?? '' }
 }
 
 /** Same call, band and mode on the same UTC date: the usual contest duplicate rule. */

@@ -78,7 +78,7 @@ async function importAdif(e: Event) {
           <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
             <strong>{{ log.length }} contact{{ log.length === 1 ? '' : 's' }}</strong>
             <button class="ghost" @click="exportAdif" :disabled="!log.length">Export ADIF</button>
-            <label class="ghost" style="cursor:pointer;padding:.45rem .8rem;border:1px solid var(--line);border-radius:8px">Import ADIF<input type="file" accept=".adi,.adif,.txt" @change="importAdif" style="position:absolute;opacity:0;width:1px;height:1px" /></label>
+            <label class="ghost" style="cursor:pointer;padding:.45rem .8rem">Import ADIF<input type="file" accept=".adi,.adif,.txt" @change="importAdif" style="position:absolute;opacity:0;width:1px;height:1px" /></label>
             <button class="ghost" @click="clearAll" :disabled="!log.length">Delete all</button>
           </div>
           <p v-if="!state.callsign" class="hint">Set your call sign in Settings so exported files carry it.</p>

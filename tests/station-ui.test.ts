@@ -48,6 +48,13 @@ describe('propagation and satellites', () => {
   it('satellite tool lists passes for the sample and explains a bad TLE', async () => {
     const w = await open('satellite-passes'); expect(w.text()).toContain('Paste an element set')
     await w.find('textarea').setValue('1 garbage'); await flushPromises(); expect(w.text()).toContain('two lines')
-    await w.findAll('button').find((b) => b.text().startsWith('Insert'))!.trigger('click'); await flushPromises(); expect(w.text()).toContain('ISS (ZARYA)'); expect(w.text()).toContain('days away')
+    await w.findAll('button').find((b) => b.text().startsWith('Insert'))!.trigger('click'); await flushPromises(); expect(w.text()).toContain('ISS (ZARYA)'); expect(w.text()).toContain('Rise (UTC)')
+  })
+})
+
+describe('satellite staleness', () => {
+  it('refuses to predict from elements years away from the start time', async () => {
+    const w = await open('satellite-passes'); await w.find('textarea').setValue('1 25544U 98067A   08264.51782528 -.00002182  00000-0 -11606-4 0  2927\n2 25544  51.6416 247.4627 0006703 130.5360 325.0288 15.72125391563537'); await flushPromises()
+    expect(w.text()).toContain('too far for a meaningful prediction'); expect(w.text()).not.toContain('Rise (UTC)')
   })
 })

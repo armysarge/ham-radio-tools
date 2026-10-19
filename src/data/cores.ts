@@ -22,5 +22,5 @@ export const CORES: Core[] = [
   { name: 'FT140-43', al: 885, material: 'Ferrite, mix 43', use: 'Chokes and transformers at higher power' },
   { name: 'FT240-43', al: 1240, material: 'Ferrite, mix 43', use: 'Large common-mode chokes and EFHW transformers' },
   { name: 'FT37-61', al: 55, material: 'Ferrite, mix 61', use: 'VHF chokes and transformers' },
-  { name: 'FT50-61', al: 79, material: 'Ferrite, mix 61', use: 'VHF chokes and transformers' },
+  { name: 'FT50-61', al: 68, material: 'Ferrite, mix 61', use: 'VHF chokes and transformers' },
 ]
