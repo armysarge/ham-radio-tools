@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import * as rf from '../src/lib/rf'
 import * as mh from '../src/lib/maidenhead'
 import * as geo from '../src/lib/geo'
-import { dipoleLength, trimPerLeg } from '../src/lib/antenna'
+import { dipoleLength, trimPerLeg, invertedV, vertical, loop } from '../src/lib/antenna'
 import { fmt, feetInches } from '../src/lib/units'
 
 describe('rf', () => {
@@ -138,6 +138,33 @@ describe('antenna & formatting', () => {
   it('trim', () => {
     expect(trimPerLeg(20, 7.1e6, 7.0e6)).toBeCloseTo(0.1408, 3) // resonates low -> cut
     expect(trimPerLeg(20, 7.1e6, 7.2e6)).toBeLessThan(0) // resonates high -> add
+  })
+  it('inverted-V geometry', () => {
+    const v = invertedV(7.1e6, 0.95, 0.97, 120, 12)
+    expect(v.total).toBeCloseTo(dipoleLength(7.1e6, 0.95) * 0.97, 9)
+    expect(v.span).toBeCloseTo(2 * v.leg * Math.sin(Math.PI / 3), 9)
+    expect(v.drop).toBeCloseTo(v.leg / 2, 9) // cos 60 deg
+    expect(v.endHeight).toBeCloseTo(12 - v.leg / 2, 9)
+    expect(invertedV(7.1e6, 0.95, 1, 180, 10).span).toBeCloseTo(dipoleLength(7.1e6, 0.95), 9) // 180 deg = flat dipole
+    expect(invertedV(7.1e6, 0.95, 1, 180, 10).drop).toBeCloseTo(0, 9)
+    expect(invertedV(7.1e6, 0.95, 0.97, 90, 5).endHeight).toBeLessThan(0) // ends would be underground: caller must warn
+    expect(() => invertedV(7.1e6, 0.95, 0.97, 30)).toThrow(/Included angle/)
+    expect(() => invertedV(7.1e6, 0.95, 0.97, 120, 0)).toThrow(/Apex height/)
+    expect(() => invertedV(0)).toThrow()
+  })
+  it('vertical', () => {
+    expect(vertical(7.1e6).radiator).toBeCloseTo(10.0283 / 1, 3)
+    expect(vertical(7.1e6, 0.9517).radiator / 0.3048).toBeCloseTo(234 / 7.1, 1) // 234/f ft rule
+    const v = vertical(14.2e6, 0.95, 45)
+    expect(v.radialReach).toBeCloseTo(v.radial * Math.SQRT1_2, 9); expect(v.radialDrop).toBeCloseTo(v.radial * Math.SQRT1_2, 9)
+    expect(() => vertical(14.2e6, 0.95, 80)).toThrow()
+  })
+  it('loop', () => {
+    expect(loop(14.2e6).perimeter / 0.3048).toBeCloseTo(1005 / 14.2, 1) // 1005/f ft rule
+    expect(loop(14.2e6, 1.0218, 'square').side * 4).toBeCloseTo(loop(14.2e6).perimeter, 9)
+    expect(loop(14.2e6, 1.0218, 'circle').diameter * Math.PI).toBeCloseTo(loop(14.2e6).perimeter, 9)
+    expect(loop(14.2e6, 1.0218, 'triangle').height).toBeCloseTo(loop(14.2e6).perimeter / 3 * Math.sqrt(3) / 2, 9)
+    expect(() => loop(14.2e6, 0.9)).toThrow()
   })
   it('fmt', () => {
     expect(fmt(21.11212)).toBe('21.11'); expect(fmt(Infinity)).toBe('∞'); expect(fmt(null)).toBe('—'); expect(fmt(0)).toBe('0')

@@ -54,3 +54,7 @@ export function applyAppearance() {
   document.documentElement.dataset.resolved = dark ? 'dark' : 'light'
   document.documentElement.style.setProperty('--base', { normal: '17px', large: '19px', xlarge: '22px' }[state.textSize])
 }
+
+/** Parameters of the saved design named by `?load=<id>` for this tool, if any. */
+export const loadedParams = (route: { query?: Record<string, unknown> } | undefined, toolId: string) =>
+  state.designs.find((d) => d.id === route?.query?.load && d.toolId === toolId)?.params ?? null

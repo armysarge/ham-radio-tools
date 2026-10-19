@@ -6,6 +6,9 @@ import OhmsLaw from '../src/tools/OhmsLaw.vue'
 import Dipole from '../src/tools/Dipole.vue'
 import Feedline from '../src/tools/Feedline.vue'
 import Reactance from '../src/tools/Reactance.vue'
+import InvertedV from '../src/tools/InvertedV.vue'
+import Vertical from '../src/tools/Vertical.vue'
+import Loop from '../src/tools/Loop.vue'
 import Maidenhead from '../src/tools/Maidenhead.vue'
 import { state, toggleFavorite } from '../src/core/store'
 import { searchTools } from '../src/core/registry'
@@ -63,6 +66,29 @@ describe('tools', () => {
   it('Reactance: 10 uH + 100 pF resonates at 5.033 MHz', async () => {
     const w = mount(Reactance, { global })
     expect(w.text()).toContain('5.033')
+  })
+  it('Inverted-V: 7.1 MHz, 120 deg, 12 m apex; warns when the ends get low', async () => {
+    const w = mount(InvertedV, { global })
+    expect(w.text()).toContain('19.45 m')
+    expect(w.text()).not.toContain('underground')
+    const h = w.findAll('input[type=text]')[1]
+    await h.setValue('6'); await flushPromises() // end height 6 - 4.86 = 1.14 m
+    expect(w.text()).toContain('out of reach')
+    await h.setValue('3'); await flushPromises()
+    expect(w.text()).toContain('underground')
+  })
+  it('Vertical: 14.2 MHz quarter wave is 5.01 m; ground mode suggests 16+ radials', async () => {
+    const w = mount(Vertical, { global })
+    expect(w.text()).toContain('5.01 m')
+    await w.findAll('button').find((b) => b.text().includes('On or in the ground'))!.trigger('click')
+    expect(w.text()).toContain('16 or more')
+  })
+  it('Loop: 14.2 MHz square loop is 21.57 m of wire; saving a design works', async () => {
+    const w = mount(Loop, { global })
+    expect(w.text()).toContain('21.57 m')
+    expect(w.text()).toContain('5.39 m') // side
+    await w.find('button.primary').trigger('click')
+    expect(state.designs[0].toolId).toBe('loop')
   })
   it('Maidenhead: default example is JN58td, typing a locator moves the point', async () => {
     const w = mount(Maidenhead, { global })

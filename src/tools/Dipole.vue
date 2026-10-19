@@ -9,9 +9,8 @@ import { FREQ_UNITS, feetInches, fmt } from '../lib/units'
 import { dipoleLength, trimPerLeg } from '../lib/antenna'
 import { saveDesign, state } from '../core/store'
 import { exportSvg } from '../platform'
+import { BANDS } from '../data/bands'
 
-// Typical design frequencies for popular bands (a convenience, NOT a band plan: allocations differ by country).
-const BANDS: [string, number][] = [['160 m', 1.85], ['80 m', 3.65], ['40 m', 7.1], ['30 m', 10.12], ['20 m', 14.2], ['17 m', 18.1], ['15 m', 21.2], ['12 m', 24.95], ['10 m', 28.4], ['6 m', 50.15]]
 
 const f = ref<number | null>(7.1e6)
 const k = ref(0.95)

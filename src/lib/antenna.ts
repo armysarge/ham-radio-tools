@@ -19,3 +19,42 @@ export function trimPerLeg(totalM: number, targetHz: number, measuredHz: number)
   if (!(targetHz > 0 && measuredHz > 0)) throw new RangeError('Frequencies must be greater than 0')
   return (totalM - (totalM * measuredHz) / targetHz) / 2
 }
+
+const DEG = Math.PI / 180
+
+/**
+ * Inverted-V: a dipole whose legs slope down from a centre support. Sloping legs interact with the ground and
+ * each other, so the wire is cut a few percent shorter than a flat dipole (`slope` ≈ 0.97, empirical).
+ * Geometry is plain trigonometry from the included angle at the apex.
+ */
+export function invertedV(fHz: number, k = 0.95, slope = 0.97, apexDeg = 120, apexHeightM = 10) {
+  if (!(apexDeg >= 60 && apexDeg <= 180)) throw new RangeError('Included angle must be between 60° and 180°')
+  if (!(slope >= 0.9 && slope <= 1)) throw new RangeError('Sloping-leg factor must be between 0.90 and 1.00')
+  if (!(apexHeightM > 0)) throw new RangeError('Apex height must be greater than 0')
+  const total = dipoleLength(fHz, k) * slope
+  const leg = total / 2
+  const half = (apexDeg / 2) * DEG
+  const drop = leg * Math.cos(half)
+  return { total, leg, span: 2 * leg * Math.sin(half), drop, endHeight: apexHeightM - drop }
+}
+
+/** Quarter-wave vertical: radiator and resonant radials share the same length, k·c/(4f). */
+export function vertical(fHz: number, k = 0.95, droopDeg = 0) {
+  if (!(droopDeg >= 0 && droopDeg <= 60)) throw new RangeError('Radial droop must be between 0° and 60°')
+  const radiator = dipoleLength(fHz, k) / 2
+  return { radiator, radial: radiator, radialReach: radiator * Math.cos(droopDeg * DEG), radialDrop: radiator * Math.sin(droopDeg * DEG) }
+}
+
+export type LoopShape = 'square' | 'circle' | 'triangle'
+/** Full-wave loop: perimeter = k·c/f with k ≈ 1.0218 (the 1005/f ft rule). */
+export function loop(fHz: number, k = 1.0218, shape: LoopShape = 'square') {
+  if (!(fHz > 0)) throw new RangeError('Frequency must be greater than 0')
+  if (!(k >= 1 && k <= 1.06)) throw new RangeError('Loop factor must be between 1.00 and 1.06')
+  const perimeter = (k * C) / fHz
+  const side = shape === 'circle' ? NaN : perimeter / (shape === 'square' ? 4 : 3)
+  return {
+    perimeter, side,
+    diameter: shape === 'circle' ? perimeter / Math.PI : NaN,
+    height: shape === 'square' ? side : shape === 'triangle' ? (side * Math.sqrt(3)) / 2 : perimeter / Math.PI,
+  }
+}

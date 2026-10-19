@@ -22,13 +22,13 @@ const LAND = (() => {
       for (const ring of poly as number[][][]) {
         // Rings crossing the antimeridian (Chukotka, Fiji) are unwrapped to continuous longitudes and drawn
         // again shifted by +-360, so they show on both edges instead of streaking across the map.
-        let off = 0
+        let off = 0, jumped = false
         const un = ring.map((p, i) => {
-          if (i) { const jump = p[0] - ring[i - 1][0]; if (jump > 180) off -= 360; else if (jump < -180) off += 360 }
+          if (i) { const jump = p[0] - ring[i - 1][0]; if (Math.abs(jump) > 180) { jumped = true; off += jump > 0 ? -360 : 360 } }
           return [p[0] + off, p[1]]
         })
         const closed = Math.abs(un[un.length - 1][0] - un[0][0]) < 180 // polar rings (Antarctica) don't close; leave them
-        d += off !== 0 && closed ? ringPath(un, 0) + ringPath(un, 360) + ringPath(un, -360) : ringPath(ring, 0)
+        d += jumped && closed ? ringPath(un, 0) + ringPath(un, 360) + ringPath(un, -360) : ringPath(ring, 0)
       }
   }
   return d

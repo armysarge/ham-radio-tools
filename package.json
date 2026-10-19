@@ -9,7 +9,8 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "check:offline": "node scripts/check-offline.mjs"
+    "check:offline": "node scripts/check-offline.mjs",
+    "screenshots": "node scripts/screenshots.mjs"
   },
   "dependencies": {
     "topojson-client": "^3.1.0",
