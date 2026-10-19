@@ -86,3 +86,20 @@ export function efhwMatch(zEndOhms: number, ratio: number, z0 = 50) {
   const zIn = zEndOhms / ratio
   return { zIn, swr: Math.max(zIn, z0) / Math.min(zIn, z0) }
 }
+
+/**
+ * J-pole: a half-wave radiator fed at the bottom through a quarter-wave shorted stub that doubles as the matching section.
+ * Overall length ≈ 3/4 λ, stub ≈ 1/4 λ, radiating section ≈ 1/2 λ. k ≈ 0.957 reproduces the familiar 58 in (1.47 m) for 146 MHz
+ * in ½-inch copper pipe. Spacing and tap position are starting values to be tuned with an analyser: they depend on the tube diameter.
+ */
+export function jpole(fHz: number, k = 0.957) {
+  if (!(fHz >= 10e6 && fHz <= 3e9)) throw new RangeError('A J-pole is practical between 10 MHz and 3 GHz')
+  if (!(k >= 0.9 && k <= 1)) throw new RangeError('Shortening factor must be between 0.90 and 1.00')
+  const lambda = C / fHz
+  return {
+    total: 0.75 * lambda * k, stub: 0.25 * lambda * k, radiator: 0.5 * lambda * k,
+    spacing: 0.025 * lambda, // centre-to-centre between the stub and the long element
+    tap: 0.025 * lambda, // start of the feed tap, measured up from the shorted bottom
+    tapMin: 0.015 * lambda, tapMax: 0.04 * lambda,
+  }
+}

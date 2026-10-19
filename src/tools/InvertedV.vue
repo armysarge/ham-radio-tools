@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
 import ModsPanel from '../components/ModsPanel.vue'
+import MaterialsPanel from '../components/MaterialsPanel.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
@@ -88,6 +89,7 @@ const endY = computed(() => (r.value ? G - Math.max(r.value.endHeight, 0) * sc.v
           :disabled="!r" :summary="`${f ? fmt(f / 1e6) : ''} MHz, ${angle}°, ${dim(r?.total)}`" :params="{ f: f ?? 0, k, slope, angle, height: height ?? 0 }" />
       </div>
     </div>
+    <MaterialsPanel antenna="inverted-v" />
     <ModsPanel antenna="inverted-v" />
 
     <template #explain>

@@ -1,6 +1,6 @@
 // Modifications builders try on the antennas in this app, each labelled by how well the claim is supported.
 // No gain figures are quoted: the real number depends on site, ground and build, and this app does not simulate.
-export type AntennaId = 'dipole' | 'inverted-v' | 'vertical' | 'loop' | 'efhw'
+export type AntennaId = 'dipole' | 'inverted-v' | 'vertical' | 'loop' | 'efhw' | 'jpole'
 export type Evidence = 'proven' | 'situational' | 'unproven'
 export interface Mod { id: string; antennas: AntennaId[]; title: string; goal: 'range' | 'bands' | 'bandwidth' | 'size' | 'safety'; what: string; effect: string; caveat: string; evidence: Evidence; basis: string }
 
@@ -16,17 +16,17 @@ export const MODS_META = {
 const L = (...a: AntennaId[]) => a
 
 export const MODS: Mod[] = [
-  { id: 'height', antennas: L('dipole', 'inverted-v', 'loop', 'efhw'), title: 'Raise the antenna', goal: 'range', evidence: 'proven',
+  { id: 'height', antennas: L('dipole', 'inverted-v', 'loop', 'efhw', 'jpole'), title: 'Raise the antenna', goal: 'range', evidence: 'proven',
     what: 'Hang the wire higher, ideally towards half a wavelength above ground for DX.',
     effect: 'Lowers the take-off angle of a horizontal antenna, which usually helps long-distance contacts; low antennas favour steep angles (short-range, “NVIS”).',
     caveat: 'For regional (a few hundred km) contacts on 80/40 m a low antenna is not a mistake. Height also changes the feed impedance.',
     basis: 'Ground-reflection theory; ARRL Antenna Book “Effects of ground”.' },
-  { id: 'choke', antennas: L('dipole', 'inverted-v', 'vertical', 'loop', 'efhw'), title: 'Add a 1:1 current choke (balun) at the feed point', goal: 'range', evidence: 'proven',
+  { id: 'choke', antennas: L('dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole'), title: 'Add a 1:1 current choke (balun) at the feed point', goal: 'range', evidence: 'proven',
     what: 'Wind coax on a ferrite core, or use a purpose-made choke balun, where the feedline meets the antenna.',
     effect: 'Stops RF current flowing on the outside of the coax, which keeps the pattern predictable and reduces interference and RF in the shack.',
     caveat: 'It does not add gain. Use a core material suited to the band; a wrong core can overheat or do nothing.',
     basis: 'Common-mode current theory; ARRL Antenna Book “Transmission lines”.' },
-  { id: 'feedline-loss', antennas: L('dipole', 'inverted-v', 'vertical', 'loop', 'efhw'), title: 'Use lower-loss feedline, especially at VHF/UHF or with a high SWR', goal: 'range', evidence: 'proven',
+  { id: 'feedline-loss', antennas: L('dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole'), title: 'Use lower-loss feedline, especially at VHF/UHF or with a high SWR', goal: 'range', evidence: 'proven',
     what: 'Swap thin coax for a thicker, lower-loss type, or use open-wire line with a tuner at the rig.',
     effect: 'Every dB lost in the cable is power not radiated, and loss increases with frequency and with mismatch.',
     caveat: 'Matters most for long runs; for 10 m of coax on HF the gain is small.',
@@ -121,12 +121,12 @@ export const MODS: Mod[] = [
     effect: 'RF voltage is highest at the ends and can burn skin or ignite dry foliage at higher power.',
     caveat: 'This is a safety measure, not a performance one.',
     basis: 'RF exposure guidance for amateur stations (e.g. FCC OET-65, ICNIRP).' },
-  { id: 'low-swr', antennas: L('dipole', 'inverted-v', 'vertical', 'loop', 'efhw'), title: 'Tune for 1:1 SWR at the rig through long, lossy coax', goal: 'range', evidence: 'unproven',
+  { id: 'low-swr', antennas: L('dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole'), title: 'Tune for 1:1 SWR at the rig through long, lossy coax', goal: 'range', evidence: 'unproven',
     what: 'Add a tuner at the radio to make the meter read 1:1 while the antenna itself is mismatched.',
     effect: 'The radio is happy, but the loss in the feedline and the antenna’s own inefficiency are unchanged; the mismatch can even increase cable loss.',
     caveat: 'SWR measures match, not radiation. A tuner at the antenna end, or fixing the antenna, is better than hiding it.',
     basis: 'Transmission-line theory; the SWR tool’s explanation.' },
-  { id: 'gadgets', antennas: L('dipole', 'inverted-v', 'vertical', 'loop', 'efhw'), title: '“Gain boosters”, crystals, magnets, special paints or add-on rings', goal: 'range', evidence: 'unproven',
+  { id: 'gadgets', antennas: L('dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole'), title: '“Gain boosters”, crystals, magnets, special paints or add-on rings', goal: 'range', evidence: 'unproven',
     what: 'Passive gadgets sold or posted to add several dB without changing the antenna’s size.',
     effect: 'No credible measurement shows an increase; gain comes from aperture, height, ground and loss, not from small trinkets.',
     caveat: 'If a claim has no before/after field-strength or modelled data, treat it as marketing. A small test with a second station on a fixed schedule is the honest check.',
@@ -163,5 +163,27 @@ MODS.push(
     effect: 'A wire at ground level loses much of its radiated signal into the ground and the resonant length changes; it is a last resort, not an equal alternative.',
     caveat: 'If you must, keep the wire as high and as straight as possible and expect to retune.',
     basis: 'Ground-loss and height effects; ARRL Antenna Book.' },
+)
+MODS.push(
+  { id: 'jpole-clear', antennas: ['jpole'], title: 'Mount it clear of metal, with the top in the open', goal: 'range', evidence: 'proven',
+    what: 'Put the J-pole on a non-metal support (fibreglass pole or PVC) at least a half wavelength from other metal, with the whole antenna as high and unobstructed as practical.',
+    effect: 'Keeps the pattern low-angle and symmetrical; nearby metal and a metal mast through the stub detune it and tilt the pattern.',
+    caveat: 'If you must use a metal mast, clamp the J-pole well off the side of it, and re-tune on site.',
+    basis: 'Standard VHF vertical practice; ARRL Antenna Book.' },
+  { id: 'jpole-tune', antennas: ['jpole'], title: 'Tune the tap and the length with an analyser', goal: 'bandwidth', evidence: 'proven',
+    what: 'Start from the dimensions here, then slide the feed tap up or down the stub for the lowest SWR and trim the top for the centre frequency.',
+    effect: 'Brings the antenna to your exact frequency and match. Tube diameter and fittings change the best tap position.',
+    caveat: 'Move the tap in small steps and recheck: it is sensitive. Fix the tap permanently only once the SWR is right.',
+    basis: 'Amateur J-pole construction practice.' },
+  { id: 'jpole-roll', antennas: ['jpole'], title: 'Roll-up twin-lead version for portable use', goal: 'size', evidence: 'proven',
+    what: 'Make the J-pole from 300 Ω twin-lead or 450 Ω ladder line, with the lengths adjusted for the line’s velocity factor, and hang it from a tree or pole.',
+    effect: 'Folds into a pocket and weighs next to nothing; works well for emergency and hiking use.',
+    caveat: 'Needs a clear, vertical hang and a choke at the feed. The stub length depends on the line’s velocity factor, so trim it.',
+    basis: 'Widely built portable antenna; the maths is the same J-pole stub.' },
+  { id: 'jpole-stack', antennas: ['jpole'], title: 'Stacking two J-poles for “more gain”', goal: 'range', evidence: 'situational',
+    what: 'Mount two J-poles one above the other and feed them together.',
+    effect: 'Narrows the pattern in the vertical plane and so concentrates power toward the horizon.',
+    caveat: 'Needs correct spacing and phasing, a harness that keeps the match, and care with interaction; a badly built stack is worse than one antenna. This app does not model the pattern.',
+    basis: 'Collinear array theory; ARRL Antenna Book.' },
 )
 export const modsFor = (a: AntennaId) => MODS.filter((m) => m.antennas.includes(a))

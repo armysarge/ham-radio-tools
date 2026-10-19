@@ -64,9 +64,12 @@ export const tools: ToolDef[] = [
   { id: 'inverted-v', title: 'Inverted-V Dipole', category: 'antenna', kind: 'empirical',
     summary: 'Wire length, end height and span for a dipole hung from one centre support.',
     keywords: ['inverted v', 'apex', 'wire', 'single mast', 'hf'], component: load(() => import('../tools/InvertedV.vue')) },
-  { id: 'vertical', title: 'Quarter-wave Vertical & Radials', category: 'antenna', kind: 'empirical',
-    summary: 'Radiator and radial lengths for a ground-plane vertical, elevated or ground-mounted.',
-    keywords: ['ground plane', 'radial', 'monopole', 'whip', 'gp'], component: load(() => import('../tools/Vertical.vue')) },
+  { id: 'vertical', title: 'Vertical Antenna (Quarter-wave Ground Plane)', category: 'antenna', kind: 'empirical',
+    summary: 'Vertical antenna design: radiator and radial lengths for a quarter-wave ground-plane vertical, elevated or ground-mounted, with a drawing.',
+    keywords: ['vertical', 'vertical antenna', 'ground plane', 'radial', 'monopole', 'whip', 'gp', 'quarter wave'], component: load(() => import('../tools/Vertical.vue')) },
+  { id: 'jpole', title: 'J-Pole Vertical (VHF/UHF)', category: 'antenna', kind: 'empirical',
+    summary: 'Dimensions, spacing and feed tap for a J-pole vertical in copper pipe or twin-lead, with a drawing and build notes.',
+    keywords: ['j-pole', 'jpole', 'j pole', 'vertical', 'vhf', 'uhf', '2m', '70cm', 'copper pipe', 'slim jim', 'roll-up'], component: load(() => import('../tools/JPole.vue')) },
   { id: 'loop', title: 'Full-wave Loop', category: 'antenna', kind: 'empirical',
     summary: 'Perimeter and side lengths for a square, triangle or circular loop, plus a 75 Ω matching section.',
     keywords: ['quad', 'delta', 'loop', 'perimeter', 'quarter wave match'], component: load(() => import('../tools/Loop.vue')) },
@@ -111,7 +114,7 @@ export const tools: ToolDef[] = [
 export const CATEGORY_ICON: Record<string, string> = { rf: 'rf', antenna: 'antenna', maps: 'map', ops: 'ops' }
 const TOOL_ICON: Record<string, string> = {
   'frequency-wavelength': 'wave', 'ohms-law': 'resistor', components: 'chip', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
-  dipole: 'dipole', efhw: 'endfed', 'inverted-v': 'invertedv', vertical: 'vertical', loop: 'loop', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
+  dipole: 'dipole', efhw: 'endfed', 'inverted-v': 'invertedv', vertical: 'vertical', jpole: 'jpole', loop: 'loop', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
   'band-plans': 'plan', 'itu-regulations': 'scale', ctcss: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'q-codes': 'q', phonetic: 'letterA',
 }
 export const iconFor = (id: string) => TOOL_ICON[id] ?? 'wave'

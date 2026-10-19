@@ -20,6 +20,7 @@ const ICONS: Record<string, string[]> = {
   dipole: ['M2 9h8', 'M14 9h8', 'M10 7h4v4h-4z', 'M12 11v9'],
   endfed: ['M7 12h15', 'M2 8h5v8H2z'],
   invertedv: ['M3 15L12 5l9 10', 'M12 5v16'],
+  jpole: ['M7 3v15a4 4 0 004 4h2a4 4 0 004-4', 'M17 3v10', 'M11 18v-4'],
   vertical: ['M12 3v14', 'M5 21l7-4 7 4'],
   loop: ['M5 5h14v14H5z', 'M12 19v3'],
   globe: ['M12 3a9 9 0 100 18 9 9 0 000-18z', 'M3 12h18', 'M12 3c3 3 3 15 0 18', 'M12 3c-3 3-3 15 0 18'],

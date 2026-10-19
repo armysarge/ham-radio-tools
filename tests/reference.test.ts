@@ -110,7 +110,7 @@ describe('antenna mods', () => {
     }
   })
   it('every antenna has proven mods and warns about unproven ones', () => {
-    for (const a of ['dipole', 'inverted-v', 'vertical', 'loop', 'efhw'] as AntennaId[]) {
+    for (const a of ['dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole'] as AntennaId[]) {
       expect(modsFor(a).filter((m) => m.evidence === 'proven').length, a).toBeGreaterThan(2)
       expect(modsFor(a).filter((m) => m.evidence === 'unproven').length, a).toBeGreaterThan(0)
     }
@@ -196,5 +196,52 @@ describe('explain-section wording', () => {
       expect(summaries, tool.id).toContain(expected[tool.kind])
       if (tool.kind !== 'analytical') expect(summaries.join('|'), tool.id).not.toMatch(/calculated/i)
     }
+  })
+})
+
+import { SNIFFER_PARTS, SNIFFER_STEPS, SNIFFER_TROUBLE, SNIFFER_VARIANTS } from '../src/data/snifferBuild'
+describe('sniffer loop build guide', () => {
+  it('is complete and the page renders the steps and diagram', async () => {
+    expect(SNIFFER_PARTS.length).toBeGreaterThanOrEqual(5); expect(SNIFFER_STEPS.length).toBeGreaterThanOrEqual(10)
+    for (const s of SNIFFER_STEPS) expect(s.detail.length, s.title).toBeGreaterThan(60)
+    expect(SNIFFER_TROUBLE.length).toBeGreaterThan(2); expect(SNIFFER_VARIANTS.length).toBeGreaterThan(2)
+    const w = mount(QrmHunting, { global })
+    await w.findAll('[role=tab]').find((b) => b.text() === 'DIY sniffer loop')!.trigger('click'); await flushPromises()
+    expect(w.text()).toContain('Build a shielded loop, step by step'); expect(w.text()).toContain('Cut the shield gap'); expect(w.text()).toContain('Safety.')
+    expect(w.find('svg[aria-label^="Shielded loop"]').exists()).toBe(true)
+  })
+})
+
+import { GROUPS, PICKS } from '../src/data/materials'
+import MaterialsPanel from '../src/components/MaterialsPanel.vue'
+import JPole from '../src/tools/JPole.vue'
+describe('materials guidance and J-pole page', () => {
+  it('every antenna has picks and every group has a best or good choice and an avoid warning', () => {
+    expect(Object.keys(PICKS).sort()).toEqual(['dipole', 'efhw', 'inverted-v', 'jpole', 'loop', 'vertical'])
+    for (const g of GROUPS) {
+      expect(g.choices.some((c) => c.verdict === 'best' || c.verdict === 'good'), g.id).toBe(true); expect(g.choices.some((c) => c.verdict === 'avoid'), g.id).toBe(true)
+      for (const c of g.choices) expect(c.note.length, c.name).toBeGreaterThan(30)
+    }
+    expect(JSON.stringify(GROUPS)).toContain('RG-213'); expect(JSON.stringify(GROUPS)).toContain('LMR-400')
+  })
+  it('the panel names the right cable for the antenna and shows verdict tables', async () => {
+    const w = mount(MaterialsPanel, { props: { antenna: 'vertical' } })
+    expect(w.text()).toContain('For this antenna'); expect(w.text()).toContain('aluminium tubing'); expect(w.text()).toContain('Feedline (cable to the antenna)')
+    expect(w.text()).toContain('Best'); expect(w.text()).toContain('Avoid')
+  })
+  it('J-pole page: 146 MHz dimensions, drawing and save', async () => {
+    const w = mount(JPole, { global: { stubs: { RouterLink: true } } }); await flushPromises()
+    expect(w.text()).toContain('1.474 m'); expect(w.text()).toContain('Matching stub'); expect(w.text()).toContain('What to build it from'); expect(w.find('svg[aria-label^="J-pole"]').exists()).toBe(true)
+    await w.findAll('button').find((b) => b.text() === '70 cm')!.trigger('click'); await flushPromises()
+    expect(w.text()).toMatch(/49\.\d cm|0\.49\d m/)
+  })
+  it('every antenna tool carries the materials panel', async () => {
+    for (const id of ['dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole']) {
+      const tool = tools.find((x) => x.id === id)!
+      const mod = (await tool.component()) as unknown as { default?: unknown }
+      const w = mount((mod.default ?? mod) as never, { global: { stubs: { RouterLink: true } } }); await flushPromises()
+      expect(w.text(), id).toContain('What to build it from')
+    }
+    expect(tools.find((x) => x.id === 'vertical')!.title).toContain('Vertical Antenna')
   })
 })

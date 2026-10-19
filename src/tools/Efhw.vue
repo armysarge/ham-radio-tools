@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
 import ModsPanel from '../components/ModsPanel.vue'
+import MaterialsPanel from '../components/MaterialsPanel.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
@@ -95,6 +96,7 @@ const usable = computed(() => r.value?.harmonics.filter((h) => h.band) ?? [])
       <p class="hint" style="margin:0">These are common amateur practices and are <strong>empirical</strong>; this app does not model the transformer.</p>
     </div>
 
+    <MaterialsPanel antenna="efhw" />
     <ModsPanel antenna="efhw" />
 
     <template #explain>

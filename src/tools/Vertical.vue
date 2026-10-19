@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
 import ModsPanel from '../components/ModsPanel.vue'
+import MaterialsPanel from '../components/MaterialsPanel.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
@@ -60,7 +61,7 @@ const ry = computed(() => RP * Math.sin(((mode.value === 'elevated' ? droop.valu
       </div>
       <div class="stack">
         <div class="card">
-          <svg ref="svgEl" class="diagram dg-big" viewBox="0 0 640 290" role="img" :aria-label="`Quarter-wave vertical: radiator ${dim(r?.radiator)}, radials ${dim(r?.radial)}`">
+          <svg ref="svgEl" class="diagram dg-big" viewBox="0 0 640 300" role="img" :aria-label="`Quarter-wave vertical: radiator ${dim(r?.radiator)}, radials ${dim(r?.radial)}`">
             <line class="dg-ground" x1="10" :y1="GY" x2="630" :y2="GY" />
             <path class="dg-wire" :d="`M${FX} ${feedY} V${feedY - RP}`" />
             <template v-if="mode === 'elevated'">
@@ -71,17 +72,32 @@ const ry = computed(() => RP * Math.sin(((mode.value === 'elevated' ? droop.valu
               <path class="dg-wire" :d="`M${FX} ${GY} h${-RP} M${FX} ${GY} h${RP}`" style="stroke-width:3" />
               <path class="dg-wire" :d="`M${FX} ${GY} l${-RP * 0.7} 14 M${FX} ${GY} l${RP * 0.7} 14 M${FX} ${GY} l${-RP * 0.4} 26 M${FX} ${GY} l${RP * 0.4} 26`" style="stroke-width:2;opacity:.6" />
             </template>
-            <circle class="dg-solid" :cx="FX" :cy="feedY" r="6" /><text class="dg-text" :x="FX + 12" :y="feedY - 6">feed</text>
+            <template v-if="mode === 'elevated'">
+              <line :x1="FX" :y1="feedY" :x2="FX" :y2="GY" stroke="var(--muted)" stroke-width="6" opacity=".55" />
+              <path class="dg-ground" fill="none" :d="`M${FX + 9} ${feedY} V${GY - 6} H${FX + 90}`" /><rect :x="FX + 5" :y="feedY + 24" width="16" height="12" rx="2" style="fill:var(--wire)" />
+              <text class="dg-tick" :x="FX + 96" :y="GY - 2">coax + choke to the shack</text>
+              <text class="dg-tick" :x="FX + rx + 8" :y="feedY + ry + 4">radials (4 recommended, 2 shown)</text>
+            </template>
+            <template v-else>
+              <text class="dg-tick" :x="FX + 14" :y="GY - 32">feed point (insulated base)</text>
+              <text class="dg-tick" :x="FX + 14" :y="GY - 16">coax + choke to the shack</text>
+              <text class="dg-tick" :x="FX - RP - 8" :y="GY - 8" text-anchor="end">16+ radials on or just under the ground</text>
+            </template>
+            <rect class="dg-solid" :x="FX - 9" :y="feedY - 4" width="18" height="12" rx="3" />
+            <circle class="dg-solid" :cx="FX" :cy="feedY" r="3" /><text v-if="mode === 'elevated'" class="dg-text" :x="FX + 14" :y="feedY - 8">feed point (insulated base)</text>
+            <text class="dg-text" :x="FX - 12" :y="feedY - RP / 2" text-anchor="end">radiator</text>
             <line class="dg-dim" :x1="FX + 40" :y1="feedY" :x2="FX + 40" :y2="feedY - RP" /><line class="dg-dim" :x1="FX + 32" :y1="feedY" :x2="FX + 48" :y2="feedY" /><line class="dg-dim" :x1="FX + 32" :y1="feedY - RP" :x2="FX + 48" :y2="feedY - RP" />
             <text class="dg-dimtext" :x="FX + 56" :y="feedY - RP / 2">{{ dim(r?.radiator) }}</text>
             <text class="dg-dimtext" :x="FX - rx - 6" :y="feedY + ry + 6" text-anchor="end">radial {{ dim(r?.radial) }}</text>
+            <text class="dg-tick" x="14" :y="GY + 16">ground</text>
           </svg>
-          <p class="hint">Side view, to scale for the angles entered. Sloping radials show 2 of the 4 suggested; ground radials show a spread.</p>
+          <p class="hint">Side view, to scale for the angles entered. Mount the base on a non-metal pole. Sloping radials show 2 of the 4 suggested; ground radials show a spread.</p>
         </div>
         <DesignActions v-model:name="name" tool-id="vertical" :default-name="`Vertical ${f ? fmt(f / 1e6) : ''} MHz`" :svg="svgEl" :file="`vertical-${f ? fmt(f / 1e6) : 'x'}MHz.svg`"
           :disabled="!r" :summary="`${f ? fmt(f / 1e6) : ''} MHz, ${dim(r?.radiator)}, ${mode}`" :params="{ f: f ?? 0, k, mode, droop }" />
       </div>
     </div>
+    <MaterialsPanel antenna="vertical" />
     <ModsPanel antenna="vertical" />
 
     <template #explain>

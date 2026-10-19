@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
 import ModsPanel from '../components/ModsPanel.vue'
+import MaterialsPanel from '../components/MaterialsPanel.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import LineChart from '../components/LineChart.vue'
@@ -118,6 +119,7 @@ const printPage = () => window.print()
       </div>
     </div>
 
+    <MaterialsPanel antenna="dipole" />
     <ModsPanel antenna="dipole" />
 
     <template #explain>

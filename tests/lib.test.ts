@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import * as rf from '../src/lib/rf'
 import * as mh from '../src/lib/maidenhead'
 import * as geo from '../src/lib/geo'
-import { dipoleLength, trimPerLeg, invertedV, vertical, loop, efhw, efhwMatch } from '../src/lib/antenna'
+import { dipoleLength, trimPerLeg, invertedV, vertical, loop, efhw, efhwMatch, jpole } from '../src/lib/antenna'
 import { fmt, feetInches } from '../src/lib/units'
 
 describe('rf', () => {
@@ -178,6 +178,14 @@ describe('antenna & formatting', () => {
     expect(efhwMatch(4000, 49).swr).toBeCloseTo(81.63 / 50, 2)
     expect(efhwMatch(1000, 49).swr).toBeCloseTo(50 / (1000 / 49), 6) // below 50 ohm: SWR is the inverse ratio
     expect(() => efhwMatch(0, 49)).toThrow(); expect(() => efhw(0)).toThrow()
+  })
+  it('J-pole: 146 MHz is about 58 in overall with a ~19 in stub; sections add up', () => {
+    const j = jpole(146e6)
+    expect(j.total / 0.0254).toBeCloseTo(58, 0); expect(j.stub / 0.0254).toBeCloseTo(19.3, 0)
+    expect(j.radiator + j.stub).toBeCloseTo(j.total, 12); expect(j.stub * 3).toBeCloseTo(j.total, 12)
+    expect(jpole(435e6).total).toBeLessThan(0.55); expect(jpole(50.15e6).total).toBeGreaterThan(4)
+    expect(j.tap).toBeGreaterThan(j.tapMin); expect(j.tap).toBeLessThan(j.tapMax)
+    expect(() => jpole(5e6)).toThrow(/practical/); expect(() => jpole(146e6, 0.5)).toThrow(/Shortening/)
   })
   it('fmt', () => {
     expect(fmt(21.11212)).toBe('21.11'); expect(fmt(Infinity)).toBe('∞'); expect(fmt(null)).toBe('—'); expect(fmt(0)).toBe('0')

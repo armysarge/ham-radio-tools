@@ -5,6 +5,10 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 ## [0.2.0] - 2026-10-19
 
 ### Added
+- Components page: resistor colour codes (3–6 bands, both directions), capacitor and SMD / EIA-96 codes, E6–E96 preferred values, series/parallel, voltage divider, LED resistor.
+- J-pole antenna design tool; the vertical tool is now titled “Vertical Antenna (Quarter-wave Ground Plane)” and its drawing shows radiator, radials, base insulator, coax and choke.
+- “What to build it from” guidance (wire, coax, connectors, chokes, supports, weatherproofing) on every antenna tool.
+- Step-by-step build guide, diagram, test and troubleshooting for the DIY shielded sniffer loop.
 - National band tables for the USA, Canada, Germany, Australia (Advanced class), South Africa, Japan and Brazil, bundled with source, licence and revision date.
 - Source registry (`scripts/pack-data/sources.json`), `npm run check:sources` drift check and `docs/DATA_SOURCES.md`.
 - GitHub link with icon in the top bar, sidebar and Settings > About.
@@ -24,6 +28,7 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 - App version shown in Settings, optional "your callsign" setting, About section.
 
 ### Fixed
+- Logo cropped to its content; phone screenshots removed from the README.
 - Basemap polygons that cross the antimeridian (Russia, Fiji) no longer streak across the map.
 - Content packs could not be stored from a reactive object (IndexedDB clone error).
 - Phone layout: top bar, drawer navigation, wide tables and grid items no longer cause horizontal scrolling.

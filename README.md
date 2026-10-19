@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/logo.svg" alt="Ham Radio Tools" width="480"/>
+  <img src="docs/logo.svg" alt="Ham Radio Tools" width="336"/>
 </p>
 
 <p align="center"><b>An offline-first amateur-radio workbench: RF calculators, antenna designers and grid-square tools that never need the internet.</b></p>
@@ -34,10 +34,6 @@
 | ![Grid squares and map](docs/screenshots/maidenhead.png) | ![SWR](docs/screenshots/swr.png) |
 | Maidenhead grid, distance and bearing on the bundled map | SWR, return loss and mismatch loss |
 
-| Phone: dipole | Phone: map |
-|---|---|
-| <img src="docs/screenshots/phone-dipole.png" width="260"/> | <img src="docs/screenshots/phone-map.png" width="260"/> |
-
 ## Overview
 
 Ham Radio Tools gives beginners, experienced operators and antenna builders a quick answer first, then lets them expand the explanation to see the formula and assumptions behind it.
@@ -53,13 +49,13 @@ Key design goals:
 
 | Area | Feature |
 |---|---|
-| **RF & electronics** | Frequency ↔ wavelength with velocity factor · Ohm's law and power (any two in, rest out) · dBm / watts / dB ratios with impedance assumptions · SWR, return loss, reflection coefficient, mismatch loss · Reactance and LC resonance · Feedline electrical length |
-| **Antenna design** | Half-wave dipole with trim helper · End-fed half-wave (harmonic bands, counterpoise, 49:1/64:1 transformer guidance) · Inverted-V (apex angle, span, end height) · Quarter-wave vertical with elevated or ground radials · Full-wave loop (square, triangle, circle) with a 75 Ω matching section · Dimensioned SVG drawings · Save, export SVG, print |
+| **RF & electronics** | Frequency ↔ wavelength with velocity factor · Ohm's law and power (any two in, rest out) · dBm / watts / dB ratios with impedance assumptions · SWR, return loss, reflection coefficient, mismatch loss · Reactance and LC resonance · Feedline electrical length · **Component codes: resistor colours both ways, capacitor and SMD codes, E-series values, series/parallel, divider, LED resistor** |
+| **Antenna design** | Half-wave dipole with trim helper · End-fed half-wave (harmonic bands, counterpoise, 49:1/64:1 transformer guidance) · Inverted-V (apex angle, span, end height) · Quarter-wave vertical with elevated or ground radials · J-pole for VHF/UHF (pipe or twin-lead) · Full-wave loop (square, triangle, circle) with a 75 Ω matching section · Dimensioned SVG drawings · **what to build it from** (wire, coax, connectors, chokes, supports: best/good/OK/avoid) · Save, export SVG, print |
 | **Maps & grid squares** | Coordinates ↔ Maidenhead (4, 6 or 8 characters) · Cell edges vs. cell centre · Short- and long-path distance and bearing · Bundled offline world map with grid overlay, pan and zoom · Saved named locations and "my station" |
 | **Projects** | Export saved designs and locations to a JSON file; import by adding or replacing; invalid entries are skipped with a reason |
 | **Operating references** | Phonetic alphabet · Q codes · Abbreviations · CTCSS tones · Constants and rules of thumb · ITU Radio Regulations explained · ITU region band plans and **national band tables for the USA, Canada, Germany, Australia, South Africa, Japan and Brazil** with a "what is at this frequency?" lookup · Callsign lookup (issuing country, island/home nation, DL/ prefixes, /P /MM suffixes) |
 | **CW (Morse)** | Chart · text → Morse player (PARIS timing, Farnsworth, adjustable pitch) · WAV download · decoder for typed dots/dashes, tapped keying and an experimental microphone decoder |
-| **QRM hunting** | Step-by-step method · source signatures (schematic sketches) · harmonic finder · DIY shielded-loop size calculator |
+| **QRM hunting** | Step-by-step method · source signatures (schematic sketches) · harmonic finder · DIY shielded-loop size calculator **and a full step-by-step build guide with diagram, tests and troubleshooting** |
 | **Antenna mods** | A proven / situational / unproven checklist on every antenna tool, with the reasoning and no invented gain figures |
 | **Broadcast schedules** | Bundled time & frequency stations · installable, dated schedule packs with staleness warnings · "on air now" at any UTC time |
 | **Content packs** | Import band plans and schedules (JSON) or convert an EiBi-layout / CSV schedule text file; stored locally in IndexedDB |
@@ -182,6 +178,8 @@ Band-plan pack format (`data.segments`): `{ "band": "20 m", "fromHz": 14000000, 
 | Feedline length | L = (θ/360)·c·VF/f | VF presets are typical values; check the datasheet |
 | Dipole | L = k·c/2f, k = 0.95 (≈ 468/f ft) | Empirical. No pattern, impedance, bandwidth, height or ground modelling |
 | End-fed half-wave | Dipole-length wire (k = 0.95); harmonics n·f against HF bands; ideal-transformer Zin = Zend/ratio | Empirical. End impedance and per-band SWR are not predicted |
+| J-pole | Overall 0.75·k·λ, stub 0.25·k·λ, k = 0.957 (≈ 58 in at 146 MHz in ½-inch pipe); spacing 0.025 λ and tap 0.025 λ as starting values | Empirical. Tap and spacing depend on tube size: tune with an analyser |
+| Components | IEC 60062 colour code, EIA capacitor and SMD/EIA-96 codes, IEC 60063 E-series, Ohm’s law | Colour codes beyond the six common temperature-coefficient colours vary by maker |
 | Inverted-V | Dipole length × sloping-leg factor 0.97; span/drop by trigonometry | Empirical. Impedance guidance is qualitative |
 | Vertical | k·c/4f for radiator and resonant radials, k = 0.95 (≈ 234/f ft) | Empirical. Radial counts are common guidance, not computed |
 | Full-wave loop | k·c/f, k = 1.0218 (≈ 1005/f ft); 75 Ω quarter-wave match | Empirical. Feed impedance is qualitative; match is single-frequency |
@@ -267,7 +265,7 @@ Recommendation: **Tauri**, because size, memory and a narrow permission model ma
 
 ## Releases and versions
 
-**Demo page:** the web build is published at <https://armysarge.co.za/ham-radio-tools>. It is the same static `dist/` bundle as the release zip (relative asset paths and hash routing, so it works from a sub-folder with no server rewrite rules). To publish a new version, unzip `ham-radio-tools-web-<version>.zip` over that folder. The demo needs HTTPS for the microphone CW decoder; everything else runs without network access once the page has loaded.
+**Demo page:** the web build is published at <https://hamradiotools.armysarge.co.za/>. It is the same static `dist/` bundle as the release zip (relative asset paths and hash routing, so it works from a sub-folder with no server rewrite rules). To publish a new version, unzip `ham-radio-tools-web-<version>.zip` over the site folder. The demo needs HTTPS for the microphone CW decoder; everything else runs without network access once the page has loaded.
 
 One repository, one version (`package.json`), one GitHub release per version with several assets (web zip, later Windows and Linux installers). See [docs/RELEASING.md](docs/RELEASING.md) for the step-by-step process, how a desktop shell is added in the same repo, and how opt-in updating works without breaking the offline rules. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 

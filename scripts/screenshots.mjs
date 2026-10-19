@@ -17,7 +17,7 @@ if (!browser) throw new Error('No Edge/Chrome found')
 const base = 'http://127.0.0.1:4174/'
 const shots = [
   ['dashboard', '', 1280, 800], ['dipole', '#/tool/dipole', 1280, 1000], ['maidenhead', '#/tool/maidenhead', 1280, 1100],
-  ['swr', '#/tool/swr', 1280, 800], ['phone-dipole', '#/tool/dipole', 390, 844], ['phone-map', '#/tool/maidenhead', 390, 844],
+  ['swr', '#/tool/swr', 1280, 800],
 ]
 for (const scheme of ['dark']) {
   for (const [name, hash, width, height] of shots) {

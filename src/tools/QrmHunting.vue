@@ -7,6 +7,8 @@ import SpectrumSketch from '../components/SpectrumSketch.vue'
 import { FREQ_UNITS, LENGTH_UNITS, feetInches, fmt } from '../lib/units'
 import { harmonicsInBands, maxFreqForDiameter, nearestHarmonic, smallLoopLimits } from '../lib/qrm'
 import { QRM_META, QRM_SOURCES, QRM_STEPS, SNIFFER_TIPS } from '../data/qrmSources'
+import { SNIFFER_BUILD_META, SNIFFER_PARTS, SNIFFER_SAFETY, SNIFFER_STEPS, SNIFFER_TROUBLE, SNIFFER_VARIANTS } from '../data/snifferBuild'
+import SnifferLoopDiagram from '../components/SnifferLoopDiagram.vue'
 import { state } from '../core/store'
 
 const tab = ref<'steps' | 'sources' | 'harm' | 'diy'>('steps')
@@ -109,6 +111,26 @@ const spacingPx = computed(() => 28)
         <p class="hint" style="text-align:center">Top view of a vertical loop seen edge-on: the loop passes signals along its own plane and nulls them broadside. Rotate for the null, then the source lies along that line, in one of two directions.</p>
       </div>
       <div class="card stack">
+        <h2>Build a shielded loop, step by step</h2>
+        <p class="muted" style="margin:0">A small loop made from a ring of coax with a gap in the outer braid. It senses the magnetic part of a signal and largely ignores local electric noise, and it has deep nulls you can use to find a direction. Cost: a few euros of coax and a box.</p>
+        <div class="cols" style="grid-template-columns:minmax(260px,420px) 1fr">
+          <SnifferLoopDiagram />
+          <div>
+            <h3>Parts</h3>
+            <ul style="margin:0;padding-left:1.2rem"><li v-for="p in SNIFFER_PARTS" :key="p.item" style="margin:.35rem 0"><strong>{{ p.item }}</strong><br /><span class="muted">{{ p.why }}</span></li></ul>
+          </div>
+        </div>
+        <h3>Steps</h3>
+        <ol style="margin:0;padding-left:1.3rem"><li v-for="s in SNIFFER_STEPS" :key="s.title" style="margin:.5rem 0"><strong>{{ s.title }}.</strong> {{ s.detail }}</li></ol>
+        <h3>If it does not work</h3>
+        <ul style="margin:0;padding-left:1.2rem"><li v-for="t in SNIFFER_TROUBLE" :key="t.problem" style="margin:.35rem 0"><strong>{{ t.problem }}:</strong> {{ t.fix }}</li></ul>
+        <h3>Other versions</h3>
+        <details v-for="v in SNIFFER_VARIANTS" :key="v.name" class="explain" style="margin:0"><summary>{{ v.name }}</summary><p>{{ v.body }}</p></details>
+        <p class="notice" style="margin:0"><strong>Safety.</strong> {{ SNIFFER_SAFETY }}</p>
+        <p class="hint" style="margin:0">Source basis: {{ SNIFFER_BUILD_META.source }} (revision {{ SNIFFER_BUILD_META.revision }}).</p>
+      </div>
+      <div class="card stack">
+        <h2>More tips</h2>
         <details v-for="t in SNIFFER_TIPS" :key="t.title" class="explain" style="margin:0"><summary>{{ t.title }}</summary><p>{{ t.body }}</p></details>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
 import ModsPanel from '../components/ModsPanel.vue'
+import MaterialsPanel from '../components/MaterialsPanel.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
@@ -89,6 +90,7 @@ const SHAPES: [LoopShape, string][] = [['square', 'Square'], ['triangle', 'Trian
           :disabled="!r" :summary="`${f ? fmt(f / 1e6) : ''} MHz, ${shape}, ${dim(r?.perimeter)}`" :params="{ f: f ?? 0, k, shape, vf: vf ?? 0.66 }" />
       </div>
     </div>
+    <MaterialsPanel antenna="loop" />
     <ModsPanel antenna="loop" />
 
     <template #explain>
