@@ -5,6 +5,8 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 ## [0.2.0] - 2026-10-19
 
 ### Added
+- End-fed half-wave (EFHW) antenna tool.
+- Menu icons, themed scrollbars, 1 px smaller base text.
 - Metric / Imperial selector in the top bar (Metric by default); distances, lengths and unit defaults follow it.
 - CW tool: Morse chart, text-to-Morse player with PARIS and Farnsworth timing, WAV download, typed and tapped decoders, experimental microphone decoder.
 - Callsign lookup (ITU series, island / home-nation entities, operating prefixes, /P /M /MM /AM suffixes).

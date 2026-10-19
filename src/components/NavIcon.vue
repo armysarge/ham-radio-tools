@@ -17,6 +17,7 @@ const ICONS: Record<string, string[]> = {
   coil: ['M2 15h3c0-7 4-7 4 0', 'M9 15c0-7 4-7 4 0', 'M13 15c0-7 4-7 4 0', 'M17 15h5'],
   coax: ['M12 4a8 8 0 100 16 8 8 0 000-16z', 'M12 9a3 3 0 100 6 3 3 0 000-6z'],
   dipole: ['M2 9h8', 'M14 9h8', 'M10 7h4v4h-4z', 'M12 11v9'],
+  endfed: ['M7 12h15', 'M2 8h5v8H2z'],
   invertedv: ['M3 15L12 5l9 10', 'M12 5v16'],
   vertical: ['M12 3v14', 'M5 21l7-4 7 4'],
   loop: ['M5 5h14v14H5z', 'M12 19v3'],

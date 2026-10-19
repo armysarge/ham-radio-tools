@@ -58,3 +58,31 @@ export function loop(fHz: number, k = 1.0218, shape: LoopShape = 'square') {
     height: shape === 'square' ? side : shape === 'triangle' ? (side * Math.sqrt(3)) / 2 : perimeter / Math.PI,
   }
 }
+
+export interface HarmonicBand { n: number; hz: number; band: string | null }
+/**
+ * End-fed half-wave (EFHW): a half-wave wire fed at one end. The feed point is a high-impedance (voltage) point on the
+ * fundamental AND on every harmonic, so one wire works on every band that falls on a multiple of the design frequency.
+ * Length uses the same end-effect factor as a dipole. The counterpoise is a short wire (or the coax shield, with a choke).
+ */
+export function efhw(fHz: number, k = 0.95, bands: { name: string; fromHz: number; toHz: number }[] = []) {
+  const length = dipoleLength(fHz, k)
+  const lambda = C / fHz
+  const harmonics: HarmonicBand[] = []
+  for (let n = 1; n <= 8; n++) {
+    const hz = n * fHz, band = bands.find((b) => hz >= b.fromHz && hz <= b.toHz)
+    harmonics.push({ n, hz, band: band?.name ?? null })
+  }
+  return { length, counterpoiseMin: 0.05 * lambda, counterpoiseMax: 0.1 * lambda, harmonics }
+}
+
+/**
+ * Impedance seen at the radio end of an ideal, lossless 'ratio':1 impedance transformer fed from a wire end whose
+ * impedance is `zEnd`, and the SWR that gives on 50 ohm. Illustrates why 49:1 or 64:1 is used; real ends vary with
+ * height, wire and counterpoise, and a real transformer has losses and leakage inductance.
+ */
+export function efhwMatch(zEndOhms: number, ratio: number, z0 = 50) {
+  if (!(zEndOhms > 0) || !(ratio > 0) || !(z0 > 0)) throw new RangeError('Values must be greater than 0')
+  const zIn = zEndOhms / ratio
+  return { zIn, swr: Math.max(zIn, z0) / Math.min(zIn, z0) }
+}

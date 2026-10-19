@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import * as rf from '../src/lib/rf'
 import * as mh from '../src/lib/maidenhead'
 import * as geo from '../src/lib/geo'
-import { dipoleLength, trimPerLeg, invertedV, vertical, loop } from '../src/lib/antenna'
+import { dipoleLength, trimPerLeg, invertedV, vertical, loop, efhw, efhwMatch } from '../src/lib/antenna'
 import { fmt, feetInches } from '../src/lib/units'
 
 describe('rf', () => {
@@ -165,6 +165,19 @@ describe('antenna & formatting', () => {
     expect(loop(14.2e6, 1.0218, 'circle').diameter * Math.PI).toBeCloseTo(loop(14.2e6).perimeter, 9)
     expect(loop(14.2e6, 1.0218, 'triangle').height).toBeCloseTo(loop(14.2e6).perimeter / 3 * Math.sqrt(3) / 2, 9)
     expect(() => loop(14.2e6, 0.9)).toThrow()
+  })
+  it('EFHW: length, harmonics and transformer match', () => {
+    const bands = [{ name: '40 m', fromHz: 7e6, toHz: 7.3e6 }, { name: '20 m', fromHz: 14e6, toHz: 14.35e6 }, { name: '15 m', fromHz: 21e6, toHz: 21.45e6 }, { name: '10 m', fromHz: 28e6, toHz: 29.7e6 }]
+    const e = efhw(7.1e6, 0.95, bands)
+    expect(e.length).toBeCloseTo(dipoleLength(7.1e6, 0.95), 9)
+    expect(e.harmonics.filter((h) => h.band).map((h) => h.band)).toEqual(['40 m', '20 m', '15 m', '10 m'])
+    expect(e.harmonics[4].band).toBeNull() // 35.5 MHz is not an amateur HF band
+    expect(e.counterpoiseMin).toBeCloseTo((0.05 * 299792458) / 7.1e6, 9)
+    expect(efhwMatch(2450, 49).swr).toBeCloseTo(1, 9) // 2450 / 49 = 50 ohm
+    expect(efhwMatch(3200, 64).zIn).toBeCloseTo(50, 9)
+    expect(efhwMatch(4000, 49).swr).toBeCloseTo(81.63 / 50, 2)
+    expect(efhwMatch(1000, 49).swr).toBeCloseTo(50 / (1000 / 49), 6) // below 50 ohm: SWR is the inverse ratio
+    expect(() => efhwMatch(0, 49)).toThrow(); expect(() => efhw(0)).toThrow()
   })
   it('fmt', () => {
     expect(fmt(21.11212)).toBe('21.11'); expect(fmt(Infinity)).toBe('∞'); expect(fmt(null)).toBe('—'); expect(fmt(0)).toBe('0')

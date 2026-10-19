@@ -9,6 +9,7 @@ import Reactance from '../src/tools/Reactance.vue'
 import InvertedV from '../src/tools/InvertedV.vue'
 import Vertical from '../src/tools/Vertical.vue'
 import Loop from '../src/tools/Loop.vue'
+import Efhw from '../src/tools/Efhw.vue'
 import Settings from '../src/views/Settings.vue'
 import { platform } from '../src/platform'
 import { saveDesign, saveLocation } from '../src/core/store'
@@ -92,6 +93,15 @@ describe('tools', () => {
     expect(w.text()).toContain('5.39 m') // side
     await w.find('button.primary').trigger('click')
     expect(state.designs[0].toolId).toBe('loop')
+  })
+  it('EFHW: 7.1 MHz is 20.06 m, covers 40/20/15/10 m, and 64:1 changes the turns ratio', async () => {
+    const w = mount(Efhw, { global })
+    expect(w.text()).toContain('20.06 m'); expect(w.text()).toContain('Works on 40 m, 20 m, 15 m, 10 m')
+    expect(w.text()).toContain('7:1 turns ratio')
+    await w.findAll('button').find((b) => b.text() === '64:1')!.trigger('click')
+    expect(w.text()).toContain('8:1 turns ratio')
+    await w.find('button.primary').trigger('click')
+    expect(state.designs.at(-1)!.toolId).toBe('efhw')
   })
   it('Maidenhead: default example is JN58td, typing a locator moves the point', async () => {
     const w = mount(Maidenhead, { global })

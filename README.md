@@ -51,7 +51,7 @@ Key design goals:
 | Area | Feature |
 |---|---|
 | **RF & electronics** | Frequency ↔ wavelength with velocity factor · Ohm's law and power (any two in, rest out) · dBm / watts / dB ratios with impedance assumptions · SWR, return loss, reflection coefficient, mismatch loss · Reactance and LC resonance · Feedline electrical length |
-| **Antenna design** | Half-wave dipole with trim helper · Inverted-V (apex angle, span, end height) · Quarter-wave vertical with elevated or ground radials · Full-wave loop (square, triangle, circle) with a 75 Ω matching section · Dimensioned SVG drawings · Save, export SVG, print |
+| **Antenna design** | Half-wave dipole with trim helper · End-fed half-wave (harmonic bands, counterpoise, 49:1/64:1 transformer guidance) · Inverted-V (apex angle, span, end height) · Quarter-wave vertical with elevated or ground radials · Full-wave loop (square, triangle, circle) with a 75 Ω matching section · Dimensioned SVG drawings · Save, export SVG, print |
 | **Maps & grid squares** | Coordinates ↔ Maidenhead (4, 6 or 8 characters) · Cell edges vs. cell centre · Short- and long-path distance and bearing · Bundled offline world map with grid overlay, pan and zoom · Saved named locations and "my station" |
 | **Projects** | Export saved designs and locations to a JSON file; import by adding or replacing; invalid entries are skipped with a reason |
 | **Operating references** | Phonetic alphabet · Q codes · Abbreviations · CTCSS tones · Constants and rules of thumb · ITU region band plans with a "what is at this frequency?" lookup · Callsign lookup (issuing country, island/home nation, DL/ prefixes, /P /MM suffixes) |
@@ -159,6 +159,7 @@ Band-plan pack format (`data.segments`): `{ "band": "20 m", "fromHz": 14000000, 
 | Reactance / resonance | X_L = 2πfL, X_C = 1/(2πfC), f₀ = 1/(2π√LC) | Ideal components; no Q or bandwidth |
 | Feedline length | L = (θ/360)·c·VF/f | VF presets are typical values; check the datasheet |
 | Dipole | L = k·c/2f, k = 0.95 (≈ 468/f ft) | Empirical. No pattern, impedance, bandwidth, height or ground modelling |
+| End-fed half-wave | Dipole-length wire (k = 0.95); harmonics n·f against HF bands; ideal-transformer Zin = Zend/ratio | Empirical. End impedance and per-band SWR are not predicted |
 | Inverted-V | Dipole length × sloping-leg factor 0.97; span/drop by trigonometry | Empirical. Impedance guidance is qualitative |
 | Vertical | k·c/4f for radiator and resonant radials, k = 0.95 (≈ 234/f ft) | Empirical. Radial counts are common guidance, not computed |
 | Full-wave loop | k·c/f, k = 1.0218 (≈ 1005/f ft); 75 Ω quarter-wave match | Empirical. Feed impedance is qualitative; match is single-frequency |

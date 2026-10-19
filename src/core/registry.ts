@@ -49,6 +49,9 @@ export const tools: ToolDef[] = [
   { id: 'dipole', title: 'Half-wave Dipole', category: 'antenna', kind: 'empirical',
     summary: 'Wire lengths for a centre-fed dipole, with a live drawing and trimming guide.',
     keywords: ['wire', 'antenna', '468', 'hf', 'cut', 'trim'], component: load(() => import('../tools/Dipole.vue')) },
+  { id: 'efhw', title: 'End-Fed Half-Wave (EFHW)', category: 'antenna', kind: 'empirical',
+    summary: 'Wire length, harmonic bands, counterpoise and 49:1 / 64:1 transformer guidance for an end-fed half wave.',
+    keywords: ['end fed', 'efhw', 'end-fed', '49:1', '64:1', 'random wire', 'multiband', 'transformer', 'unun'], component: load(() => import('../tools/Efhw.vue')) },
   { id: 'inverted-v', title: 'Inverted-V Dipole', category: 'antenna', kind: 'empirical',
     summary: 'Wire length, end height and span for a dipole hung from one centre support.',
     keywords: ['inverted v', 'apex', 'wire', 'single mast', 'hf'], component: load(() => import('../tools/InvertedV.vue')) },
@@ -96,7 +99,7 @@ export const tools: ToolDef[] = [
 export const CATEGORY_ICON: Record<string, string> = { rf: 'rf', antenna: 'antenna', maps: 'map', ops: 'ops' }
 const TOOL_ICON: Record<string, string> = {
   'frequency-wavelength': 'wave', 'ohms-law': 'resistor', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
-  dipole: 'dipole', 'inverted-v': 'invertedv', vertical: 'vertical', loop: 'loop', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
+  dipole: 'dipole', efhw: 'endfed', 'inverted-v': 'invertedv', vertical: 'vertical', loop: 'loop', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
   'band-plans': 'plan', ctcss: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'q-codes': 'q', phonetic: 'letterA',
 }
 export const iconFor = (id: string) => TOOL_ICON[id] ?? 'wave'

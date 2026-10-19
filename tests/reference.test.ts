@@ -110,7 +110,7 @@ describe('antenna mods', () => {
     }
   })
   it('every antenna has proven mods and warns about unproven ones', () => {
-    for (const a of ['dipole', 'inverted-v', 'vertical', 'loop'] as AntennaId[]) {
+    for (const a of ['dipole', 'inverted-v', 'vertical', 'loop', 'efhw'] as AntennaId[]) {
       expect(modsFor(a).filter((m) => m.evidence === 'proven').length, a).toBeGreaterThan(2)
       expect(modsFor(a).filter((m) => m.evidence === 'unproven').length, a).toBeGreaterThan(0)
     }
