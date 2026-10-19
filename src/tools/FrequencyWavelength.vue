@@ -35,7 +35,7 @@ const wave = Array.from({ length: 81 }, (_, i) => `${i ? 'L' : 'M'}${40 + i * 5}
           <button :aria-pressed="known === 'l'" @click="known = 'l'">I know the wavelength</button>
         </div>
         <NumField v-if="known === 'f'" v-model="f" label="Frequency" :units="FREQ_UNITS" unit="MHz" :min="0" minExclusive />
-        <NumField v-else v-model="l" label="Wavelength" :units="LENGTH_UNITS" :min="0" minExclusive />
+        <NumField v-else v-model="l" label="Wavelength" :units="LENGTH_UNITS" :unit="imperial ? 'ft' : 'm'" :min="0" minExclusive />
         <NumField v-model="vf" label="Velocity factor" :min="0" :max="1" minExclusive hint="1.00 = free space. Typical coax is 0.66–0.85." />
       </div>
       <div class="stack">

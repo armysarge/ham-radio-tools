@@ -48,7 +48,7 @@ const endY = computed(() => (r.value ? G - Math.max(r.value.endHeight, 0) * sc.v
             <button v-for="[b, mhz] in BANDS" :key="b" :aria-pressed="f === mhz * 1e6" @click="f = mhz * 1e6">{{ b }}</button>
           </div>
           <NumField v-model="f" label="Design frequency" :units="FREQ_UNITS" unit="MHz" :min="100e3" :max="1e9" />
-          <NumField v-model="height" label="Apex height above ground" :units="LENGTH_UNITS" unit="m" :min="0" minExclusive hint="Height of the centre support / feed point." />
+          <NumField v-model="height" label="Apex height above ground" :units="LENGTH_UNITS" :unit="imperial ? 'ft' : 'm'" :min="0" minExclusive hint="Height of the centre support / feed point." />
           <label class="field"><span class="lbl">Included angle at apex = {{ angle }}°</span>
             <input v-model.number="angle" type="range" min="60" max="180" step="1" aria-label="Included angle" />
             <span class="hint">180° is a flat dipole. 90–120° is typical.</span></label>

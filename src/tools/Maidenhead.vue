@@ -7,7 +7,7 @@ import WorldMap from '../components/WorldMap.vue'
 import { decode, encode, precisionInfo, type Precision } from '../lib/maidenhead'
 import { KM_PER_MILE, KM_PER_NM, greatCircle, path } from '../lib/geo'
 import { fmt } from '../lib/units'
-import { station } from '../core/store'
+import { state, station } from '../core/store'
 
 const st = station()
 const aLat = ref<number | null>(st?.lat ?? 48.14666), aLon = ref<number | null>(st?.lon ?? 11.60833)
@@ -30,6 +30,8 @@ const markers = computed(() => [
 ])
 function pick(lat: number, lon: number) { bLat.value = +lat.toFixed(5); bLon.value = +lon.toFixed(5) }
 
+const imperial = computed(() => state.units === 'imperial')
+const dist = (km: number) => (imperial.value ? `${fmt(km / KM_PER_MILE, 2)} miles` : `${fmt(km, 2)} km`)
 const deg = (v: number | null) => (v == null ? '—' : `${fmt(v, 4)}°`)
 // compass arrow endpoint for a bearing
 const arrow = (b: number | null) => (b == null ? null : { x: 100 + 72 * Math.sin((b * Math.PI) / 180), y: 100 - 72 * Math.cos((b * Math.PI) / 180) })
@@ -50,7 +52,7 @@ const arrow = (b: number | null) => (b == null ? null : { x: 100 + 72 * Math.sin
         <div class="seg" role="group" aria-label="Locator length">
           <button v-for="n in [4, 6, 8]" :key="n" :aria-pressed="chars === n" @click="chars = n as Precision">{{ n }} characters</button>
         </div>
-        <p class="hint" style="margin-top:0">{{ chars }} characters = a {{ info.name }}, {{ fmt(info.latDeg * 60, 3) }}′ high × {{ fmt(info.lonDeg * 60, 3) }}′ wide — about {{ fmt(info.nsKm, 2) }} km north–south{{ ewKm != null ? ` and ${fmt(ewKm, 2)} km east–west here` : '' }}.</p>
+        <p class="hint" style="margin-top:0">{{ chars }} characters = a {{ info.name }}, {{ fmt(info.latDeg * 60, 3) }}′ high × {{ fmt(info.lonDeg * 60, 3) }}′ wide — about {{ dist(info.nsKm) }} north–south{{ ewKm != null ? ` and ${dist(ewKm)} east–west here` : '' }}.</p>
         <LocationInput v-model:lat="aLat" v-model:lon="aLon" v-model:chars="chars" title="You" />
         <LocationInput v-model:lat="bLat" v-model:lon="bLon" v-model:chars="chars" title="Other station" />
       </div>
@@ -69,11 +71,11 @@ const arrow = (b: number | null) => (b == null ? null : { x: 100 + 72 * Math.sin
           <h2>Path to the other station</h2>
           <p v-if="!p" class="muted">Enter both locations to see distance and bearing.</p>
           <template v-else>
-            <ResultRow label="Short path" :value="p.shortKm" unit="km" big />
-            <ResultRow label="" :value="p.shortKm / KM_PER_MILE" unit="miles" />
+            <ResultRow label="Short path" :value="imperial ? p.shortKm / KM_PER_MILE : p.shortKm" :unit="imperial ? 'miles' : 'km'" big />
+            <ResultRow label="" :value="imperial ? p.shortKm : p.shortKm / KM_PER_MILE" :unit="imperial ? 'km' : 'miles'" />
             <ResultRow label="" :value="p.shortKm / KM_PER_NM" unit="nautical miles" />
             <ResultRow label="Short-path beam heading" :value="p.shortBearing == null ? 'undefined' : fmt(p.shortBearing, 4)" :unit="p.shortBearing == null ? '' : '° true'" big />
-            <ResultRow label="Long path" :value="p.longKm" unit="km" />
+            <ResultRow label="Long path" :value="imperial ? p.longKm / KM_PER_MILE : p.longKm" :unit="imperial ? 'miles' : 'km'" />
             <ResultRow label="Long-path beam heading" :value="p.longBearing == null ? 'undefined' : fmt(p.longBearing, 4)" :unit="p.longBearing == null ? '' : '° true'" />
             <p v-if="p.shortBearing == null" class="notice">{{ p.shortKm < 1 ? 'Same point: there is no direction to point.' : 'Exact opposite sides of the Earth: every direction is equally short.' }}</p>
           </template>

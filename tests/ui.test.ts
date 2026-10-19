@@ -19,7 +19,7 @@ import { FREQ_UNITS } from '../src/lib/units'
 
 const global = { stubs: { RouterLink: true }, mocks: { $route: { query: {} } } }
 
-beforeEach(() => { localStorage.clear(); state.favorites = []; state.locations = []; state.designs = []; state.stationId = null })
+beforeEach(() => { localStorage.clear(); state.favorites = []; state.locations = []; state.designs = []; state.stationId = null; state.units = 'metric' })
 const type = async (w: ReturnType<typeof mount>, sel: string, v: string) => { const i = w.find(sel); await i.setValue(v); await flushPromises() }
 
 describe('NumField', () => {
@@ -113,6 +113,20 @@ describe('registry & store', () => {
   it('favorites persist', async () => {
     toggleFavorite('swr'); await flushPromises()
     expect(JSON.parse(localStorage.getItem('hrt:v1')!).favorites).toEqual(['swr'])
+  })
+})
+
+describe('measurement system', () => {
+  it('defaults to metric and switches distances and lengths to imperial', async () => {
+    expect(state.units).toBe('metric')
+    const m = mount(Maidenhead, { global })
+    expect(m.text()).toMatch(/Short path\s*[\d.]+\s*km/)
+    const d = mount(Dipole, { global })
+    expect(d.text()).toContain('20.06 m')
+    state.units = 'imperial'; await flushPromises()
+    expect(m.text()).toMatch(/Short path\s*[\d.]+\s*miles/)
+    expect(d.text()).toContain('65 ft')
+    expect(d.text()).toMatch(/Each leg\s*32 ft/) // leading figure is now imperial (metric shown only as the secondary row)
   })
 })
 

@@ -137,3 +137,5 @@ svg.diagram { width: 100%; height: auto; display: block; }
 
 @media (max-width: 480px) { .topbar { gap: .35rem; } .topbar button { padding: .3rem .5rem; } .brand { font-size: .95rem; gap: .35rem; } .brand svg { width: 24px; height: 24px; } }
 @media (max-width: 600px) { svg.dg-big .dg-text, svg.dg-big .dg-dimtext { font-size: 25px; } .dg-tick { font-size: 17px; } svg.diagram .dg-text { font-size: 17px; } svg.dg-big .dg-wire { stroke-width: 6; } }
+.unit-select { width: auto; min-width: 6.5rem; }
+@media (max-width: 480px) { .unit-select { min-width: 0; padding: .3rem .3rem; } }

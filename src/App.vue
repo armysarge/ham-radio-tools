@@ -34,6 +34,7 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
         Ham Radio Tools
       </router-link>
       <input ref="searchEl" v-model="q" class="search" type="text" placeholder="Search tools — press / to jump here" aria-label="Search tools" />
+      <select v-model="state.units" class="unit-select" aria-label="Measurement system"><option value="metric">Metric</option><option value="imperial">Imperial</option></select>
       <button :aria-label="`Theme: ${state.theme}. Click to change`" @click="cycleTheme">
         {{ state.theme === 'system' ? '◐ Auto' : state.theme === 'light' ? '☀ Light' : '☾ Dark' }}
       </button>

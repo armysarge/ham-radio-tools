@@ -42,8 +42,8 @@ function doImport() {
           <select v-model="state.theme"><option value="system">Match system</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
         <label class="field"><span class="lbl">Text size</span>
           <select v-model="state.textSize"><option value="normal">Normal</option><option value="large">Large</option><option value="xlarge">Extra large</option></select></label>
-        <label class="field"><span class="lbl">Length units</span>
-          <select v-model="state.units"><option value="metric">Metric (m)</option><option value="imperial">Imperial (ft / in)</option></select></label>
+        <label class="field"><span class="lbl">Measurement system</span>
+          <select v-model="state.units"><option value="metric">Metric (m, km)</option><option value="imperial">Imperial (ft, in, miles)</option></select></label>
       </div>
       <p v-if="!storageOk" class="notice">This browser is blocking local storage, so settings, favorites and saved items will be lost when you close the page.</p>
     </div>
