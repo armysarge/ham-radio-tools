@@ -272,13 +272,13 @@ Recommendation: **Tauri**, because size, memory and a narrow permission model ma
 
 ## Security & privacy notes
 
-- Nothing leaves the device. Settings, favorites, locations, saved designs and the **logbook** live in this browser's `localStorage`; clearing site data erases them. The logbook is not part of the project file: back it up with **Export ADIF**.
+- Nothing leaves the device. The one exception is the **public demo build** (`npm run build:demo`), which can send anonymous page-view statistics to Google Analytics (measurement ID in `.env.demo`) **only after the visitor clicks Allow**: no call sign, designs, locations, log or search text, and no ad personalisation. The default build, the release zip and the desktop app contain no analytics code at all, and `npm run check:offline` would fail if they did. Settings, favorites, locations, saved designs and the **logbook** live in this browser's `localStorage`; clearing site data erases them. The logbook is not part of the project file: back it up with **Export ADIF**.
 - If the browser blocks storage, the app still works and says so in **Settings**.
 - Antenna voltages are high at wire ends — keep them insulated and out of reach (the inverted-V tool warns about low ends).
 
 ## Releases and versions
 
-**Demo page:** the web build is published at <https://hamradiotools.armysarge.co.za/>. It is the same static `dist/` bundle as the release zip (relative asset paths and hash routing, so it works from a sub-folder with no server rewrite rules). To publish a new version, unzip `ham-radio-tools-web-<version>.zip` over the site folder. The demo needs HTTPS for the microphone CW decoder; everything else runs without network access once the page has loaded.
+**Demo page:** the web build is published at <https://hamradiotools.armysarge.co.za/>. It is the same app as the release zip but built with `npm run build:demo` (output in `dist-demo/`, the `ham-radio-tools-web-demo-<version>.zip` release asset), which adds the opt-in analytics banner and a Content-Security-Policy widened for Google's hosts only. Otherwise it is a static bundle (relative asset paths and hash routing, so it works from a sub-folder with no server rewrite rules). To publish a new version, unzip `ham-radio-tools-web-<version>.zip` over the site folder. The demo needs HTTPS for the microphone CW decoder; everything else runs without network access once the page has loaded.
 
 One repository, one version (`package.json`), one GitHub release per version with several assets (web zip, later Windows and Linux installers). See [docs/RELEASING.md](docs/RELEASING.md) for the step-by-step process, how a desktop shell is added in the same repo, and how opt-in updating works without breaking the offline rules. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 

@@ -5,6 +5,7 @@ import { CATEGORIES, CATEGORY_ICON, iconFor, tools } from './core/registry'
 import { state } from './core/store'
 import NavIcon from './components/NavIcon.vue'
 import GithubLink from './components/GithubLink.vue'
+import ConsentBanner from './components/ConsentBanner.vue'
 
 const route = useRoute(), router = useRouter()
 const q = ref(typeof route.query.q === 'string' ? route.query.q : '')
@@ -66,6 +67,7 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
       </nav>
     </aside>
 
+    <ConsentBanner />
     <main id="main" tabindex="-1">
       <router-view v-slot="{ Component }">
         <Suspense v-if="Component"><component :is="Component" /><template #fallback><p class="muted">Loading…</p></template></Suspense>

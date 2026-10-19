@@ -12,10 +12,11 @@ interface State {
   locations: SavedLocation[]
   stationId: string | null
   designs: SavedDesign[]
+  analytics: 'unset' | 'on' | 'off' // only offered in the demo build; never 'on' without an explicit click
 }
 
 const KEY = 'hrt:v1'
-const defaults = (): State => ({ theme: 'system', units: 'metric', textSize: 'normal', callsign: '', favorites: [], locations: [], stationId: null, designs: [] })
+const defaults = (): State => ({ theme: 'system', units: 'metric', textSize: 'normal', callsign: '', favorites: [], locations: [], stationId: null, designs: [], analytics: 'unset' })
 
 // localStorage can be missing or throw (private windows, blocked storage); the app must still work without it.
 function load(): State {

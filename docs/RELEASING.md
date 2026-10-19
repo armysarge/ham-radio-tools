@@ -49,7 +49,7 @@ Each release:
    git push origin main --follow-tags
    ```
 
-5. The **Release** workflow runs: checks that the tag equals `package.json`, type-checks, runs the tests, builds, runs the offline acceptance check, zips `dist/` as `ham-radio-tools-web-0.3.0.zip`, writes `SHA256SUMS.txt` and creates the GitHub release with notes from the changelog.
+5. The **Release** workflow runs: checks that the tag equals `package.json`, type-checks, runs the tests, builds, runs the offline acceptance check, zips `dist/` as `ham-radio-tools-web-0.3.0.zip` and the analytics-enabled demo build as `ham-radio-tools-web-demo-0.3.0.zip` (upload that one to the demo site), writes `SHA256SUMS.txt` and creates the GitHub release with notes from the changelog.
 6. Open the release page and confirm the assets. Download the zip on a clean machine, unzip it, serve it with any static server and click through a few tools with the network off.
 
 Fixing a bad release: do not move a published tag. Fix forward with the next patch version. If a release must be withdrawn, mark it as a pre-release or delete the release on GitHub and say why in the changelog.

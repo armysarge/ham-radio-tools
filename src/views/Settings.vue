@@ -5,6 +5,7 @@ import { tools } from '../core/registry'
 import { platform } from '../platform'
 import PackManager from '../components/PackManager.vue'
 import GithubLink from '../components/GithubLink.vue'
+import { analyticsAvailable } from '../core/analytics'
 import { applyImport, exportProject, parseProject, type ImportReport } from '../lib/project'
 import { fmt } from '../lib/units'
 import { encode } from '../lib/maidenhead'
@@ -92,6 +93,15 @@ function doImport() {
 
     <PackManager />
 
+    <div class="card stack" v-if="analyticsAvailable">
+      <h2>Usage statistics</h2>
+      <p style="margin:0">This public demo can send anonymous page-view statistics to Google Analytics, only if you allow it. It never sends your call sign, saved designs, locations, log or search text. The downloadable and desktop versions contain no analytics at all.</p>
+      <div class="seg" role="group" aria-label="Usage statistics">
+        <button :aria-pressed="state.analytics === 'on'" @click="state.analytics = 'on'">Allowed</button>
+        <button :aria-pressed="state.analytics !== 'on'" @click="state.analytics = 'off'">Not allowed</button>
+      </div>
+      <p v-if="state.analytics === 'off'" class="muted" style="margin:0">Turned off. If it was on earlier in this visit, reload the page to stop the analytics script loading.</p>
+    </div>
     <div class="card stack">
       <h2>About</h2>
       <p style="margin:0"><strong>Ham Radio Tools</strong> version <span class="mono">{{ version }}</span> · MIT licence</p>

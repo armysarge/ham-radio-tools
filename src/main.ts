@@ -4,6 +4,7 @@ import App from './App.vue'
 import { tools } from './core/registry'
 import { applyAppearance, state } from './core/store'
 import { watch } from 'vue'
+import { startAnalytics } from './core/analytics'
 import './style.css'
 
 // Hash routing: works from file://, a USB stick, or any static folder with no server rewrites.
@@ -23,4 +24,5 @@ watch(() => [state.theme, state.textSize], applyAppearance)
 matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', applyAppearance)
 applyAppearance()
 
+startAnalytics(router)
 createApp(App).use(router).mount('#app')

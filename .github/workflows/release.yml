@@ -36,6 +36,9 @@ jobs:
           VERSION="${GITHUB_REF_NAME#v}"
           mkdir -p release
           (cd dist && zip -r "../release/ham-radio-tools-web-${VERSION}.zip" .)
+          # The public demo adds opt-in analytics; it is a separate asset so the main zip stays tracker-free.
+          npm run build:demo
+          (cd dist-demo && zip -r "../release/ham-radio-tools-web-demo-${VERSION}.zip" .)
           (cd release && sha256sum *.zip > SHA256SUMS.txt)
 
       - name: Release notes from CHANGELOG.md

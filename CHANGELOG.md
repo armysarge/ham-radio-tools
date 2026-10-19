@@ -5,6 +5,7 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 ## [0.2.0] - 2026-10-19
 
 ### Added
+- Opt-in Google Analytics for the public demo build only (`npm run build:demo`): consent banner and Settings switch, page paths only, no ad personalisation; absent from the default build, release zip and desktop app.
 - Station tools: feedline loss, link budget and path loss (with radio horizon and Fresnel clearance), L-network matching, low-pass filter designer, coils and toroids, battery and solar planner.
 - Yagi and quad starting designs and a radial and site planner.
 - Logbook with duplicate warning and ADIF 3.1 export / import; UTC clock with time zones, station-ID reminder and UTC countdown; Koch Morse practice trainer.

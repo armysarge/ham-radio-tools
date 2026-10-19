@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
+    "build:demo": "vue-tsc --noEmit && vite build --mode demo --outDir dist-demo",
     "preview": "vite preview",
     "test": "vitest run",
     "check:offline": "node scripts/check-offline.mjs",
