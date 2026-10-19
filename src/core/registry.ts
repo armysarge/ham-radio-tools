@@ -93,6 +93,15 @@ export const tools: ToolDef[] = [
   { id: 'power-planner', title: 'Battery & Solar Planner', category: 'station', kind: 'analytical',
     summary: 'Daily energy use, battery runtime and the solar panel and battery size for portable or field operation.',
     keywords: ['battery', 'solar', 'field day', 'portable', 'runtime', 'amp hours', 'lifepo4', 'off grid'], component: load(() => import('../tools/PowerPlanner.vue')) },
+  { id: 'yagi', title: 'Yagi Beam (starting design)', category: 'antenna', kind: 'empirical',
+    summary: 'Element lengths and spacing for a 2–8 element Yagi from published proportions, with feed and boom notes.',
+    keywords: ['yagi', 'beam', 'director', 'reflector', 'directional', 'vhf', 'uhf', 'boom'], component: withProps(() => import('../tools/Beam.vue'), { which: 'yagi' }) },
+  { id: 'quad', title: 'Quad Beam (starting design)', category: 'antenna', kind: 'empirical',
+    summary: 'Driven, reflector and director loop sizes for a 2–5 element square quad beam.',
+    keywords: ['quad', 'cubical quad', 'beam', 'loop', 'director', 'reflector', 'spreader'], component: withProps(() => import('../tools/Beam.vue'), { which: 'quad' }) },
+  { id: 'radial-planner', title: 'Radial & Site Planner', category: 'antenna', kind: 'empirical',
+    summary: 'Radial length, count and wire for a vertical, and which bands a quarter-wave radial fits in your garden.',
+    keywords: ['radials', 'ground plane', 'garden', 'site', 'vertical', 'counterpoise', 'ground system'], component: load(() => import('../tools/RadialPlanner.vue')) },
   { id: 'maidenhead', title: 'Grid Squares, Distance & Bearing', category: 'maps', kind: 'analytical',
     summary: 'Coordinates ↔ Maidenhead locators on an offline world map, with beam heading.',
     keywords: ['locator', 'qth', 'grid', 'bearing', 'distance', 'great circle', 'map', 'latitude'], component: load(() => import('../tools/Maidenhead.vue')) },
@@ -136,7 +145,7 @@ const TOOL_ICON: Record<string, string> = {
   'frequency-wavelength': 'wave', 'ohms-law': 'resistor', components: 'chip', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
   dipole: 'dipole', efhw: 'endfed', 'inverted-v': 'invertedv', vertical: 'vertical', jpole: 'jpole', loop: 'loop', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
   'band-plans': 'plan', 'itu-regulations': 'scale', ctcss: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'q-codes': 'q', phonetic: 'letterA',
-  'feedline-loss': 'cable', 'link-budget': 'link', 'l-network': 'match', 'low-pass-filter': 'filter', coils: 'toroid', 'power-planner': 'battery',
+  'feedline-loss': 'cable', 'link-budget': 'link', 'l-network': 'match', 'low-pass-filter': 'filter', coils: 'toroid', 'power-planner': 'battery', yagi: 'yagi', quad: 'loop', 'radial-planner': 'vertical',
 }
 export const iconFor = (id: string) => TOOL_ICON[id] ?? 'wave'
 export const toolById = (id: string) => tools.find((t) => t.id === id)

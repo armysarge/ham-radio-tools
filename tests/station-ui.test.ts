@@ -13,3 +13,9 @@ describe('station tools render with their defaults', () => {
   it('coils: toroid turns', async () => { const w = await open('coils'); expect(w.text()).toContain('45.18') })
   it('power planner', async () => { const w = await open('power-planner'); expect(w.text()).toContain('Solar panel needed') })
 })
+
+describe('beam and radial tools', () => {
+  it('yagi lists reflector, driven and director', async () => { const w = await open('yagi'); expect(w.text()).toContain('reflector'); expect(w.text()).toContain('director'); expect(w.text()).not.toContain('NaN') })
+  it('quad shows loop perimeters', async () => { const w = await open('quad'); expect(w.text()).toContain('Perimeter'); expect(w.text()).toContain('driven') })
+  it('radial planner', async () => { const w = await open('radial-planner'); expect(w.text()).toContain('Number of radials'); expect(w.text()).toContain('40 m') })
+})

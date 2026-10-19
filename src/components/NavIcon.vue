@@ -42,6 +42,7 @@ const ICONS: Record<string, string[]> = {
   filter: ['M3 6h8c4 0 4 12 10 12', 'M3 20h18'],
   toroid: ['M12 5c4 0 8 3 8 7s-4 7-8 7-8-3-8-7 4-7 8-7z', 'M12 9c2 0 3 1.5 3 3s-1 3-3 3-3-1.500-3-3 1-3 3-3z'],
   battery: ['M3 7h15v10H3z', 'M18 10h3v4h-3z', 'M8 10l-1 4h3l-1 3'],
+  yagi: ['M3 12h18', 'M6 6v12', 'M11 8v8', 'M15 9v6', 'M19 10v4'],
   letterA: ['M5 20L12 4l7 16', 'M8 14h8'],
 }
 </script>
