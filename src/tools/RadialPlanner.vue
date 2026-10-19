@@ -6,6 +6,7 @@ import ResultRow from '../components/ResultRow.vue'
 import { FREQ_UNITS, LENGTH_UNITS } from '../lib/units'
 import { radialLengthM, radialPlan } from '../lib/beams'
 import { state } from '../core/store'
+import RadialDiagram from '../components/RadialDiagram.vue'
 
 const f = ref<number | null>(7.1e6), r = ref<number | null>(8)
 const elevated = ref(false)
@@ -32,6 +33,7 @@ const show = (m: number) => (imp.value ? `${(m / 0.3048).toFixed(1)} ft` : `${m.
           <ResultRow label="Radial length" :value="plan ? show(plan.lengthM) : null" big :note="plan ? (plan.full ? 'a full quarter wave' : `${Math.round(plan.fraction * 100)} % of a quarter wave: the room is the limit`) : ''" />
           <ResultRow label="Number of radials" :value="plan?.count ?? null" big />
           <ResultRow label="Total wire" :value="plan ? show(plan.totalWireM) : null" />
+          <RadialDiagram v-if="plan && r" :count="plan.count" :length-label="show(plan.lengthM)" :room-label="show(r)" :fits="plan.full" />
           <p class="hint" v-if="plan">{{ plan.advice }}</p>
         </div>
         <div class="card">

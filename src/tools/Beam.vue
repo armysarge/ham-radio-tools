@@ -5,6 +5,7 @@ import NumField from '../components/NumField.vue'
 import { FREQ_UNITS, feetInches } from '../lib/units'
 import { quad, yagi } from '../lib/beams'
 import { state } from '../core/store'
+import BeamDiagram from '../components/BeamDiagram.vue'
 
 const props = defineProps<{ which: 'yagi' | 'quad' }>()
 const isYagi = props.which === 'yagi'
@@ -16,6 +17,13 @@ const rows = computed(() => {
     if (!f.value) return []
     if (isYagi) return yagi(f.value, n.value).map((e) => ({ role: e.role, a: dim(e.length), b: dim(e.position) }))
     return quad(f.value, n.value).map((e) => ({ role: e.role, a: dim(e.perimeter), b: dim(e.side), c: dim(e.position) }))
+  } catch { return [] }
+})
+const diagram = computed(() => {
+  try {
+    if (!f.value) return []
+    if (isYagi) return yagi(f.value, n.value).map((e) => ({ role: e.role, size: e.length, pos: e.position, label: dim(e.length), posLabel: dim(e.position) }))
+    return quad(f.value, n.value).map((e) => ({ role: e.role, size: e.side, pos: e.position, label: dim(e.perimeter), posLabel: dim(e.position) }))
   } catch { return [] }
 })
 </script>
@@ -31,6 +39,7 @@ const rows = computed(() => {
         <p class="notice" role="status">A starting design, not an optimised one. No gain or pattern is claimed: build it, then trim with an antenna analyser.</p>
       </div>
       <div class="card">
+        <BeamDiagram v-if="diagram.length" :kind="which" :rows="diagram" />
         <div class="table-wrap"><table class="table">
           <thead v-if="isYagi"><tr><th>Element</th><th>Length</th><th>Distance from reflector</th></tr></thead>
           <thead v-else><tr><th>Loop</th><th>Perimeter</th><th>Side</th><th>Distance from reflector</th></tr></thead>
