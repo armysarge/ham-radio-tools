@@ -13,6 +13,8 @@ export const CATEGORIES = [
   { id: 'rf', name: 'RF & Electronics', blurb: 'Frequency, power, SWR and basic circuit maths' },
   { id: 'antenna', name: 'Antenna Design', blurb: 'Dimensioned designs with cut-and-trim guidance' },
   { id: 'maps', name: 'Maps & Grid Squares', blurb: 'Maidenhead locators, distance and bearing' },
+  { id: 'station', name: 'Station & Logging', blurb: 'Feedlines, links, matching, filters, coils, power and your log' },
+  { id: 'prop', name: 'Propagation & Satellites', blurb: 'Skip, grey line and satellite passes' },
   { id: 'ops', name: 'Operating References', blurb: 'Quick lookups for on-air use' },
 ] as const
 export type CategoryId = (typeof CATEGORIES)[number]['id']
@@ -73,6 +75,24 @@ export const tools: ToolDef[] = [
   { id: 'loop', title: 'Full-wave Loop', category: 'antenna', kind: 'empirical',
     summary: 'Perimeter and side lengths for a square, triangle or circular loop, plus a 75 Ω matching section.',
     keywords: ['quad', 'delta', 'loop', 'perimeter', 'quarter wave match'], component: load(() => import('../tools/Loop.vue')) },
+  { id: 'feedline-loss', title: 'Feedline Loss', category: 'station', kind: 'analytical',
+    summary: 'Cable loss from datasheet figures, length, frequency and SWR, and the power that reaches the antenna.',
+    keywords: ['coax', 'rg-58', 'rg-213', 'lmr', 'attenuation', 'db per 100 ft', 'cable loss'], component: load(() => import('../tools/FeedlineLoss.vue')) },
+  { id: 'link-budget', title: 'Link Budget & Path Loss', category: 'station', kind: 'analytical',
+    summary: 'Free-space path loss, link margin, noise floor, radio horizon and Fresnel clearance.',
+    keywords: ['fspl', 'path loss', 'range', 'margin', 'horizon', 'fresnel', 'line of sight', 'noise floor'], component: load(() => import('../tools/LinkBudget.vue')) },
+  { id: 'l-network', title: 'L-network Matching', category: 'station', kind: 'analytical',
+    summary: 'Inductor and capacitor values to match two resistances at a frequency, low-pass or high-pass.',
+    keywords: ['matching', 'antenna tuner', 'transformer', 'impedance', 'q', 'l match'], component: load(() => import('../tools/LNetwork.vue')) },
+  { id: 'low-pass-filter', title: 'Low-pass Filter Designer', category: 'station', kind: 'analytical',
+    summary: 'Butterworth and Chebyshev pi or T harmonic filters with part values and an attenuation curve.',
+    keywords: ['harmonic', 'filter', 'tvi', 'butterworth', 'chebyshev', 'lpf', 'cutoff'], component: load(() => import('../tools/LowPassFilter.vue')) },
+  { id: 'coils', title: 'Coils & Toroids', category: 'station', kind: 'analytical',
+    summary: 'Turns for a toroid from its AL value, and air-core coil turns by Wheeler’s formula.',
+    keywords: ['inductor', 'toroid', 'balun', 'unun', 'amidon', 't50-2', 'ft240', 'turns', 'winding', 'choke'], component: load(() => import('../tools/Coils.vue')) },
+  { id: 'power-planner', title: 'Battery & Solar Planner', category: 'station', kind: 'analytical',
+    summary: 'Daily energy use, battery runtime and the solar panel and battery size for portable or field operation.',
+    keywords: ['battery', 'solar', 'field day', 'portable', 'runtime', 'amp hours', 'lifepo4', 'off grid'], component: load(() => import('../tools/PowerPlanner.vue')) },
   { id: 'maidenhead', title: 'Grid Squares, Distance & Bearing', category: 'maps', kind: 'analytical',
     summary: 'Coordinates ↔ Maidenhead locators on an offline world map, with beam heading.',
     keywords: ['locator', 'qth', 'grid', 'bearing', 'distance', 'great circle', 'map', 'latitude'], component: load(() => import('../tools/Maidenhead.vue')) },
@@ -111,11 +131,12 @@ export const tools: ToolDef[] = [
     keywords: ['nato', 'alpha', 'bravo', 'spelling', 'callsign'], component: load(() => import('../tools/Phonetic.vue')) },
 ]
 
-export const CATEGORY_ICON: Record<string, string> = { rf: 'rf', antenna: 'antenna', maps: 'map', ops: 'ops' }
+export const CATEGORY_ICON: Record<string, string> = { rf: 'rf', antenna: 'antenna', maps: 'map', station: 'station', prop: 'sun', ops: 'ops' }
 const TOOL_ICON: Record<string, string> = {
   'frequency-wavelength': 'wave', 'ohms-law': 'resistor', components: 'chip', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
   dipole: 'dipole', efhw: 'endfed', 'inverted-v': 'invertedv', vertical: 'vertical', jpole: 'jpole', loop: 'loop', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
   'band-plans': 'plan', 'itu-regulations': 'scale', ctcss: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'q-codes': 'q', phonetic: 'letterA',
+  'feedline-loss': 'cable', 'link-budget': 'link', 'l-network': 'match', 'low-pass-filter': 'filter', coils: 'toroid', 'power-planner': 'battery',
 }
 export const iconFor = (id: string) => TOOL_ICON[id] ?? 'wave'
 export const toolById = (id: string) => tools.find((t) => t.id === id)
