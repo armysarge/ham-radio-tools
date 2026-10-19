@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { KIND_LABEL, iconFor, toolById } from '../core/registry'
+import { EXPLAIN_LABEL, KIND_LABEL, iconFor, toolById } from '../core/registry'
 import NavIcon from './NavIcon.vue'
 import { isFavorite, toggleFavorite } from '../core/store'
 
@@ -25,7 +25,7 @@ const fav = computed(() => isFavorite(props.id))
     </header>
     <slot />
     <details class="explain">
-      <summary>How this is calculated</summary>
+      <summary>{{ EXPLAIN_LABEL[tool.kind] }}</summary>
       <slot name="explain" />
     </details>
     <details v-if="references?.length" class="explain">

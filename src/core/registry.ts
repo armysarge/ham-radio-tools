@@ -1,6 +1,12 @@
 import { defineComponent, h, type Component } from 'vue'
 
 export type Kind = 'analytical' | 'empirical' | 'reference'
+/** Title of the “explain” section: only real calculators say “calculated”. */
+export const EXPLAIN_LABEL: Record<Kind, string> = {
+  analytical: 'How this is calculated',
+  empirical: 'How this design estimate works',
+  reference: 'How this works',
+}
 export const KIND_LABEL: Record<Kind, string> = { analytical: 'Analytical', empirical: 'Design estimate', reference: 'Reference' }
 
 export const CATEGORIES = [

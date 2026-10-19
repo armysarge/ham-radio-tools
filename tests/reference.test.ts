@@ -182,3 +182,19 @@ describe('ITU primer', () => {
     expect(ITU_GLOSSARY.length).toBeGreaterThan(8)
   })
 })
+
+import { tools } from '../src/core/registry'
+describe('explain-section wording', () => {
+  it('only calculators say “calculated”; estimates and references use their own wording', async () => {
+    const expected = { analytical: 'How this is calculated', empirical: 'How this design estimate works', reference: 'How this works' } as const
+    for (const tool of tools) {
+      const mod = (await tool.component()) as unknown as { default?: unknown }
+      const comp = mod.default ?? mod // lazy imports resolve to a module, wrapped ones to a component
+      const w = mount(comp as never, { global })
+      await flushPromises()
+      const summaries = w.findAll('details.explain summary').map((s) => s.text())
+      expect(summaries, tool.id).toContain(expected[tool.kind])
+      if (tool.kind !== 'analytical') expect(summaries.join('|'), tool.id).not.toMatch(/calculated/i)
+    }
+  })
+})
