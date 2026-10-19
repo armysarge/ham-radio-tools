@@ -58,3 +58,29 @@ describe('reference tools', () => {
     await k.find('input[type=text]').setValue('boltzmann'); expect(k.text()).toContain('1.380 649')
   })
 })
+
+import Cw from '../src/tools/Cw.vue'
+describe('CW tool', () => {
+  const tab = (w: ReturnType<typeof mount>, name: string) => w.findAll('[role=tab]').find((b) => b.text().startsWith(name))!.trigger('click')
+  it('shows the Morse pattern and duration, and flags unsendable characters', async () => {
+    const w = mount(Cw, { global })
+    expect(w.text()).toContain('▬ • ▬ •') // C
+    expect(w.text()).toMatch(/Takes \d+\.\d s/)
+    await w.find('textarea').setValue('A~'); await flushPromises()
+    expect(w.text()).toContain('Cannot be sent in Morse')
+  })
+  it('rejects a character speed below the overall speed', async () => {
+    const w = mount(Cw, { global })
+    await w.findAll('input[type=text]')[1].setValue('10'); await w.findAll('input[type=text]')[0].setValue('20'); await flushPromises()
+    expect(w.text()).toContain('Character speed must be at least')
+  })
+  it('decodes typed symbols and shows a helpful empty listening state', async () => {
+    const w = mount(Cw, { global })
+    await tab(w, 'Decode'); await flushPromises()
+    expect(w.text()).toContain('CQ DX')
+    await tab(w, 'Listen'); await flushPromises()
+    expect(w.text()).toContain('Experimental')
+    await w.findAll('button').find((b) => b.text().includes('Start listening'))!.trigger('click'); await flushPromises()
+    expect(w.text()).toMatch(/cannot access a microphone|refused or no microphone/) // jsdom has no microphone: a readable error, not a crash
+  })
+})
