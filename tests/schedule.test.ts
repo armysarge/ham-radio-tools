@@ -77,3 +77,12 @@ describe('broadcast schedule tool', () => {
     expect(w.text()).toContain('four digits, 24-hour UTC')
   })
 })
+
+import { readFileSync } from 'node:fs'
+describe('documented example files', () => {
+  it('the example pack and CSV in docs/packs are valid', () => {
+    expect(parsePack(readFileSync('docs/packs/example-band-plan.json', 'utf8')).rows).toBe(2)
+    const csv = parseScheduleText(readFileSync('docs/packs/example-schedule.csv', 'utf8'))
+    expect(csv.entries).toHaveLength(2); expect(csv.skipped).toEqual([]); expect(csv.entries[1].days).toBe('1234567')
+  })
+})

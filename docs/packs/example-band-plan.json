@@ -1,0 +1,18 @@
+{
+  "format": "ham-radio-tools-pack",
+  "version": 1,
+  "kind": "band-plan",
+  "id": "example-format-only",
+  "title": "EXAMPLE band plan (format demo, not a real plan)",
+  "jurisdiction": "Nowhere",
+  "source": "Written by hand to show the file format; contains no authoritative data",
+  "sourceUrl": "https://example.invalid/",
+  "revision": "2026-10-19",
+  "license": "CC0 (example only)",
+  "data": {
+    "segments": [
+      { "band": "20 m", "fromHz": 14000000, "toHz": 14070000, "use": "CW and narrow digital modes", "modes": "CW, RTTY", "status": "example" },
+      { "band": "20 m", "fromHz": 14070000, "toHz": 14350000, "use": "All modes", "modes": "CW, digital, SSB", "power": "example limit", "note": "Replace with data from your regulator or society" }
+    ]
+  }
+}

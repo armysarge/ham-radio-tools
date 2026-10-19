@@ -54,8 +54,13 @@ Key design goals:
 | **Antenna design** | Half-wave dipole with trim helper · Inverted-V (apex angle, span, end height) · Quarter-wave vertical with elevated or ground radials · Full-wave loop (square, triangle, circle) with a 75 Ω matching section · Dimensioned SVG drawings · Save, export SVG, print |
 | **Maps & grid squares** | Coordinates ↔ Maidenhead (4, 6 or 8 characters) · Cell edges vs. cell centre · Short- and long-path distance and bearing · Bundled offline world map with grid overlay, pan and zoom · Saved named locations and "my station" |
 | **Projects** | Export saved designs and locations to a JSON file; import by adding or replacing; invalid entries are skipped with a reason |
-| **Operating references** | Phonetic alphabet · Q codes |
-| **App** | Search (`/` to focus) · Categories · Favorites · Light/dark/auto theme · Text size · Metric/imperial · Local persistence |
+| **Operating references** | Phonetic alphabet · Q codes · Abbreviations · CTCSS tones · Constants and rules of thumb · ITU region band plans with a "what is at this frequency?" lookup · Callsign lookup (issuing country, island/home nation, DL/ prefixes, /P /MM suffixes) |
+| **CW (Morse)** | Chart · text → Morse player (PARIS timing, Farnsworth, adjustable pitch) · WAV download · decoder for typed dots/dashes, tapped keying and an experimental microphone decoder |
+| **QRM hunting** | Step-by-step method · source signatures (schematic sketches) · harmonic finder · DIY shielded-loop size calculator |
+| **Antenna mods** | A proven / situational / unproven checklist on every antenna tool, with the reasoning and no invented gain figures |
+| **Broadcast schedules** | Bundled time & frequency stations · installable, dated schedule packs with staleness warnings · "on air now" at any UTC time |
+| **Content packs** | Import band plans and schedules (JSON) or convert an EiBi-layout / CSV schedule text file; stored locally in IndexedDB |
+| **App** | Search (`/` to focus) · Categories · Favorites · Light/dark/auto theme · Text size · **Metric/Imperial selector in the top bar (Metric by default)** · Local persistence |
 
 ## Requirements
 
@@ -120,7 +125,7 @@ Key design goals:
 - `npm run check:offline` scans `dist/` for external URLs, then drives the built app in a real browser with **every non-localhost request blocked and recorded**: start-up, search, calculators, dipole save, map and locator, persistence across reload, a project export → delete → re-import round trip, and a 375 px phone pass (no horizontal overflow on any page, menu drawer works).
 - **Not yet done:** the separate clean-machine installation check — it needs a packaged installer, which doesn't exist yet.
 
-**What has actually been tested:** Windows 10 (build 19045), Node 24, Microsoft Edge via Playwright, Vitest/jsdom. Linux, macOS, Firefox, Safari and real phones/tablets are **untested**. Visual review was at 375 px and 768 px, mostly in dark theme. On phones the map supports touch pan; pinch-zoom is not implemented (use +/−).
+**What has actually been tested:** Windows 10 (build 19045), Node 24, Microsoft Edge via Playwright (including real IndexedDB for packs), Vitest/jsdom with 99 tests. The microphone decoder is tested on synthesised audio only, never on a real microphone or radio. Linux, macOS, Firefox, Safari and real phones/tablets are **untested**. Visual review was at 375 px and 768 px, mostly in dark theme. On phones the map supports touch pan; pinch-zoom is not implemented (use +/−).
 
 ## Project files
 
@@ -132,9 +137,17 @@ Key design goals:
 |---|---|
 | App, calculators, diagrams | Bundled |
 | World basemap (Natural Earth 1:110m, public domain) | Bundled — country outlines only |
-| Regional map packs, band plans, manual library, local AI | Unavailable (planned) |
+| ITU region band plans, CTCSS, abbreviations, constants, Q codes, callsign prefixes, time stations, antenna mods, QRM guide | Bundled — each dated in its tool |
+| National band plans, shortwave programme schedules | **Installable packs** — none bundled; shown as *Installed* once imported |
+| Regional map packs, manual library, local AI | Unavailable (planned) |
 
-Future packs will be separate folders imported from a file or USB stick and listed as *Bundled*, *Installed* or *Unavailable* under **Settings & content**. No import mechanism exists yet.
+### Content packs and keeping data current
+
+Data that goes out of date is **not** baked into the app. A pack is a JSON file (`format: "ham-radio-tools-pack"`) with a `kind` (`band-plan` or `broadcast-schedule`), an id, title, **source**, **licence** and a **revision date**. Import it under **Settings & content**; the app shows its age and warns when a schedule is over **45 days** old (band plans: 365 days). Nothing is fetched automatically, so "monthly updates" means: download a fresh schedule when you are online, convert/import it, and the old copy is replaced (the preview tells you if the installed one is newer). Packs live in the browser's IndexedDB, not localStorage, so large schedules fit.
+
+Working examples of both formats are in [docs/packs](docs/packs) (clearly marked as format demos, not real data).
+
+Band-plan pack format (`data.segments`): `{ "band": "20 m", "fromHz": 14000000, "toHz": 14070000, "use": "CW and narrow digital", "modes": "CW, RTTY", "power": "…", "status": "…", "note": "…" }`. Schedule pack format (`data.entries`): `{ "freqKhz": 5950, "startUtc": "0000", "endUtc": "0100", "days": "daily" | "135", "station": "…", "language": "…", "target": "…", "country": "…" }` (days: 1 = Monday).
 
 ## Calculation references and known limitations
 
@@ -149,6 +162,11 @@ Future packs will be separate folders imported from a file or USB stick and list
 | Inverted-V | Dipole length × sloping-leg factor 0.97; span/drop by trigonometry | Empirical. Impedance guidance is qualitative |
 | Vertical | k·c/4f for radiator and resonant radials, k = 0.95 (≈ 234/f ft) | Empirical. Radial counts are common guidance, not computed |
 | Full-wave loop | k·c/f, k = 1.0218 (≈ 1005/f ft); 75 Ω quarter-wave match | Empirical. Feed impedance is qualitative; match is single-frequency |
+| ITU band plans | Article 5 amateur allocations, simplified per region | Overview only: no sub-band (CW/phone) plans, national rules differ; always check your licence |
+| Callsign lookup | ITU call sign series reduced to 1–2 character blocks; SSA–SSM/SSN–SSZ and 3DA–3DM/3DN–3DZ split by third letter | Shows who issued the call, not where the operator is; island/home-nation list is not the full DXCC list; spot-checked against the public ITU prefix table |
+| CW | ITU-R M.1677 code; PARIS unit = 1200/WPM ms; Farnsworth gap = (60c − 37.2s)/(19cs) s | Decoder clusters key-down/gap lengths: tolerates ~±15 % jitter in tests; microphone decoding is experimental |
+| QRM harmonics | Multiples n·f inside each band; small loop ≤ λ/10 perimeter | Harmonic lists are arithmetic only; source sketches are schematic, not recordings |
+| Antenna mods | Qualitative evidence labels with reasons | No gain figures; ratings reflect handbook consensus, not simulation |
 | Locator | Integer cell arithmetic; cell edge belongs to the north-east cell; lon 180 → −180; lat 90 → top row | A locator is a cell, not a point |
 | Distance / bearing | Haversine, R = 6371.0088 km; forward azimuth; long path = circumference − short | Sphere: up to ~0.5% vs. the ellipsoid; true (not magnetic) bearings; undefined for coincident or antipodal points |
 
@@ -157,10 +175,10 @@ Band-preset buttons are convenience design frequencies, **not** a band plan; all
 ## Architecture
 
 ```
-src/lib/        pure calculation code (rf, antenna, maidenhead, geo, units) — no Vue, fully unit-tested
-src/data/       reference data kept apart from logic (Q codes, band presets)
-src/core/       registry.ts (typed tool list, categories, search) · store.ts (settings, favorites, locations, designs → localStorage)
-src/components/ NumField (unit-aware validated input, v-model is canonical SI), ResultRow, ToolLayout, LineChart, WorldMap, LocationInput, DesignActions
+src/lib/        pure logic (rf, antenna, maidenhead, geo, units, morse, callsign, qrm, packs, project, scheduleImport) — no Vue, fully unit-tested
+src/data/       dated reference data kept apart from logic (Q codes, ITU bands, CTCSS, constants, callsign blocks, time stations, antenna mods, QRM sources)
+src/core/       registry.ts (typed tool list, categories, search) · store.ts (settings, favorites, locations, designs → localStorage) · packs.ts (content packs → IndexedDB)
+src/components/ NumField (unit-aware validated input, v-model is canonical SI), ResultRow, ToolLayout, LineChart, WorldMap, LocationInput, DesignActions, ModsPanel, PackManager, SpectrumSketch
 src/tools/      one .vue per tool, lazy-loaded
 src/views/      dashboard, settings, saved designs
 src/platform/   the only place for OS-level access (file save, clipboard)
@@ -196,8 +214,12 @@ Recommendation: **Tauri**, because size, memory and a narrow permission model ma
 - [x] Dipole, inverted-V, vertical and loop designers
 - [x] Maidenhead, distance/bearing, bundled offline map, saved locations
 - [x] Offline acceptance check
-- [ ] Morse reference and audio practice, UTC/local time and timers
-- [ ] Regional band-plan packs (jurisdiction, source, revision date)
+- [x] Morse chart, player, WAV export and decoders
+- [x] Content-pack infrastructure, ITU band plans, CTCSS, abbreviations, constants, callsign lookup
+- [x] QRM hunting guide, antenna mods, broadcast schedules
+- [ ] Morse practice trainer (Koch method), UTC/local time and timers
+- [ ] National band-plan packs with sub-band segments (jurisdiction, source, revision) — format exists, **no national pack is bundled yet**
+- [ ] DCS codes, DXCC-level callsign entities, CQ/ITU zones
 - [x] Saved-project export/import (JSON file)
 - [ ] Regional map packs (evaluate MapLibre GL + PMTiles) and pinch-zoom
 - [ ] Tauri shell and clean-machine install tests on Windows and Linux
