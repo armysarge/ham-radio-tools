@@ -65,6 +65,15 @@ await step('saved design + favorite persist across reload', async () => {
   await page.goto(base + '#/saved'); await page.getByText('Dipole 7.1 MHz').waitFor()
 })
 await step('no uncaught errors', async () => { if (errors.length) throw new Error(errors.join(' | ')) })
+await step('phone width (375px): no horizontal overflow on any page, menu drawer opens', async () => {
+  const m = await ctx.newPage(); await m.setViewportSize({ width: 375, height: 812 })
+  const routes = ['', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/maidenhead', 'tool/q-codes', 'tool/phonetic', 'settings', 'saved']
+  const bad = []
+  for (const r of routes) { await m.goto(base + '#/' + r); await m.waitForTimeout(400); const w = await m.evaluate(() => [document.documentElement.scrollWidth, innerWidth]); if (w[0] > w[1]) bad.push(r + ' ' + w.join('>')) }
+  if (bad.length) throw new Error('overflow: ' + bad.join(', '))
+  await m.goto(base); await m.getByRole('button', { name: 'Toggle navigation menu' }).click(); await m.locator('aside').getByRole('link', { name: 'SWR & Return Loss' }).first().click(); await m.waitForURL(/tool\/swr/); await m.getByRole('heading', { level: 1, name: 'SWR & Return Loss' }).waitFor()
+  await m.close()
+})
 blocked.length ? fail(`attempted external requests: ${blocked.join(', ')}`) : ok('zero external requests attempted (all non-localhost blocked)')
 
 await browser.close(); server.close()

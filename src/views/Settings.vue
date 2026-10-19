@@ -23,7 +23,7 @@ import { encode } from '../lib/maidenhead'
     <div class="card">
       <h2>Saved locations</h2>
       <p v-if="!state.locations.length" class="muted">None yet. Save one from the <router-link to="/tool/maidenhead">grid square tool</router-link>; mark one as “My station” to use it as the default.</p>
-      <table v-else class="table">
+      <div v-else class="table-wrap"><table class="table">
         <thead><tr><th>Name</th><th>Latitude</th><th>Longitude</th><th>Locator</th><th>Station</th><th></th></tr></thead>
         <tbody>
           <tr v-for="l in state.locations" :key="l.id">
@@ -32,12 +32,12 @@ import { encode } from '../lib/maidenhead'
             <td><button class="ghost" :aria-label="`Delete ${l.name}`" @click="deleteLocation(l.id)">Delete</button></td>
           </tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
 
     <div class="card">
       <h2>Content on this device</h2>
-      <table class="table">
+      <div class="table-wrap"><table class="table">
         <thead><tr><th>Content</th><th>Status</th><th>Notes</th></tr></thead>
         <tbody>
           <tr><td>Application, calculators, diagrams</td><td>Bundled</td><td>Included in the install; no downloads.</td></tr>
@@ -47,7 +47,7 @@ import { encode } from '../lib/maidenhead'
           <tr><td>Radio manual library</td><td>Unavailable</td><td>Planned. You will import your own PDFs.</td></tr>
           <tr><td>Offline AI assistant</td><td>Unavailable</td><td>Planned and optional.</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <p class="muted">This app makes no network requests: no telemetry, update checks or online map tiles.</p>
     </div>
   </div>

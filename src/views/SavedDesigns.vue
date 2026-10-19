@@ -10,7 +10,7 @@ import { toolById } from '../core/registry'
     <p><strong>No saved designs yet.</strong></p>
     <p>Open an antenna tool such as the <router-link to="/tool/dipole">half-wave dipole</router-link> and press “Save design”.</p>
   </div>
-  <table v-else class="table">
+  <div v-else class="table-wrap"><table class="table">
     <thead><tr><th>Name</th><th>Tool</th><th>Summary</th><th>Saved</th><th></th></tr></thead>
     <tbody>
       <tr v-for="d in state.designs" :key="d.id">
@@ -22,5 +22,5 @@ import { toolById } from '../core/registry'
         </td>
       </tr>
     </tbody>
-  </table>
+  </table></div>
 </template>

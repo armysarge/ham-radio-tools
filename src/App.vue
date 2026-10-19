@@ -40,7 +40,9 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
       <span class="badge-offline" title="No network access is used by this app">Works offline</span>
     </header>
 
+    <div class="backdrop" :class="{ on: menu }" @click="menu = false"></div>
     <aside class="sidebar" :class="{ open: menu }" aria-label="Main navigation">
+      <button class="drawer-close" @click="menu = false">✕ Close</button>
       <nav>
         <router-link to="/">All tools</router-link>
         <template v-if="favTools.length">

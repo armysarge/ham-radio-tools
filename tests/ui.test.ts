@@ -4,6 +4,8 @@ import NumField from '../src/components/NumField.vue'
 import Swr from '../src/tools/Swr.vue'
 import OhmsLaw from '../src/tools/OhmsLaw.vue'
 import Dipole from '../src/tools/Dipole.vue'
+import Feedline from '../src/tools/Feedline.vue'
+import Reactance from '../src/tools/Reactance.vue'
 import Maidenhead from '../src/tools/Maidenhead.vue'
 import { state, toggleFavorite } from '../src/core/store'
 import { searchTools } from '../src/core/registry'
@@ -53,6 +55,14 @@ describe('tools', () => {
     expect(state.designs).toHaveLength(1)
     await flushPromises()
     expect(JSON.parse(localStorage.getItem('hrt:v1')!).designs[0].toolId).toBe('dipole')
+  })
+  it('Feedline: quarter wave of 0.66 VF coax at 14.2 MHz is 3.48 m', async () => {
+    const w = mount(Feedline, { global })
+    expect(w.text()).toContain('3.484')
+  })
+  it('Reactance: 10 uH + 100 pF resonates at 5.033 MHz', async () => {
+    const w = mount(Reactance, { global })
+    expect(w.text()).toContain('5.033')
   })
   it('Maidenhead: default example is JN58td, typing a locator moves the point', async () => {
     const w = mount(Maidenhead, { global })

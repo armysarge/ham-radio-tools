@@ -70,7 +70,7 @@ const printPage = () => window.print()
       </div>
       <div class="stack">
         <div class="card">
-          <svg ref="svgEl" class="diagram" viewBox="0 0 640 270" role="img" :aria-label="`Dipole drawing: each leg ${dim(leg)}, total ${dim(total)}`">
+          <svg ref="svgEl" class="diagram dg-big" viewBox="0 0 640 270" role="img" :aria-label="`Dipole drawing: each leg ${dim(leg)}, total ${dim(total)}`">
             <line class="dg-ground" x1="10" y1="245" x2="630" y2="245" />
             <line class="dg-ground" x1="40" y1="70" x2="40" y2="245" /><line class="dg-ground" x1="600" y1="70" x2="600" y2="245" />
             <path class="dg-wire" d="M40 85 H300 M340 85 H600" />

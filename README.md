@@ -6,8 +6,8 @@ An offline-first amateur-radio workbench: RF calculators, a dipole designer, and
 
 | Done | Not yet |
 |---|---|
-| App shell, sidebar, search (`/` key), categories, favorites, light/dark/auto theme, text-size setting | Q codes, Morse, time/timers, band-plan packs |
-| Tools: frequency↔wavelength, Ohm's law, dBm/watts/dB, SWR/return loss, half-wave dipole, Maidenhead + distance/bearing + map, phonetic alphabet | Reactance/resonance, feedline electrical length (maths exists in `src/lib/rf.ts`, **no UI yet**), inverted-V, vertical, loop |
+| App shell, sidebar, search (`/` key), categories, favorites, light/dark/auto theme, text-size setting | Morse, time/timers, band-plan packs (Q-code list is a paraphrased common set, not verbatim ITU) |
+| Tools: frequency↔wavelength, Ohm's law, dBm/watts/dB, SWR/return loss, reactance & resonance, feedline electrical length, half-wave dipole, Maidenhead + distance/bearing + map, Q codes, phonetic alphabet | Inverted-V, vertical, loop |
 | Local settings, saved locations (+ "my station"), saved dipole designs, SVG export, print | Regional map packs, manual library, local AI, native utilities, desktop wrapper |
 
 ## Setup
@@ -17,7 +17,7 @@ Requires Node 20+ (developed on Node 24). **Development needs the network once**
 ```bash
 npm install        # dev-time download of build tools
 npm run dev        # http://localhost:5173
-npm test           # unit + component tests (23)
+npm test           # unit + component tests (25)
 npm run build      # type-check + production build into dist/
 npm run check:offline   # offline acceptance check (needs Microsoft Edge or Chrome installed)
 ```
@@ -35,10 +35,10 @@ npm run check:offline   # offline acceptance check (needs Microsoft Edge or Chro
 
 - No CDN, hosted API, telemetry, update check or online tile requests. A Content-Security-Policy in `index.html` restricts loads to the app's own origin.
 - Not a PWA: there is no service worker, so nothing relies on a prior online visit.
-- `npm run check:offline` scans `dist/` for external URLs, then drives the built app in a real browser with **every non-localhost request blocked and recorded**: start-up, search, four calculators, dipole save, map + locator, favorites/saved-design persistence across reload.
+- `npm run check:offline` scans `dist/` for external URLs, then drives the built app in a real browser with **every non-localhost request blocked and recorded**: start-up, search, calculators, dipole save, map + locator, favorites/saved-design persistence across reload, and a 375 px mobile pass.
 - **Not yet done:** the separate clean-machine installation check (needs a packaged installer, which doesn't exist yet).
 
-**What has actually been run:** Windows 10 (build 19045), Node 24, Microsoft Edge via Playwright, Vitest/jsdom. Linux, macOS, Firefox, Safari, tablets: **untested**. Layouts are responsive CSS but were only eyeballed at 768 px and a narrow desktop pane, dark theme mostly; light theme and phone width were not reviewed.
+**What has actually been run:** Windows 10 (build 19045), Node 24, Microsoft Edge via Playwright, Vitest/jsdom. Linux, macOS, Firefox, Safari, tablets: **untested**. Responsive layout: the offline check loads every page at 375 px wide and fails on horizontal overflow, and the menu drawer is exercised there; visual review was done at 375 px and 768 px mostly in dark theme (light theme not reviewed, no real phone/tablet touch testing). The map fills its container at any aspect ratio; on phones, touch pan works but pinch-zoom is not implemented (use the +/− buttons).
 
 ## Desktop wrapper recommendation: Tauri 2 (when you get there)
 
@@ -78,6 +78,8 @@ Canonical units are Hz, m, W, Ω, degrees; display units are a UI concern in `Nu
 
 | Tool | Method | Limits |
 |---|---|---|
+| Reactance / resonance | X_L = 2πfL, X_C = 1/(2πfC), f₀ = 1/(2π√LC) | Ideal components; no Q or bandwidth |
+| Feedline length | L = (θ/360)·c·VF/f | VF presets are typical values; check the datasheet |
 | Wavelength | λ = c·VF/f, c = 299 792 458 m/s | VF is user-supplied |
 | dBm / dB | 10·log₁₀(P/1 mW); 20·log₁₀ for voltage | Voltage dB assumes equal impedances (stated in UI) |
 | SWR family | Γ-based relations; resistive load: Γ = (R−Z₀)/(R+Z₀) | Lossless line; resistive loads only (no complex impedance yet) |

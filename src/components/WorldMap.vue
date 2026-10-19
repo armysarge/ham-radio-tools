@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { feature } from 'topojson-client'
 import world from 'world-atlas/countries-110m.json' // Natural Earth 1:110m, public domain, bundled locally
 import { encode } from '../lib/maidenhead'
@@ -13,21 +13,35 @@ const emit = defineEmits<{ pick: [lat: number, lon: number] }>()
 const LAND = (() => {
   const w = world as any
   const fc = feature(w, w.objects.countries) as any
+  const ringPath = (pts: number[][], dx: number) =>
+    'M' + pts.map(([x, y]) => (x + 180 + dx).toFixed(2) + ' ' + (90 - y).toFixed(2)).join('L') + 'Z'
   let d = ''
   for (const f of fc.features) {
     const g = f.geometry
     for (const poly of g.type === 'Polygon' ? [g.coordinates] : g.coordinates)
-      for (const ring of poly) d += 'M' + ring.map(([x, y]: number[]) => `${(x + 180).toFixed(2)} ${(90 - y).toFixed(2)}`).join('L') + 'Z'
+      for (const ring of poly as number[][][]) {
+        // Rings crossing the antimeridian (Chukotka, Fiji) are unwrapped to continuous longitudes and drawn
+        // again shifted by +-360, so they show on both edges instead of streaking across the map.
+        let off = 0
+        const un = ring.map((p, i) => {
+          if (i) { const jump = p[0] - ring[i - 1][0]; if (jump > 180) off -= 360; else if (jump < -180) off += 360 }
+          return [p[0] + off, p[1]]
+        })
+        const closed = Math.abs(un[un.length - 1][0] - un[0][0]) < 180 // polar rings (Antarctica) don't close; leave them
+        d += off !== 0 && closed ? ringPath(un, 0) + ringPath(un, 360) + ringPath(un, -360) : ringPath(ring, 0)
+      }
   }
   return d
 })()
 
 const vx = ref(180), vy = ref(90), vw = ref(360) // view centre (svg coords) and width
-const vh = computed(() => vw.value / 2)
+const aspect = ref(2) // follows the container so the map fills it on phones as well as laptops
+const vh = computed(() => vw.value / aspect.value)
 const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), Math.max(a, b))
 function setView(x: number, y: number, w: number) {
   w = clamp(w, 0.1, 360)
-  vw.value = w; vx.value = clamp(x, w / 2, 360 - w / 2); vy.value = clamp(y, w / 4, 180 - w / 4)
+  vw.value = w; const h = w / aspect.value
+  vx.value = clamp(x, w / 2, 360 - w / 2); vy.value = h >= 180 ? 90 : clamp(y, h / 2, 180 - h / 2)
 }
 const viewBox = computed(() => `${vx.value - vw.value / 2} ${vy.value - vh.value / 2} ${vw.value} ${vh.value}`)
 const reset = () => setView(180, 90, 360)
@@ -35,11 +49,15 @@ function fit() {
   const pts = props.markers
   if (!pts.length) return reset()
   const xs = pts.map((p) => p.lon + 180), ys = pts.map((p) => 90 - p.lat)
-  const w = Math.max((Math.max(...xs) - Math.min(...xs)) * 1.5, (Math.max(...ys) - Math.min(...ys)) * 3, 2)
+  const w = Math.max((Math.max(...xs) - Math.min(...xs)) * 1.5, (Math.max(...ys) - Math.min(...ys)) * 1.5 * aspect.value, 2)
   setView((Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2, w)
 }
 
 const svg = ref<SVGSVGElement>()
+let ro: ResizeObserver | undefined
+const measure = () => { const r = svg.value?.getBoundingClientRect(); if (r && r.height > 0) { aspect.value = r.width / r.height; setView(vx.value, vy.value, vw.value) } }
+onMounted(() => { measure(); if (typeof ResizeObserver !== 'undefined') { ro = new ResizeObserver(measure); ro.observe(svg.value!) } })
+onUnmounted(() => ro?.disconnect())
 function toLonLat(e: { clientX: number; clientY: number }) {
   const r = svg.value!.getBoundingClientRect()
   return { x: vx.value - vw.value / 2 + ((e.clientX - r.left) / r.width) * vw.value, y: vy.value - vh.value / 2 + ((e.clientY - r.top) / r.height) * vh.value }
@@ -111,7 +129,7 @@ const r = computed(() => Math.max(vw.value / 130, 0.004))
     <svg ref="svg" :viewBox="viewBox" tabindex="0" role="application" preserveAspectRatio="xMidYMid meet"
       aria-label="World map. Arrow keys pan, plus and minus zoom. Click or tap to set the other station."
       @pointerdown="down" @pointermove="move" @pointerup="up" @wheel.prevent="zoomAt($event.deltaY > 0 ? 1.25 : 0.8, $event)" @keydown="key">
-      <rect x="0" y="0" width="360" height="180" fill="var(--sea)" />
+      <rect x="-500" y="-500" width="1360" height="1180" fill="var(--sea)" />
       <path class="land" :d="LAND" fill-rule="evenodd" />
       <rect v-if="cell" class="cell" :x="cell.west + 180" :y="90 - cell.north" :width="cell.east - cell.west" :height="cell.north - cell.south" />
       <path class="gridline" :d="grid.d" />
