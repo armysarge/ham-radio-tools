@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
+import ModsPanel from '../components/ModsPanel.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
@@ -87,6 +88,8 @@ const endY = computed(() => (r.value ? G - Math.max(r.value.endHeight, 0) * sc.v
           :disabled="!r" :summary="`${f ? fmt(f / 1e6) : ''} MHz, ${angle}°, ${dim(r?.total)}`" :params="{ f: f ?? 0, k, slope, angle, height: height ?? 0 }" />
       </div>
     </div>
+    <ModsPanel antenna="inverted-v" />
+
     <template #explain>
       <div class="formula">L<sub>total</sub> = k · s · c / (2f)     span = 2·(L/2)·sin(θ/2)     drop = (L/2)·cos(θ/2)</div>
       <p>An inverted-V is a dipole hung from a single high support. k ≈ 0.95 is the usual end-effect factor and s ≈ 0.97 an allowance for the sloping legs; both are <strong>empirical</strong>. The tool does not simulate the antenna, so it makes no claim about SWR bandwidth, gain or pattern.</p>

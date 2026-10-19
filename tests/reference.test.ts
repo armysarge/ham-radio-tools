@@ -98,3 +98,27 @@ describe('callsign tool', () => {
     expect(w.text()).toContain('only letters, digits')
   })
 })
+
+import { MODS, modsFor, type AntennaId } from '../src/data/antennaMods'
+import ModsPanel from '../src/components/ModsPanel.vue'
+describe('antenna mods', () => {
+  it('data is complete, unique, and never promises dB gains', () => {
+    expect(new Set(MODS.map((m) => m.id)).size).toBe(MODS.length)
+    for (const m of MODS) {
+      for (const k of ['title', 'what', 'effect', 'caveat', 'basis'] as const) expect(m[k].length, `${m.id}.${k}`).toBeGreaterThan(k === 'title' ? 5 : 15)
+      expect(`${m.what} ${m.effect} ${m.caveat}`, m.id).not.toMatch(/\d+(\.\d+)?\s?dB/)
+    }
+  })
+  it('every antenna has proven mods and warns about unproven ones', () => {
+    for (const a of ['dipole', 'inverted-v', 'vertical', 'loop'] as AntennaId[]) {
+      expect(modsFor(a).filter((m) => m.evidence === 'proven').length, a).toBeGreaterThan(2)
+      expect(modsFor(a).filter((m) => m.evidence === 'unproven').length, a).toBeGreaterThan(0)
+    }
+  })
+  it('panel filters by evidence', async () => {
+    const w = mount(ModsPanel, { props: { antenna: 'vertical' } })
+    expect(w.text()).toContain('More radials'); expect(w.text()).toContain('A single ground rod')
+    await w.findAll('button').find((b) => b.text().startsWith('Unproven'))!.trigger('click')
+    expect(w.text()).toContain('A single ground rod'); expect(w.text()).not.toContain('Elevate the radials')
+  })
+})

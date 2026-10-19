@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
+import ModsPanel from '../components/ModsPanel.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import LineChart from '../components/LineChart.vue'
@@ -116,6 +117,8 @@ const printPage = () => window.print()
         </div>
       </div>
     </div>
+
+    <ModsPanel antenna="dipole" />
 
     <template #explain>
       <div class="formula">L<sub>total</sub> = k · c / (2f)       k ≈ 0.95  (468 ÷ f<sub>MHz</sub> feet)</div>

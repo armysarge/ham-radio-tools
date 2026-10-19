@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
+import ModsPanel from '../components/ModsPanel.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
@@ -88,6 +89,8 @@ const SHAPES: [LoopShape, string][] = [['square', 'Square'], ['triangle', 'Trian
           :disabled="!r" :summary="`${f ? fmt(f / 1e6) : ''} MHz, ${shape}, ${dim(r?.perimeter)}`" :params="{ f: f ?? 0, k, shape, vf: vf ?? 0.66 }" />
       </div>
     </div>
+    <ModsPanel antenna="loop" />
+
     <template #explain>
       <div class="formula">perimeter = k · c / f      k ≈ 1.0218  (1005 ÷ f<sub>MHz</sub> feet)</div>
       <p>A full-wave loop is about one wavelength of wire (slightly more, because of the wire’s end-effects and the closed shape). The numbers are an <strong>empirical design estimate</strong>, not a simulation: shape, wire size, height and nearby objects shift resonance, and gain or radiation patterns are not computed. Square, triangle and circle differ little in resonant length for a given perimeter; the circle encloses the most area.</p>

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
+import ModsPanel from '../components/ModsPanel.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
@@ -81,6 +82,8 @@ const ry = computed(() => RP * Math.sin(((mode.value === 'elevated' ? droop.valu
           :disabled="!r" :summary="`${f ? fmt(f / 1e6) : ''} MHz, ${dim(r?.radiator)}, ${mode}`" :params="{ f: f ?? 0, k, mode, droop }" />
       </div>
     </div>
+    <ModsPanel antenna="vertical" />
+
     <template #explain>
       <div class="formula">radiator = radial = k · c / (4f)      k ≈ 0.95  (234 ÷ f<sub>MHz</sub> feet)</div>
       <p>A quarter-wave vertical uses the ground, or a set of radials, as the other half of a dipole. <strong>These are empirical design estimates, not simulations</strong>: the tool makes no claim about gain, take-off angle or bandwidth.</p>
