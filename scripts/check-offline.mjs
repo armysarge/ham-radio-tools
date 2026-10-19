@@ -64,6 +64,18 @@ await step('saved design + favorite persist across reload', async () => {
   await page.getByRole('button', { name: /Remove from favorites/ }).waitFor()
   await page.goto(base + '#/saved'); await page.getByText('Dipole 7.1 MHz').waitFor()
 })
+await step('project export, delete, re-import restores the saved design', async () => {
+  await page.goto(base + '#/settings')
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Export project file' }).click()])
+  const path = await dl.path()
+  const { readFile: rf } = await import('node:fs/promises')
+  const json = JSON.parse(await rf(path, 'utf8'))
+  if (json.format !== 'ham-radio-tools-project' || !json.designs.length) throw new Error('export missing designs')
+  await page.goto(base + '#/saved'); await page.getByRole('button', { name: /Delete Dipole 7.1 MHz/ }).click(); await page.getByText('No saved designs yet').waitFor()
+  await page.goto(base + '#/settings'); await page.locator('input[type=file]').setInputFiles(path)
+  await page.getByRole('button', { name: 'Import', exact: true }).click(); await page.getByText(/Imported 0 location\(s\) and 1 design/).waitFor()
+  await page.goto(base + '#/saved'); await page.getByText('Dipole 7.1 MHz').waitFor()
+})
 await step('no uncaught errors', async () => { if (errors.length) throw new Error(errors.join(' | ')) })
 await step('phone width (375px): no horizontal overflow on any page, menu drawer opens', async () => {
   const m = await ctx.newPage(); await m.setViewportSize({ width: 375, height: 812 })

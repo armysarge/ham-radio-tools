@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import NumField from '../src/components/NumField.vue'
 import Swr from '../src/tools/Swr.vue'
@@ -9,6 +9,9 @@ import Reactance from '../src/tools/Reactance.vue'
 import InvertedV from '../src/tools/InvertedV.vue'
 import Vertical from '../src/tools/Vertical.vue'
 import Loop from '../src/tools/Loop.vue'
+import Settings from '../src/views/Settings.vue'
+import { platform } from '../src/platform'
+import { saveDesign, saveLocation } from '../src/core/store'
 import Maidenhead from '../src/tools/Maidenhead.vue'
 import { state, toggleFavorite } from '../src/core/store'
 import { searchTools } from '../src/core/registry'
@@ -110,5 +113,46 @@ describe('registry & store', () => {
   it('favorites persist', async () => {
     toggleFavorite('swr'); await flushPromises()
     expect(JSON.parse(localStorage.getItem('hrt:v1')!).favorites).toEqual(['swr'])
+  })
+})
+
+describe('project backup', () => {
+  const pick = async (w: ReturnType<typeof mount>, text: string) => {
+    const input = w.find('input[type=file]')
+    const file = new File([text], 'p.json', { type: 'application/json' })
+    Object.defineProperty(input.element, 'files', { value: [file], configurable: true })
+    await input.trigger('change'); await new Promise((r) => setTimeout(r, 20)); await flushPromises()
+  }
+  it('exports saved designs and locations, then restores them after deletion', async () => {
+    saveLocation('Home', 48.1, 11.6, true)
+    saveDesign({ toolId: 'dipole', name: '40 m', summary: 's', params: { f: 7.1e6, k: 0.95 } })
+    const spy = vi.spyOn(platform, 'saveFile').mockImplementation(() => {})
+    const w = mount(Settings, { global })
+    await w.findAll('button').find((b) => b.text().includes('Export project file'))!.trigger('click')
+    const [name, data] = spy.mock.calls[0] as [string, string]
+    expect(name).toMatch(/^ham-radio-tools-project-\d{4}-\d{2}-\d{2}\.json$/)
+    state.locations = []; state.designs = []; state.stationId = null
+    await pick(w, data)
+    expect(w.text()).toContain('contains 1 location(s) and 1 design(s)')
+    await w.findAll('button').find((b) => b.text() === 'Import')!.trigger('click')
+    expect(state.locations.map((l) => l.name)).toEqual(['Home'])
+    expect(state.designs[0].params).toEqual({ f: 7.1e6, k: 0.95 })
+    expect(state.stationId).toBe(state.locations[0].id)
+    expect(w.text()).toContain('Imported 1 location(s) and 1 design(s)')
+    spy.mockRestore()
+  })
+  it('shows a readable error for a wrong file and requires confirmation to replace', async () => {
+    saveLocation('Keep me', 1, 2)
+    const w = mount(Settings, { global })
+    await pick(w, '{"hello":1}')
+    expect(w.text()).toContain('not a Ham Radio Tools project')
+    await pick(w, JSON.stringify({ format: 'ham-radio-tools-project', version: 1, locations: [], designs: [] }))
+    await w.findAll('button').find((b) => b.text() === 'Replace what I have')!.trigger('click')
+    const go = w.findAll('button').find((b) => b.text() === 'Import')!
+    expect(go.attributes('disabled')).toBeDefined()
+    expect(state.locations).toHaveLength(1)
+    await w.find('input[type=checkbox]').setValue(true)
+    await go.trigger('click')
+    expect(state.locations).toHaveLength(0)
   })
 })

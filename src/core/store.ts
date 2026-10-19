@@ -1,4 +1,5 @@
 import { reactive, watch } from 'vue'
+import type { ProjectData } from '../lib/project'
 
 export interface SavedLocation { id: string; name: string; lat: number; lon: number }
 export interface SavedDesign { id: string; toolId: string; name: string; summary: string; params: Record<string, number | string>; saved: string }
@@ -58,3 +59,6 @@ export function applyAppearance() {
 /** Parameters of the saved design named by `?load=<id>` for this tool, if any. */
 export const loadedParams = (route: { query?: Record<string, unknown> } | undefined, toolId: string) =>
   state.designs.find((d) => d.id === route?.query?.load && d.toolId === toolId)?.params ?? null
+
+export const projectData = (): ProjectData => ({ locations: state.locations, designs: state.designs, stationId: state.stationId })
+export function setProjectData(d: ProjectData) { state.locations = d.locations; state.designs = d.designs; state.stationId = d.stationId }

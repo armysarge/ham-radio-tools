@@ -53,6 +53,7 @@ Key design goals:
 | **RF & electronics** | Frequency ↔ wavelength with velocity factor · Ohm's law and power (any two in, rest out) · dBm / watts / dB ratios with impedance assumptions · SWR, return loss, reflection coefficient, mismatch loss · Reactance and LC resonance · Feedline electrical length |
 | **Antenna design** | Half-wave dipole with trim helper · Inverted-V (apex angle, span, end height) · Quarter-wave vertical with elevated or ground radials · Full-wave loop (square, triangle, circle) with a 75 Ω matching section · Dimensioned SVG drawings · Save, export SVG, print |
 | **Maps & grid squares** | Coordinates ↔ Maidenhead (4, 6 or 8 characters) · Cell edges vs. cell centre · Short- and long-path distance and bearing · Bundled offline world map with grid overlay, pan and zoom · Saved named locations and "my station" |
+| **Projects** | Export saved designs and locations to a JSON file; import by adding or replacing; invalid entries are skipped with a reason |
 | **Operating references** | Phonetic alphabet · Q codes |
 | **App** | Search (`/` to focus) · Categories · Favorites · Light/dark/auto theme · Text size · Metric/imperial · Local persistence |
 
@@ -116,10 +117,14 @@ Key design goals:
 
 - No service worker, so this is **not** a PWA that depends on a prior online visit.
 - A Content-Security-Policy in `index.html` restricts loads to the app's own origin.
-- `npm run check:offline` scans `dist/` for external URLs, then drives the built app in a real browser with **every non-localhost request blocked and recorded**: start-up, search, calculators, dipole save, map and locator, persistence across reload, and a 375 px phone pass (no horizontal overflow on any page, menu drawer works).
+- `npm run check:offline` scans `dist/` for external URLs, then drives the built app in a real browser with **every non-localhost request blocked and recorded**: start-up, search, calculators, dipole save, map and locator, persistence across reload, a project export → delete → re-import round trip, and a 375 px phone pass (no horizontal overflow on any page, menu drawer works).
 - **Not yet done:** the separate clean-machine installation check — it needs a packaged installer, which doesn't exist yet.
 
 **What has actually been tested:** Windows 10 (build 19045), Node 24, Microsoft Edge via Playwright, Vitest/jsdom. Linux, macOS, Firefox, Safari and real phones/tablets are **untested**. Visual review was at 375 px and 768 px, mostly in dark theme. On phones the map supports touch pan; pinch-zoom is not implemented (use +/−).
+
+## Project files
+
+**Settings & content → Back up or move your projects** writes `ham-radio-tools-project-YYYY-MM-DD.json` containing saved designs, saved locations and which location is your station (format `ham-radio-tools-project`, version 1). Theme, units and favorites are per-device and not included. Import previews the file first, then either **adds** items (existing ids are never overwritten; importing the same file twice changes nothing) or **replaces** everything after an explicit confirmation. Files from a newer app version, files over 5 MB, and anything not in this format are refused with a readable message.
 
 ## Content on this device
 
@@ -193,7 +198,7 @@ Recommendation: **Tauri**, because size, memory and a narrow permission model ma
 - [x] Offline acceptance check
 - [ ] Morse reference and audio practice, UTC/local time and timers
 - [ ] Regional band-plan packs (jurisdiction, source, revision date)
-- [ ] Saved-project export/import (JSON file)
+- [x] Saved-project export/import (JSON file)
 - [ ] Regional map packs (evaluate MapLibre GL + PMTiles) and pinch-zoom
 - [ ] Tauri shell and clean-machine install tests on Windows and Linux
 - [ ] J-pole, end-fed, matching networks, Yagi (documented methods only)

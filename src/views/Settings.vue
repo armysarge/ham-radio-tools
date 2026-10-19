@@ -1,7 +1,35 @@
 <script setup lang="ts">
-import { deleteLocation, state, storageOk } from '../core/store'
+import { computed, ref } from 'vue'
+import { deleteLocation, projectData, setProjectData, state, storageOk } from '../core/store'
+import { tools } from '../core/registry'
+import { platform } from '../platform'
+import { applyImport, exportProject, parseProject, type ImportReport } from '../lib/project'
 import { fmt } from '../lib/units'
 import { encode } from '../lib/maidenhead'
+
+// ---- project backup ----
+const hasData = computed(() => state.locations.length + state.designs.length > 0)
+const exportProjectFile = () => platform.saveFile(`ham-radio-tools-project-${new Date().toISOString().slice(0, 10)}.json`, exportProject(projectData()), 'application/json')
+const pending = ref<ReturnType<typeof parseProject> | null>(null)
+const fileName = ref('')
+const importError = ref('')
+const mode = ref<'merge' | 'replace'>('merge')
+const confirmReplace = ref(false)
+const report = ref<ImportReport | null>(null)
+async function onFile(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  pending.value = null; report.value = null; importError.value = ''; confirmReplace.value = false
+  if (!file) return
+  fileName.value = file.name
+  try { pending.value = parseProject(await file.text(), tools.map((t) => t.id)) } catch (err) { importError.value = (err as Error).message }
+  input.value = '' // allow choosing the same file again
+}
+function doImport() {
+  if (!pending.value) return
+  const { next, report: r } = applyImport(projectData(), pending.value, mode.value)
+  setProjectData(next); report.value = r; pending.value = null
+}
 </script>
 
 <template>
@@ -33,6 +61,29 @@ import { encode } from '../lib/maidenhead'
           </tr>
         </tbody>
       </table></div>
+    </div>
+
+    <div class="card stack">
+      <h2>Back up or move your projects</h2>
+      <p class="muted" style="margin:0">Saves your <strong>saved designs and locations</strong> (and which one is your station) to a small JSON file. Copy it to a USB stick to move to another computer. Theme, units and favorites are per-device and are not included.</p>
+      <div class="seg">
+        <button class="primary" :disabled="!hasData" @click="exportProjectFile">Export project file</button>
+        <label class="btn" style="display:inline-flex;align-items:center">Choose a project file to import…<input type="file" accept=".json,application/json" class="sr-only" aria-label="Import project file" @change="onFile" /></label>
+      </div>
+      <p v-if="!hasData" class="hint" style="margin:0">Nothing to export yet — save a design or a location first.</p>
+      <p v-if="importError" class="err" role="alert">{{ importError }}</p>
+      <div v-if="pending" class="notice" role="status">
+        <strong>{{ fileName }}</strong> contains {{ pending.data.locations.length }} location(s) and {{ pending.data.designs.length }} design(s).
+        <ul v-if="pending.invalid.length" style="margin:.4rem 0 0"><li v-for="m in pending.invalid" :key="m">Skipped: {{ m }}</li></ul>
+        <div class="seg" role="group" aria-label="Import mode" style="margin:.6rem 0">
+          <button :aria-pressed="mode === 'merge'" @click="mode = 'merge'; confirmReplace = false">Add to what I have</button>
+          <button :aria-pressed="mode === 'replace'" @click="mode = 'replace'">Replace what I have</button>
+        </div>
+        <p v-if="mode === 'merge'" style="margin:0 0 .6rem">Items already on this device (same id) are kept as they are.</p>
+        <label v-else style="display:block;margin-bottom:.6rem"><input v-model="confirmReplace" type="checkbox" /> I understand this removes my {{ state.locations.length }} saved location(s) and {{ state.designs.length }} saved design(s) first.</label>
+        <button class="primary" :disabled="mode === 'replace' && !confirmReplace" @click="doImport">Import</button>
+      </div>
+      <p v-if="report" class="notice" role="status">Imported {{ report.addedLocations }} location(s) and {{ report.addedDesigns }} design(s); {{ report.skippedExisting }} already existed and were left unchanged{{ report.skippedInvalid.length ? `; ${report.skippedInvalid.length} invalid item(s) skipped` : '' }}.</p>
     </div>
 
     <div class="card">
