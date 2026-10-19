@@ -11,7 +11,7 @@ const copyText = computed(() => `${props.label}: ${shown.value}${props.unit ? ' 
 <template>
   <div class="result" :class="{ big }">
     <div>{{ label }}<div v-if="note" class="hint">{{ note }}</div></div>
-    <div><span class="val">{{ shown }}</span> <span class="unit">{{ unit }}</span></div>
+    <div><span class="val" :key="shown">{{ shown }}</span> <span class="unit">{{ unit }}</span></div>
     <button class="copy ghost" :aria-label="'Copy ' + copyText" :disabled="shown === '—'" @click="platform.copyText(copyText)">Copy</button>
   </div>
 </template>

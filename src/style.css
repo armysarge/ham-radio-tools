@@ -159,3 +159,64 @@ svg.diagram { width: 100%; height: auto; display: block; }
 .gh-link { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; min-width: 44px; justify-content: center; color: var(--ink); text-decoration: none; border-radius: 8px; padding: 0 .4rem; }
 .gh-link:hover { color: var(--accent); background: var(--panel2); }
 .gh-text { font-size: .95rem; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---- “expandable” sections: look like something you can open downward ---- */
+details.explain { border-left: 4px solid var(--accent); overflow: clip; }
+details.explain > summary { list-style: none; gap: .7rem; border-radius: 6px; margin: 0 -.5rem; padding: 0 .5rem; }
+details.explain > summary::-webkit-details-marker { display: none; }
+details.explain > summary::before { content: ''; flex: none; width: .55rem; height: .55rem; margin: 0 .3rem 0 .2rem; border-right: 2.5px solid var(--accent); border-bottom: 2.5px solid var(--accent); transform: translateY(-2px) rotate(45deg); }
+details.explain[open] > summary::before { transform: translateY(2px) rotate(-135deg); }
+details.explain > summary::after { content: 'Show'; margin-left: auto; font-size: .8rem; font-weight: 600; color: var(--muted); border: 1.5px solid var(--line); border-radius: 999px; padding: .1rem .7rem; }
+details.explain[open] > summary::after { content: 'Hide'; }
+details.explain > summary:hover { background: var(--panel2); }
+details.explain > summary:hover::after { color: var(--accent); border-color: var(--accent); }
+
+/* ---- motion: everything below is switched off for people who ask for reduced motion ---- */
+@media (prefers-reduced-motion: no-preference) {
+  :root { interpolate-size: allow-keywords; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+  @keyframes pop { 0% { transform: scale(.6); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
+  @keyframes tick { from { opacity: .25; transform: translateY(-5px); } }
+  @keyframes slide-up { from { opacity: 0; transform: translateY(24px); } }
+  @keyframes sheen { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+
+  body, .card, .sidebar, .topbar, details.explain, input, select, textarea { transition: background-color .25s, border-color .2s, color .2s, box-shadow .2s; }
+
+  /* page and card entrance, staggered */
+  main > * { animation: rise .4s cubic-bezier(.2, .7, .2, 1) backwards; }
+  .cols > * { animation: rise .45s cubic-bezier(.2, .7, .2, 1) backwards; }
+  .cols > :nth-child(2) { animation-delay: .07s; } .cols > :nth-child(3) { animation-delay: .14s; }
+  .tool-card { animation: rise .4s cubic-bezier(.2, .7, .2, 1) backwards; }
+  .tool-card:nth-child(2) { animation-delay: .03s; } .tool-card:nth-child(3) { animation-delay: .06s; } .tool-card:nth-child(4) { animation-delay: .09s; }
+  .tool-card:nth-child(5) { animation-delay: .12s; } .tool-card:nth-child(6) { animation-delay: .15s; } .tool-card:nth-child(n+7) { animation-delay: .18s; }
+  svg.diagram { animation: rise .6s ease .1s backwards; }
+
+  /* hover and press feedback */
+  button { transition: border-color .12s, background-color .12s, transform .12s, box-shadow .12s; }
+  button:hover { box-shadow: 0 2px 8px rgb(0 0 0 / .12); }
+  button:active { transform: scale(.96); box-shadow: none; }
+  .tool-card { transition: transform .18s ease, box-shadow .18s ease, border-color .18s; }
+  .tool-card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgb(0 0 0 / .14); }
+  .sidebar nav a { transition: background-color .15s, padding-left .15s, color .15s; }
+  .sidebar nav a:hover:not(.router-link-exact-active) { padding-left: .9rem; }
+  .sidebar nav a .nav-icon, .tool-head .nav-icon { transition: transform .2s ease; }
+  .sidebar nav a:hover .nav-icon, .tool-head:hover .nav-icon { transform: scale(1.18) rotate(-6deg); }
+  input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent); }
+
+  /* results: a changed value ticks in */
+  .result .val { display: inline-block; animation: tick .3s ease; }
+  .kind { transition: transform .15s; } .kind:hover { transform: scale(1.06); }
+  button[aria-pressed] > .pop { display: inline-block; animation: pop .35s ease; }
+  .consent { animation: slide-up .5s cubic-bezier(.2, .7, .2, 1) .6s backwards; }
+
+  /* expandable sections: chevron turns, the content slides open and fades in */
+  details.explain > summary::before { transition: transform .25s ease; }
+  details.explain > summary::after { transition: color .15s, border-color .15s; }
+  details.explain[open] > :not(summary) { animation: rise .35s ease .05s backwards; }
+  @supports selector(::details-content) {
+    details.explain::details-content { block-size: 0; overflow: clip; transition: block-size .3s ease, content-visibility .3s allow-discrete; }
+    details.explain[open]::details-content { block-size: auto; }
+  }
+  details.explain:not([open]) > summary { animation: nudge 2.4s ease-in-out 1.2s 2; }
+  @keyframes nudge { 0%, 100% { background-color: transparent; } 50% { background-color: var(--panel2); } }
+}

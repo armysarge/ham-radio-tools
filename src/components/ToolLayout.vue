@@ -19,7 +19,7 @@ const fav = computed(() => isFavorite(props.id))
           <span class="kind" :class="tool.kind" :title="tool.kind === 'empirical' ? 'Rule-of-thumb design estimate; not a simulation' : ''">{{ KIND_LABEL[tool.kind] }}</span>
         </div>
         <button class="no-print" :aria-pressed="fav" :aria-label="fav ? 'Remove from favorites' : 'Add to favorites'" @click="toggleFavorite(id)">
-          {{ fav ? '★ Favorite' : '☆ Favorite' }}
+          <span :key="String(fav)" class="pop">{{ fav ? '★ Favorite' : '☆ Favorite' }}</span>
         </button>
       </div>
     </header>
