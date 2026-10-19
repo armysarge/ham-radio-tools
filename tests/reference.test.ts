@@ -122,3 +122,46 @@ describe('antenna mods', () => {
     expect(w.text()).toContain('A single ground rod'); expect(w.text()).not.toContain('Elevate the radials')
   })
 })
+
+import { harmonicsInBands, maxFreqForDiameter, nearestHarmonic, smallLoopLimits } from '../src/lib/qrm'
+import { QRM_SOURCES, QRM_STEPS } from '../src/data/qrmSources'
+import QrmHunting from '../src/tools/QrmHunting.vue'
+describe('QRM hunting', () => {
+  it('harmonic counts per band', () => {
+    const h = Object.fromEntries(harmonicsInBands(65e3).map((b) => [b.band, b]))
+    expect(h['40 m'].count).toBe(5) // n = 108…112 → 7.02…7.28 MHz
+    expect(h['40 m'].first).toEqual({ n: 108, hz: 108 * 65e3 })
+    expect(h['60 m'].count).toBe(0)
+    expect(harmonicsInBands(1e3).every((b) => b.count > 0)).toBe(true) // a 1 kHz fundamental is everywhere
+    expect(harmonicsInBands(100e6).find((b) => b.band === '6 m')!.count).toBe(0)
+    expect(() => harmonicsInBands(0)).toThrow()
+  })
+  it('nearest harmonic and its offset', () => {
+    expect(nearestHarmonic(65e3, 7.1e6)).toMatchObject({ n: 109, hz: 7.085e6 })
+    expect(nearestHarmonic(65e3, 7.1e6).offsetHz).toBeCloseTo(15e3, 6)
+    expect(nearestHarmonic(100e3, 7.1e6).offsetHz).toBeCloseTo(0, 6)
+    expect(nearestHarmonic(500e3, 100e3).n).toBe(1) // never harmonic 0
+    expect(() => nearestHarmonic(65e3, -1)).toThrow()
+  })
+  it('small-loop limit is lambda/10 and round-trips', () => {
+    const l = smallLoopLimits(30e6)
+    expect(l.perimeter).toBeCloseTo(0.99931, 4); expect(l.diameter * Math.PI).toBeCloseTo(l.perimeter, 9); expect(l.squareSide * 4).toBeCloseTo(l.perimeter, 9)
+    expect(maxFreqForDiameter(l.diameter)).toBeCloseTo(30e6, 0)
+    expect(() => smallLoopLimits(0)).toThrow(); expect(() => maxFreqForDiameter(-1)).toThrow()
+  })
+  it('content is complete', () => {
+    for (const s of QRM_SOURCES) for (const k of ['sounds', 'looks', 'where', 'clues', 'fix'] as const) expect(s[k].length, `${s.id}.${k}`).toBeGreaterThan(20)
+    expect(QRM_STEPS.length).toBeGreaterThanOrEqual(5)
+  })
+  it('tool: harmonic finder reacts to the entered frequency, steps tick off', async () => {
+    const w = mount(QrmHunting, { global })
+    expect(w.text()).toContain('Is it your house?')
+    await w.find('input[type=checkbox]').setValue(true)
+    await w.findAll('[role=tab]').find((b) => b.text() === 'Harmonic finder')!.trigger('click'); await flushPromises()
+    expect(w.text()).toContain('7.085') // 109 × 65 kHz
+    await w.findAll('input[type=text]')[0].setValue('100'); await flushPromises()
+    expect(w.text()).toContain('falls inside your receiver’s passband') // 71 × 100 kHz = 7.1 MHz exactly
+    await w.findAll('[role=tab]').find((b) => b.text() === 'Sources & signatures')!.trigger('click'); await flushPromises()
+    expect(w.text()).toContain('schematic illustrations'); expect(w.findAll('svg[role=img]').length).toBeGreaterThanOrEqual(QRM_SOURCES.length)
+  })
+})
