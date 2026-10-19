@@ -13,10 +13,13 @@ const ok = (m) => console.log('ok  :', m)
 
 // 1. Static scan: no external URLs in shipped files (XML namespace URIs are identifiers, not requests).
 async function* walk(d) { for (const e of await readdir(d, { withFileTypes: true })) e.isDirectory() ? yield* walk(join(d, e.name)) : yield join(d, e.name) }
-// Allowed: XML namespace identifiers, framework doc strings, and the "official source" links inside bundled band-plan packs.
-// Those links are plain data that the user may click (they open the web in a new tab); the app itself never requests them.
-const PACK_SOURCES = ['legislation.gov.au', 'publications.gc.ca', 'www.gesetze-im-internet.de', 'www.ecfr.gov', 'api.acts.co.za'].map((h) => h.replace(/\./g, '\\.')).join('|')
-const allowed = new RegExp('^https?://(www\\.w3\\.org/|localhost|vuejs\\.org|github\\.com/vuejs|vue-router|router\\.vuejs\\.org|' + PACK_SOURCES + ')')
+// Allowed: XML namespace identifiers, framework doc strings, the repository link, and the "official source" links of the
+// bundled band-plan packs (hosts taken from scripts/pack-data/sources.json). Those are plain data shown as links the user may
+// click (they open in a new tab); the app itself never requests them.
+const hostsFromSources = JSON.parse(await readFile('scripts/pack-data/sources.json', 'utf8')).sources.flatMap((x) => [x.officialUrl, ...x.check.map((c) => c.url)]).map((u) => new URL(u.replace(/\{[a-zA-Z]+\}/g, 'x')).hostname)
+const esc = (h) => h.replace(/\./g, '\\.')
+const repo = /REPO_URL = '([^']+)'/.exec(await readFile('src/core/meta.ts', 'utf8'))[1].replace(/^https?:\/\//, '')
+const allowed = new RegExp('^https?://(www\\.w3\\.org/|localhost|vuejs\\.org|github\\.com/vuejs|vue-router|router\\.vuejs\\.org|' + [...new Set(hostsFromSources)].map(esc).join('|') + '|' + esc(repo) + ')')
 let found = 0
 for await (const f of walk(dist)) {
   const t = await readFile(f, 'utf8').catch(() => '')

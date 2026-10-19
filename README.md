@@ -14,10 +14,11 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/armysarge/ham-radio-tools"><img src="https://img.shields.io/badge/GitHub-armysarge%2Fham--radio--tools-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub repository"/></a>
   <a href="https://www.buymeacoffee.com/armysarge"><img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=flat-square&logo=buymeacoffee&logoColor=black" alt="Buy Me A Coffee"/></a>
 </p>
 
-<p align="center"><b>Live demo: <a href="https://armysarge.co.za/ham-radio-tools">armysarge.co.za/ham-radio-tools</a></b></p>
+<p align="center"><b>Live demo: <a href="https://hamradiotools.armysarge.co.za/">https://hamradiotools.armysarge.co.za/</a></b></p>
 
 ---
 
@@ -56,7 +57,7 @@ Key design goals:
 | **Antenna design** | Half-wave dipole with trim helper · End-fed half-wave (harmonic bands, counterpoise, 49:1/64:1 transformer guidance) · Inverted-V (apex angle, span, end height) · Quarter-wave vertical with elevated or ground radials · Full-wave loop (square, triangle, circle) with a 75 Ω matching section · Dimensioned SVG drawings · Save, export SVG, print |
 | **Maps & grid squares** | Coordinates ↔ Maidenhead (4, 6 or 8 characters) · Cell edges vs. cell centre · Short- and long-path distance and bearing · Bundled offline world map with grid overlay, pan and zoom · Saved named locations and "my station" |
 | **Projects** | Export saved designs and locations to a JSON file; import by adding or replacing; invalid entries are skipped with a reason |
-| **Operating references** | Phonetic alphabet · Q codes · Abbreviations · CTCSS tones · Constants and rules of thumb · ITU Radio Regulations explained · ITU region band plans and **national band tables for the USA, Canada, Germany, Australia and South Africa** with a "what is at this frequency?" lookup · Callsign lookup (issuing country, island/home nation, DL/ prefixes, /P /MM suffixes) |
+| **Operating references** | Phonetic alphabet · Q codes · Abbreviations · CTCSS tones · Constants and rules of thumb · ITU Radio Regulations explained · ITU region band plans and **national band tables for the USA, Canada, Germany, Australia, South Africa, Japan and Brazil** with a "what is at this frequency?" lookup · Callsign lookup (issuing country, island/home nation, DL/ prefixes, /P /MM suffixes) |
 | **CW (Morse)** | Chart · text → Morse player (PARIS timing, Farnsworth, adjustable pitch) · WAV download · decoder for typed dots/dashes, tapped keying and an experimental microphone decoder |
 | **QRM hunting** | Step-by-step method · source signatures (schematic sketches) · harmonic finder · DIY shielded-loop size calculator |
 | **Antenna mods** | A proven / situational / unproven checklist on every antenna tool, with the reasoning and no invented gain figures |
@@ -140,7 +141,7 @@ Key design goals:
 | App, calculators, diagrams | Bundled |
 | World basemap (Natural Earth 1:110m, public domain) | Bundled — country outlines only |
 | ITU region band plans, CTCSS, abbreviations, constants, Q codes, callsign prefixes, time stations, antenna mods, QRM guide | Bundled — each dated in its tool |
-| National band tables: United States, Canada, Germany, Australia, South Africa | Bundled — compiled from each regulator's own text (see below) |
+| National band tables: United States, Canada, Germany, Australia, South Africa, Japan, Brazil | Bundled — compiled from each regulator's own text (see below) |
 | Other countries, IARU/national mode sub-band plans, shortwave programme schedules | **Installable packs** — shown as *Installed* once imported |
 | Regional map packs, manual library, local AI | Unavailable (planned) |
 
@@ -153,10 +154,14 @@ Key design goals:
 | Germany | AFuV Anlage 1 (BGBl. 2024 I Nr. 175), gesetze-im-internet.de | Classes A / E / N; unofficial English paraphrase of the footnotes |
 | Canada | ISED RBR-4 Issue 3 (July 2022), Schedule I | Qualifications and bandwidths; power limits in the pack notes |
 | Australia | Radiocommunications (Amateur Stations) Class Licence 2023, Schedule 2 Table C | **Advanced class only**; Standard and Foundation not included |
+| Japan | MIC usage chart 令和5年告示第80号 (amended Jul 2025) and licence-symbol leaflet | The chart is a picture **read by hand**; emission categories per segment; power by licence symbol in the notes |
+| Brazil | Anatel Ato nº 926/2024 | Classes A/B/C, mean power, and the full sub-band mode plan (Portuguese notes) |
 
-Not included yet: **the United Kingdom** — Ofcom's licence documents sit behind a bot-protection wall that this project's tooling does not bypass, so the table has to come from a copy you provide (drop the PDF in and ask, or build it from Ofcom's published schedule yourself). Mode sub-bands (where CW, digital and SSB sit inside a band) are voluntary plans from national societies and the IARU, not regulator tables, and are not included.
+Not included yet: **the United Kingdom** (Ofcom's documents sit behind a bot-protection wall that this project does not bypass) and **India** (the DoT/WPC official text could not be retrieved). Both need an official PDF supplied by the maintainer; see [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md). Mode sub-bands (where CW, digital and SSB sit inside a band) are voluntary plans from national societies and the IARU, not regulator tables, and are not included.
 
-The packs are generated by [scripts/build-packs.mjs](scripts/build-packs.mjs) from tables transcribed out of those documents, into `src/data/packs/*.json`; each pack states its source, licence, revision date and a "read first" scope note. To refresh one: read the new source, edit its table in the script, bump `REVISION`, run `node scripts/build-packs.mjs` and `npm test`. Rules change: the app shows each pack's age and links to the official source.
+**Every source is recorded** (official URL, version, retrieval date, licence, how it was read, known gaps and a content hash) in [scripts/pack-data/sources.json](scripts/pack-data/sources.json) and explained in [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md). `npm run check:sources` re-fetches the documents (network, run by you) and tells you which have changed; `npm run build:packs` regenerates the packs.
+
+The packs are generated by [scripts/build-packs.mjs](scripts/build-packs.mjs) from tables transcribed out of those documents, into `src/data/packs/*.json`; each pack states its source, licence, revision date and a "read first" scope note. To refresh one, follow the routine in [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md). Rules change: the app shows each pack's age and links to the official source.
 
 ### Content packs and keeping data current
 
@@ -249,6 +254,7 @@ Recommendation: **Tauri**, because size, memory and a narrow permission model ma
 ## Data, licenses and attribution
 
 - **Reference project:** [it-tools](https://github.com/CorentinTh/it-tools) (GPL-3.0) was reviewed for ideas only — per-tool modules in a central registry, categories, and easy tool scaffolding. **No code or assets were copied.**
+- **Icons:** the GitHub mark in the app is the Octicons “mark-github” icon (MIT, © GitHub, Inc.); the other menu icons are original line drawings.
 - **Basemap:** Natural Earth 1:110m countries (public domain) via `world-atlas` 2.0.2 (ISC, © Michael Bostock), compiled into the app.
 - **Runtime dependencies:** Vue, vue-router (MIT), topojson-client (ISC). Fonts: none bundled (system stacks).
 - Each tool's *Sources & references* panel names the handbooks used for the **methods**; no text was copied.

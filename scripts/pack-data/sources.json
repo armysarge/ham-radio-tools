@@ -1,0 +1,180 @@
+{
+  "_comment": "Registry of the official documents behind each bundled band-plan pack. `npm run check:sources` re-fetches `check` URLs, hashes the normalised text (or PDF bytes) and compares with `sha256`; `--update` records new hashes after you have reviewed and rebuilt the pack. {today} in a URL is replaced by the current date, {ecfrDate} by the latest issue date the eCFR publishes for title 47.",
+  "sources": [
+    {
+      "pack": "us-fcc-part97",
+      "jurisdiction": "United States",
+      "publisher": "Federal Communications Commission (via the eCFR)",
+      "document": "47 CFR 97.301, 97.303, 97.305, 97.313",
+      "version": "eCFR current to 2026-10-01; last amended 91 FR 1430-1431, 14 Jan 2026",
+      "officialUrl": "https://www.ecfr.gov/current/title-47/chapter-I/subchapter-D/part-97",
+      "retrieved": "2026-10-19",
+      "licence": "US federal regulation (public domain)",
+      "reviewEveryDays": 180,
+      "extraction": "Fetched as XML from the eCFR versioner API, tags stripped, tables transcribed into scripts/build-packs.mjs (class access ranges, emission rows).",
+      "check": [
+        {
+          "url": "https://www.ecfr.gov/api/versioner/v1/full/{ecfrDate}/title-47.xml?part=97&section=97.301",
+          "kind": "text",
+          "sha256": "98b9905599c9a3a05c5da05f0caf0c3f4a0576f085a3a81db9588e265c2e661c"
+        },
+        {
+          "url": "https://www.ecfr.gov/api/versioner/v1/full/{ecfrDate}/title-47.xml?part=97&section=97.303",
+          "kind": "text",
+          "sha256": "b3c9739c6dd3840f6d512fea800f8c7a8f2f6f67963617ea9bfb510b6cbb2126"
+        },
+        {
+          "url": "https://www.ecfr.gov/api/versioner/v1/full/{ecfrDate}/title-47.xml?part=97&section=97.305",
+          "kind": "text",
+          "sha256": "a5a0e4d4ecb5e874e90d39c9c02c96912948cb279a6a621ec9ca93199c4d59ae"
+        },
+        {
+          "url": "https://www.ecfr.gov/api/versioner/v1/full/{ecfrDate}/title-47.xml?part=97&section=97.313",
+          "kind": "text",
+          "sha256": "b8834067880d1a1ce65157e55193cf4993b0104e578bff3b0e4b9d3c7969961e"
+        }
+      ],
+      "gaps": "Region 2 only; Novice class omitted; mode limits beyond 97.305 (97.307 emission standards) not reproduced."
+    },
+    {
+      "pack": "za-icasa-annexure-i",
+      "jurisdiction": "South Africa",
+      "publisher": "ICASA (text via acts.co.za)",
+      "document": "Radio Frequency Spectrum Regulations, Annexure I (Amateur radio frequency bands), as amended 2021",
+      "version": "Radio Frequency Spectrum Amendment Regulations, 2021",
+      "officialUrl": "https://api.acts.co.za/electronic-communications-act-2005/n279_annexure_i.php",
+      "retrieved": "2026-10-19",
+      "licence": "South African government regulation",
+      "reviewEveryDays": 90,
+      "extraction": "HTML page tags stripped; table rows transcribed into scripts/build-packs.mjs. The 60 m row comes from ICASA's National Radio Frequency Plan 2018 as reported by ARRL/IARU Region 1 (not in this table).",
+      "check": [
+        {
+          "url": "https://api.acts.co.za/electronic-communications-act-2005/n279_annexure_i.php",
+          "kind": "text",
+          "sha256": "d6ba2d7ebeda076f8dc2e188d9ec2d71ca56bbc47f9d3a6de7bb522edbe11554"
+        }
+      ],
+      "gaps": "Third-party copy of the Gazette text, not ICASA's own site; a 2025 draft National Radio Frequency Plan and SARL submissions (Jan 2026) may change values — check ICASA and the SARL. Page text can include site boilerplate, so a CHANGED result may be cosmetic: diff before rebuilding."
+    },
+    {
+      "pack": "de-bnetza-afuv",
+      "jurisdiction": "Germany",
+      "publisher": "Bundesministerium der Justiz (gesetze-im-internet.de)",
+      "document": "Amateurfunkverordnung (AFuV), Anlage 1",
+      "version": "BGBl. 2024 I Nr. 175, S. 1-4",
+      "officialUrl": "https://www.gesetze-im-internet.de/afuv_2005/anlage_1.html",
+      "retrieved": "2026-10-19",
+      "licence": "German federal law (official work, no copyright)",
+      "reviewEveryDays": 180,
+      "extraction": "HTML tags stripped; the 45-row table parsed by column into scripts/pack-data/de-afuv-anlage1.json; footnote texts translated (unofficial) in scripts/build-packs.mjs.",
+      "check": [
+        {
+          "url": "https://www.gesetze-im-internet.de/afuv_2005/anlage_1.html",
+          "kind": "text",
+          "sha256": "d5afd0014c5d8c140fadd5e40bb61b96ffd102741dc2297a1fc43b655303008b"
+        }
+      ],
+      "gaps": "Row for > 275 GHz and the terahertz conditions (footnote 14) not listed."
+    },
+    {
+      "pack": "ca-ised-rbr4",
+      "jurisdiction": "Canada",
+      "publisher": "Innovation, Science and Economic Development Canada",
+      "document": "RBR-4 Standards for the Operation of Radio Stations in the Amateur Radio Service, Schedule I",
+      "version": "Issue 3, July 2022",
+      "officialUrl": "https://publications.gc.ca/site/eng/440360/publication.html",
+      "retrieved": "2026-10-19",
+      "licence": "Government of Canada publication",
+      "reviewEveryDays": 180,
+      "extraction": "PDF text via pdftotext -layout from a copy hosted by the University of New Brunswick (the ISED PDF itself was not fetched); Schedule I table transcribed into scripts/build-packs.mjs.",
+      "check": [
+        {
+          "url": "https://www.ece.unb.ca/petersen/amateur-radio-files/RBR04e-Operating-Standards-2022-Jul.pdf",
+          "kind": "bytes",
+          "sha256": "e805024a0ea5de502169457c101a2f15227837a04b2ee8d4c0e6cd8fd9c5acdd"
+        }
+      ],
+      "gaps": "Mirror, not ISED's own file; a newer ISED issue would not be detected by this hash — check the ISED page. 220-222 MHz and the 60 m single channels omitted."
+    },
+    {
+      "pack": "au-acma-class-licence",
+      "jurisdiction": "Australia",
+      "publisher": "Australian Communications and Media Authority (Federal Register of Legislation)",
+      "document": "Radiocommunications (Amateur Stations) Class Licence 2023 [F2023L01648], Schedule 2 Table C (Advanced)",
+      "version": "As made 7 Dec 2023; commenced 19 Feb 2024",
+      "officialUrl": "https://legislation.gov.au/F2023L01648/asmade/2023-12-12/text/original/pdf",
+      "retrieved": "2026-10-19",
+      "licence": "Commonwealth of Australia legislation (CC BY 4.0)",
+      "reviewEveryDays": 180,
+      "extraction": "PDF text via pdftotext -layout; Table C read from the text and transcribed into scripts/build-packs.mjs.",
+      "check": [
+        {
+          "url": "https://legislation.gov.au/F2023L01648/asmade/2023-12-12/text/original/pdf",
+          "kind": "bytes",
+          "sha256": "50036cf5e634e1e66922ef912b064f532919759063ab0b8f1d5570e812ab9f1c"
+        }
+      ],
+      "gaps": "The as-made PDF never changes, so amendments are NOT detected by this check: look at the instrument's compilations on the Federal Register of Legislation. Advanced class only; Tables A (Foundation) and B (Standard) not transcribed; bandwidth limitations not reproduced."
+    },
+    {
+      "pack": "jp-mic-notification-80",
+      "jurisdiction": "Japan",
+      "publisher": "Ministry of Internal Affairs and Communications (総務省)",
+      "document": "アマチュア業務に使用する電波の型式及び周波数の使用区別 (令和5年総務省告示第80号) usage chart; power from the 'frequency etc. comprehensive display symbols' leaflet (June 2023)",
+      "version": "Last amended 令和7年7月17日総務省告示第259号",
+      "officialUrl": "https://www.soumu.go.jp/main_content/001040318.pdf",
+      "retrieved": "2026-10-19",
+      "licence": "Japanese government publication (MIC terms of use)",
+      "reviewEveryDays": 180,
+      "extraction": "The chart is a picture: rendered to PNG (pdfplumber, 420 dpi), cropped per band and READ BY HAND; every boundary must be re-checked against the original. Power values read from the leaflet https://www.soumu.go.jp/main_content/000903134.pdf (rendered the same way).",
+      "check": [
+        {
+          "url": "https://www.soumu.go.jp/main_content/001040318.pdf",
+          "kind": "bytes",
+          "sha256": "fcce232d2c3da7f524ef335096731a2e1f20a47d1141e8e78fcd073e0b0c8718"
+        },
+        {
+          "url": "https://www.soumu.go.jp/main_content/000903134.pdf",
+          "kind": "bytes",
+          "sha256": "78246d606f2c65fea0403702aabf2c95d7bccecd56a3f82b721b2e898807484a"
+        }
+      ],
+      "gaps": "The notification's full text (tele.soumu.go.jp r05_80.pdf) returned an error page; bands above 10.5 GHz are not on the chart; overlay uses (repeater, VoIP, EME) are described in notes rather than as separate ranges."
+    },
+    {
+      "pack": "br-anatel-ato-926",
+      "jurisdiction": "Brazil",
+      "publisher": "Agência Nacional de Telecomunicações (Anatel)",
+      "document": "Ato nº 926, de 1 de fevereiro de 2024 — Requisitos Técnicos e Operacionais do Serviço de Radioamador",
+      "version": "Anatel page updated 5 Mar 2024; Anatel's June 2026 guide still cites it",
+      "officialUrl": "https://informacoes.anatel.gov.br/legislacao/atos-de-requisitos-tecnicos-de-gestao-do-espectro/2024/1919-ato-926",
+      "retrieved": "2026-10-19",
+      "licence": "Brazilian federal regulation",
+      "reviewEveryDays": 90,
+      "extraction": "HTML page tags stripped; Tabelas II-XXIX parsed by cell into scripts/pack-data/br-ato926-subbands.json (the parser is described in the commit history); Table I (classes) and item 5 (power) transcribed into scripts/build-packs.mjs. The page counter 'Acessos' is removed before hashing.",
+      "check": [
+        {
+          "url": "https://informacoes.anatel.gov.br/legislacao/atos-de-requisitos-tecnicos-de-gestao-do-espectro/2024/1919-ato-926",
+          "kind": "text",
+          "strip": [
+            "Acessos: \\d+"
+          ],
+          "sha256": "0a124cb2144fe0c22b02deb24605550fa979e0c154e153ccecaebe41c4504d19"
+        }
+      ],
+      "gaps": "Ato 3448/2026 (11 Mar 2026) consolidates operational rules and exams and was not read; check whether it changes bands, classes or power. Repeater and IVG channelisation not reproduced. Anatel says the site text does not replace the Diario Oficial publication."
+    }
+  ],
+  "notIncluded": [
+    {
+      "jurisdiction": "United Kingdom",
+      "reason": "Ofcom's licence documents are behind a bot-protection challenge (HTTP 403 / Cloudflare) that this project does not bypass.",
+      "needs": "The current Amateur Radio Licence schedule (bands, power) or Interface Requirement IR 2028 as a PDF supplied by the maintainer."
+    },
+    {
+      "jurisdiction": "India",
+      "reason": "The DoT/WPC documents (G.S.R. 280(E) 2010 amending the Indian Wireless Telegraph (Amateur Service) Rules, with Annexure V bands and power) returned 404/403 or only scanned pages; a consolidated copy at arsi.info omits the annexure.",
+      "needs": "A PDF of the current Annexure V (or the NFAP-2022 amateur rows) from DoT/WPC, supplied by the maintainer."
+    }
+  ]
+}

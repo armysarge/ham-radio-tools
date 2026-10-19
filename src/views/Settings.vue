@@ -4,6 +4,7 @@ import { deleteLocation, projectData, setProjectData, state, storageOk } from '.
 import { tools } from '../core/registry'
 import { platform } from '../platform'
 import PackManager from '../components/PackManager.vue'
+import GithubLink from '../components/GithubLink.vue'
 import { applyImport, exportProject, parseProject, type ImportReport } from '../lib/project'
 import { fmt } from '../lib/units'
 import { encode } from '../lib/maidenhead'
@@ -95,6 +96,7 @@ function doImport() {
       <h2>About</h2>
       <p style="margin:0"><strong>Ham Radio Tools</strong> version <span class="mono">{{ version }}</span> · MIT licence</p>
       <p style="margin:0">Made by <strong class="mono">ZS6SHZ</strong>. 73!</p>
+      <p style="margin:0"><GithubLink label /> <span class="muted">· source code, issues and releases (opens the web)</span></p>
       <p class="muted" style="margin:0">This app never checks for updates or contacts any server. To update, install the newer release you downloaded yourself.</p>
     </div>
   </div>

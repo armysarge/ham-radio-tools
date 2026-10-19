@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { CATEGORIES, CATEGORY_ICON, iconFor, tools } from './core/registry'
 import { state } from './core/store'
 import NavIcon from './components/NavIcon.vue'
+import GithubLink from './components/GithubLink.vue'
 
 const route = useRoute(), router = useRouter()
 const q = ref(typeof route.query.q === 'string' ? route.query.q : '')
@@ -40,6 +41,7 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
       <button :aria-label="`Theme: ${state.theme}. Click to change`" @click="cycleTheme">
         {{ state.theme === 'system' ? '◐ Auto' : state.theme === 'light' ? '☀ Light' : '☾ Dark' }}
       </button>
+      <GithubLink />
       <span class="badge-offline" title="No network access is used by this app">Works offline</span>
     </header>
 
@@ -60,6 +62,7 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
         <router-link to="/saved"><NavIcon name="saved" />Saved designs</router-link>
         <router-link to="/settings"><NavIcon name="settings" />Settings &amp; content</router-link>
         <p class="muted" style="font-size:.8rem;margin:.8rem .6rem">Ham Radio Tools v{{ version }} · by ZS6SHZ</p>
+        <div style="margin:0 .6rem"><GithubLink label /></div>
       </nav>
     </aside>
 

@@ -200,3 +200,95 @@ const seg = (band, fromHz, toHz, use, extra = {}) => ({ band, fromHz, toHz, use,
     data: { segments },
   })
 }
+
+// ================= Japan: MIC 令和5年総務省告示第80号 usage chart (last amended 令和7年7月17日告示第259号) + licence-symbol power leaflet =================
+{
+  const NARROW = 'Narrow-band, all emission types', ALLE = 'All emission types', WIDE = 'Wide-band telegraphy, telephony and image', CW = 'CW (Morse) only'
+  // [from, to, unit, use, note]  — read from the MIC chart; boundaries as printed on it
+  const rows = [
+    [135.7, 137.8, 'kHz', NARROW, 'Chart bracket: occupied bandwidth 500 Hz or less.'], [472, 479, 'kHz', NARROW, 'Chart bracket: occupied bandwidth 500 Hz or less.'],
+    [1800, 1830, 'kHz', CW], [1830, 1875, 'kHz', NARROW, 'Occupied bandwidth 3 kHz or less (A3E 6 kHz or less).'], [1907.5, 1912.5, 'kHz', NARROW, 'Chart bracket: occupied bandwidth 500 Hz or less.'],
+    [3500, 3530, 'kHz', CW], [3530, 3580, 'kHz', NARROW], [3599, 3612, 'kHz', NARROW], [3662, 3687, 'kHz', NARROW],
+    [3702, 3716, 'kHz', NARROW], [3745, 3770, 'kHz', NARROW], [3791, 3805, 'kHz', NARROW],
+    [7000, 7030, 'kHz', CW], [7030, 7200, 'kHz', NARROW],
+    [10100, 10120, 'kHz', CW], [10120, 10150, 'kHz', NARROW, 'Occupied bandwidth 2 kHz or less.'],
+    [14000, 14070, 'kHz', CW], [14070, 14350, 'kHz', NARROW, 'Beacon (marker) signal 14,100 kHz.'],
+    [18068, 18080, 'kHz', CW], [18080, 18168, 'kHz', NARROW, 'Beacon (marker) signal 18,110 kHz.'],
+    [21000, 21070, 'kHz', CW], [21070, 21450, 'kHz', NARROW, 'Beacon (marker) signal 21,150 kHz.'],
+    [24890, 24900, 'kHz', CW], [24900, 24990, 'kHz', NARROW, 'Beacon (marker) signal 24,930 kHz.'],
+    [28.0, 28.07, 'MHz', CW], [28.07, 29.0, 'MHz', NARROW, 'Beacon (marker) signal 28.2 MHz.'], [29.0, 29.3, 'MHz', ALLE], [29.3, 29.51, 'MHz', 'Satellite'],
+    [29.51, 29.59, 'MHz', 'Repeaters (all emission types)'], [29.59, 29.61, 'MHz', ALLE], [29.61, 29.7, 'MHz', 'Repeaters (all emission types)'],
+    [50.0, 50.07, 'MHz', NARROW, 'Occupied bandwidth 2 kHz or less; beacon 50.01 MHz; the chart also marks moon-bounce (EME) use at the bottom of the band.'], [50.07, 51.0, 'MHz', NARROW],
+    [51.0, 54.0, 'MHz', ALLE, 'Calling frequency 51.0 MHz.'],
+    [144.0, 144.02, 'MHz', 'Moon-bounce (EME)'], [144.02, 144.5, 'MHz', NARROW, 'The chart marks EME use at the bottom, up to about 144.2 MHz.'],
+    [144.5, 144.6, 'MHz', ALLE + ' (VoIP also)'], [144.6, 144.7, 'MHz', ALLE], [144.7, 145.65, 'MHz', WIDE, 'Calling frequency 145.0 MHz.'],
+    [145.65, 145.8, 'MHz', ALLE + ' (VoIP also)'], [145.8, 146.0, 'MHz', 'Satellite'],
+    [430.0, 430.1, 'MHz', CW], [430.1, 430.7, 'MHz', NARROW], [430.7, 431.4, 'MHz', ALLE + ' (VoIP 430.7–431.0)'], [431.4, 431.9, 'MHz', WIDE],
+    [431.9, 432.1, 'MHz', 'Moon-bounce (EME)'], [432.1, 434.0, 'MHz', WIDE, 'Calling frequency 433.0 MHz.'], [434.0, 435.0, 'MHz', 'Repeaters'], [435.0, 438.0, 'MHz', 'Satellite'],
+    [438.0, 439.0, 'MHz', ALLE + ' (VoIP also)'], [439.0, 440.0, 'MHz', 'Repeaters'],
+    [1260, 1270, 'MHz', 'Satellite'], [1270, 1273, 'MHz', 'Repeaters'], [1273, 1290, 'MHz', ALLE], [1290, 1293, 'MHz', 'Repeaters'], [1293, 1295.8, 'MHz', ALLE, 'Calling frequency 1295.0 MHz.'],
+    [1295.8, 1296.2, 'MHz', 'Moon-bounce (EME)'], [1296.2, 1299, 'MHz', ALLE], [1299, 1300, 'MHz', 'Repeaters'],
+    [2400, 2405, 'MHz', 'Satellite and moon-bounce (EME)'], [2405, 2407, 'MHz', 'Repeaters'], [2407, 2424, 'MHz', ALLE], [2424, 2424.5, 'MHz', 'Moon-bounce (EME)'], [2424.5, 2425, 'MHz', ALLE],
+    [2425, 2427, 'MHz', 'Repeaters', 'Calling frequency 2427.0 MHz (just above).'], [2427, 2450, 'MHz', ALLE],
+    [5650, 5670, 'MHz', 'Satellite (repeaters also)'], [5670, 5830, 'MHz', ALLE, 'Repeaters at 5670–5690, 5725–5730, 5765–5770 and 5810–5830 MHz; moon-bounce (EME) at 5760–5762 MHz; calling frequency 5760.0 MHz.'], [5830, 5850, 'MHz', 'Satellite (repeaters also)'],
+    [10000, 10250, 'MHz', ALLE, 'Repeaters at 10.0–10.025, 10.15–10.18 and 10.245–10.25 GHz; calling frequency 10.24 GHz.'], [10450, 10500, 'MHz', ALLE + ', satellite and moon-bounce (EME)'],
+  ]
+  const segments = rows.map(([f, t, unit, use, note]) => { const c = hz[unit], from = c(f), to = c(t); return seg(bandOf(from, to), from, to, use, { note }) })
+  write('jp-mic-notification-80', {
+    title: 'Japan — MIC usage chart (告示第80号)', jurisdiction: 'Japan',
+    source: 'Ministry of Internal Affairs and Communications (総務省), “アマチュア業務に使用する電波の型式及び周波数の使用区別” (令和5年総務省告示第80号), usage chart, last amended 令和7年7月17日総務省告示第259号; power from the MIC leaflet “周波数等の一括表示記号” (June 2023)',
+    sourceUrl: 'https://www.soumu.go.jp/main_content/001040318.pdf', license: 'Japanese government publication (MIC terms of use)',
+    notes: 'ITU Region 3. The chart shows which kinds of emission are allowed in each part of each band; it is a picture, so every boundary here was read from it by hand and must be checked against the original. Where the chart overlays a use on another (repeaters, VoIP, moon-bounce) the overlay is described in the note. Bands above 10.5 GHz (24, 47, 77, 135 and 249 GHz) are not on this chart and are not listed; the licence leaflet shows power limits for them. Maximum antenna power depends on the licence symbol (first to fourth class operator, F = fixed / M = mobile): 1.9–28 MHz — 1st class 1 kW (F) / 50 W (M), 2nd class 200 W / 50 W, 3rd class 50 W, 4th class 10 W; 50 MHz — 500 W, 200 W, 50 W, 20 W; 144 and 430 MHz — 50 W (1st to 3rd class), 20 W (4th class); 1200 MHz — 10 W (F) / 1 W (M); 2.4–10.5 GHz — 2 W; 47 GHz and up — 0.2 W (249 GHz: 0.1 W). 3rd and 4th class operators may not use the 10 MHz or 14 MHz bands, and 4th class may not use 18 MHz; 135 kHz and 472 kHz are limited to 200 W (2nd class and above, F). Terrestrial use above these limits needs the exact symbol on your licence. Revision of this pack: the chart as amended 17 July 2025; an earlier MIC notification (令和5年告示第80号 of March 2023) is superseded by it.',
+    data: { segments },
+  })
+}
+
+// ================= Brazil: Anatel Ato nº 926/2024, Requisitos Técnicos e Operacionais do Serviço de Radioamador =================
+{
+  const sub = JSON.parse(readFileSync(new URL('./pack-data/br-ato926-subbands.json', import.meta.url), 'utf8'))
+  const ALLC = 'A, B, C'
+  // Table I — which COER classes may operate where (frequencies in kHz / MHz / GHz as published)
+  const K = (a, b, who) => [hz.kHz(a), hz.kHz(b), who], M = (a, b, who) => [hz.MHz(a), hz.MHz(b), who], G = (a, b, who) => [hz.GHz(a), hz.GHz(b), who]
+  const access = [
+    K(135.7, 137.8, ALLC), K(472, 479, ALLC), K(1800, 1850, ALLC), K(1850, 2000, 'A'), K(3500, 3800, ALLC), K(3800, 4000, 'A'), K(5351.5, 5366.5, 'A'),
+    K(7000, 7047, ALLC), K(7047, 7300, 'A, B'), K(10100, 10150, 'A'), K(14000, 14350, 'A'), K(18068, 18168, 'A'), K(21000, 21150, ALLC), K(21150, 21300, 'A, B'), K(21300, 21450, 'A'),
+    K(24890, 24990, ALLC), M(28, 29.7, ALLC), M(50, 54, ALLC), M(144, 148, ALLC), M(220, 225, ALLC), M(430, 440, ALLC), M(902, 907.5, ALLC), M(915, 928, ALLC), M(1240, 1300, ALLC),
+    M(2300, 2450, ALLC), M(3300, 3500, ALLC), M(5650, 5925, ALLC), G(10, 10.5, ALLC), G(24, 24.25, ALLC), G(47, 47.2, ALLC), G(76, 81.5, ALLC), G(122.25, 123, ALLC), G(134, 141, ALLC), G(241, 250, ALLC),
+  ]
+  const MODES = [['cw', 'CW'], ['ssb', 'SSB'], ['am', 'AM'], ['fm', 'FM'], ['dv', 'digital voice'], ['dig', 'digital modes'], ['other', 'other modes (Morse AM/FM, image, experimental)']]
+  const special = (f, t) => { const mid = (f + t) / 2; if (mid >= hz.kHz(135.7) && mid <= hz.kHz(137.8)) return '1 W EIRP'; if (mid >= hz.kHz(472) && mid <= hz.kHz(479)) return '5 W EIRP'; if (mid >= hz.kHz(5351.5) && mid <= hz.kHz(5366.5)) return '25 W EIRP' }
+  const rowsOut = []
+  const manual = { title: 'Faixa dos 2.200 metros', unit: 'kHz', rows: [{ from: 135.7, to: 137.8, cw: true, dig: true, app: 'ACDS allowed if it causes no interference to point-to-point and DX traffic (Note 1)' }] }
+  // The published text repeats Table XX (13 cm) with one difference (2304.1–2304.3 MHz: CW+digital vs CW+SSB+digital); the first copy is used and the pack notes say so.
+  const seen = new Set()
+  const tables = [manual, ...sub.filter((t) => t.rows.length && !seen.has(t.title) && seen.add(t.title))]
+  for (const tb of tables) {
+    const c = hz[tb.unit]
+    for (const r of tb.rows) {
+      const from = c(r.from), to = c(r.to)
+      const cuts = new Set([from, to])
+      for (const [a, b] of access) { if (a > from && a < to) cuts.add(a); if (b > from && b < to) cuts.add(b) }
+      const pts = [...cuts].sort((x, y) => x - y)
+      const modes = MODES.filter(([k]) => r[k]).map(([, label]) => label)
+      const parts = []
+      for (let i = 0; i < pts.length - 1; i++) {
+        const a = pts[i], b = pts[i + 1], hit = access.find(([x, y]) => a >= x && b <= y)
+        if (!hit) continue
+        const last = parts[parts.length - 1]
+        if (last && last.to === a && last.who === hit[2]) last.to = b; else parts.push({ from: a, to: b, who: hit[2] })
+      }
+      for (const p of parts) {
+        const note = [r.app && r.app !== 'x' ? r.app : '', (r.app || '').match(/Nota (\d+)/) ? tb.notes?.[(r.app.match(/Nota (\d+)/) || [])[1]] : ''].filter(Boolean).join(' — ')
+        rowsOut.push(seg(bandOf(p.from, p.to), p.from, p.to, modes.length ? modes.join(', ') : 'Guard band / reserved', { classes: 'Classes ' + p.who, note, power: special(p.from, p.to) }))
+      }
+    }
+  }
+  const segments = rowsOut.sort((x, y) => x.fromHz - y.fromHz)
+  write('br-anatel-ato-926', {
+    title: 'Brazil — Anatel Ato 926/2024', jurisdiction: 'Brazil',
+    source: 'Anatel Ato nº 926, de 1 de fevereiro de 2024 — Requisitos Técnicos e Operacionais para uso de radiofrequências associadas ao Serviço de Radioamador (Tabela I classes; Tabelas II–XXIX sub-band plan; item 5 power), as published on informacoes.anatel.gov.br',
+    sourceUrl: 'https://informacoes.anatel.gov.br/legislacao/atos-de-requisitos-tecnicos-de-gestao-do-espectro/2024/1919-ato-926', license: 'Brazilian federal regulation (public)',
+    notes: 'ITU Region 2. COER classes A, B and C. Mean transmitter output power: Class A 1,500 W, Class B 1,000 W, Class C 100 W (item 5.2); lower limits apply on 135.7–137.8 kHz (1 W EIRP), 472–479 kHz (5 W EIRP), 5351.5–5366.5 kHz (25 W EIRP) and for terrestrial links at 2.3–2.45 GHz, 3.4–3.5 GHz and 47–47.2 GHz (100 W EIRP). Each row lists the emission modes the Ato permits in that sub-band (CW, SSB, AM, FM, digital voice, digital modes, other) with its application note (DX, ACDS, beacons, repeaters, satellites, EME, “exclusive” uses). Anatel states the site text does not replace the Diário Oficial publication. Anatel’s June 2026 guide still names Ato 926/2024 as the technical reference; a newer Ato 3448/2026 consolidates the operational rules and exam procedures, so check Anatel for later changes. Repeater channelisation (item 9) and internet voice gateway channels (item 10) are not reproduced. Notes are in Anatel’s original Portuguese. The published text contains the 13 cm table (Tabela XX) twice with one difference — 2304.1–2304.3 MHz is CW and digital in one copy and CW, SSB and digital in the other; the first copy is shown here.',
+    data: { segments },
+  })
+}

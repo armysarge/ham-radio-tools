@@ -1,0 +1,1700 @@
+{
+ "format": "ham-radio-tools-pack",
+ "version": 1,
+ "kind": "band-plan",
+ "id": "br-anatel-ato-926",
+ "revision": "2026-10-19",
+ "title": "Brazil — Anatel Ato 926/2024",
+ "jurisdiction": "Brazil",
+ "source": "Anatel Ato nº 926, de 1 de fevereiro de 2024 — Requisitos Técnicos e Operacionais para uso de radiofrequências associadas ao Serviço de Radioamador (Tabela I classes; Tabelas II–XXIX sub-band plan; item 5 power), as published on informacoes.anatel.gov.br",
+ "sourceUrl": "https://informacoes.anatel.gov.br/legislacao/atos-de-requisitos-tecnicos-de-gestao-do-espectro/2024/1919-ato-926",
+ "license": "Brazilian federal regulation (public)",
+ "notes": "ITU Region 2. COER classes A, B and C. Mean transmitter output power: Class A 1,500 W, Class B 1,000 W, Class C 100 W (item 5.2); lower limits apply on 135.7–137.8 kHz (1 W EIRP), 472–479 kHz (5 W EIRP), 5351.5–5366.5 kHz (25 W EIRP) and for terrestrial links at 2.3–2.45 GHz, 3.4–3.5 GHz and 47–47.2 GHz (100 W EIRP). Each row lists the emission modes the Ato permits in that sub-band (CW, SSB, AM, FM, digital voice, digital modes, other) with its application note (DX, ACDS, beacons, repeaters, satellites, EME, “exclusive” uses). Anatel states the site text does not replace the Diário Oficial publication. Anatel’s June 2026 guide still names Ato 926/2024 as the technical reference; a newer Ato 3448/2026 consolidates the operational rules and exam procedures, so check Anatel for later changes. Repeater channelisation (item 9) and internet voice gateway channels (item 10) are not reproduced. Notes are in Anatel’s original Portuguese. The published text contains the 13 cm table (Tabela XX) twice with one difference — 2304.1–2304.3 MHz is CW and digital in one copy and CW, SSB and digital in the other; the first copy is shown here.",
+ "data": {
+  "segments": [
+   {
+    "band": "2200 m",
+    "fromHz": 135700,
+    "toHz": 137800,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "ACDS allowed if it causes no interference to point-to-point and DX traffic (Note 1)",
+    "power": "1 W EIRP"
+   },
+   {
+    "band": "630 m",
+    "fromHz": 472000,
+    "toHz": 479000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "(ver Nota 2) — ACDS pode ser utilizado desde que não cause interferências em comunicações ponto a ponto e DX.",
+    "power": "5 W EIRP"
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1800000,
+    "toHz": 1810000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1810000,
+    "toHz": 1830000,
+    "use": "CW",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1830000,
+    "toHz": 1839000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "DX (ver Nota 3) — ACDS pode ser utilizado por estações brasileiras participantes de redes internacionais de modos digitais voltadas para estudos de rádio propagação."
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1839000,
+    "toHz": 1840000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "DX (ver Nota 3.1) — ACDS pode ser utilizado por estações brasileiras participantes de redes internacionais de modos digitais voltadas para estudos de rádio propagação."
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1840000,
+    "toHz": 1843000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "DX"
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1843000,
+    "toHz": 1850000,
+    "use": "CW, SSB",
+    "classes": "Classes A, B, C",
+    "note": "DX"
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1850000,
+    "toHz": 2000000,
+    "use": "CW, SSB, AM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3500000,
+    "toHz": 3510000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "DX"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3510000,
+    "toHz": 3570000,
+    "use": "CW",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3570000,
+    "toHz": 3580000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "(ver Nota 3)"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3580000,
+    "toHz": 3590000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3590000,
+    "toHz": 3600000,
+    "use": "CW, SSB, AM, digital voice, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3600000,
+    "toHz": 3625000,
+    "use": "CW, SSB, AM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3625000,
+    "toHz": 3775000,
+    "use": "CW, SSB, AM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3775000,
+    "toHz": 3800000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "DX"
+   },
+   {
+    "band": "75 m",
+    "fromHz": 3800000,
+    "toHz": 3875000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A"
+   },
+   {
+    "band": "75 m",
+    "fromHz": 3875000,
+    "toHz": 3900000,
+    "use": "CW, SSB, AM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A"
+   },
+   {
+    "band": "75 m",
+    "fromHz": 3900000,
+    "toHz": 4000000,
+    "use": "CW, SSB, AM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A"
+   },
+   {
+    "band": "60 m",
+    "fromHz": 5351500,
+    "toHz": 5354000,
+    "use": "CW, digital modes",
+    "classes": "Classes A",
+    "power": "25 W EIRP"
+   },
+   {
+    "band": "60 m",
+    "fromHz": 5354000,
+    "toHz": 5366000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A",
+    "note": "DX",
+    "power": "25 W EIRP"
+   },
+   {
+    "band": "60 m",
+    "fromHz": 5366000,
+    "toHz": 5366500,
+    "use": "CW, digital modes",
+    "classes": "Classes A",
+    "note": "ACDS",
+    "power": "25 W EIRP"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7000000,
+    "toHz": 7025000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "DX"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7025000,
+    "toHz": 7040000,
+    "use": "CW",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7040000,
+    "toHz": 7047000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "(ver Nota 3)"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7047000,
+    "toHz": 7050000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B",
+    "note": "ACDS"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7050000,
+    "toHz": 7053000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B",
+    "note": "ACDS"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7053000,
+    "toHz": 7100000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7100000,
+    "toHz": 7300000,
+    "use": "CW, SSB, AM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B"
+   },
+   {
+    "band": "30 m",
+    "fromHz": 10100000,
+    "toHz": 10130000,
+    "use": "CW",
+    "classes": "Classes A"
+   },
+   {
+    "band": "30 m",
+    "fromHz": 10130000,
+    "toHz": 10140000,
+    "use": "CW, digital modes",
+    "classes": "Classes A",
+    "note": "ACDS"
+   },
+   {
+    "band": "30 m",
+    "fromHz": 10140000,
+    "toHz": 10150000,
+    "use": "CW, digital modes",
+    "classes": "Classes A",
+    "note": "(ver Nota 3)"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14000000,
+    "toHz": 14025000,
+    "use": "CW",
+    "classes": "Classes A",
+    "note": "DX"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14025000,
+    "toHz": 14070000,
+    "use": "CW",
+    "classes": "Classes A"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14070000,
+    "toHz": 14089000,
+    "use": "CW, digital modes",
+    "classes": "Classes A"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14089000,
+    "toHz": 14099000,
+    "use": "CW, digital modes",
+    "classes": "Classes A",
+    "note": "ACDS"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14099000,
+    "toHz": 14101000,
+    "use": "CW",
+    "classes": "Classes A",
+    "note": "IBP (exclusivo)"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14101000,
+    "toHz": 14112000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A",
+    "note": "ACDS"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14112000,
+    "toHz": 14190000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14190000,
+    "toHz": 14200000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A",
+    "note": "DX em SSB"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14200000,
+    "toHz": 14285000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14285000,
+    "toHz": 14300000,
+    "use": "CW, SSB, AM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14300000,
+    "toHz": 14350000,
+    "use": "CW, SSB, AM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A"
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18068000,
+    "toHz": 18095000,
+    "use": "CW",
+    "classes": "Classes A"
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18095000,
+    "toHz": 18105000,
+    "use": "CW, digital modes",
+    "classes": "Classes A"
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18105000,
+    "toHz": 18109000,
+    "use": "CW, digital modes",
+    "classes": "Classes A",
+    "note": "ACDS"
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18109000,
+    "toHz": 18111000,
+    "use": "CW",
+    "classes": "Classes A",
+    "note": "IBP (exclusivo)"
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18111000,
+    "toHz": 18120000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A",
+    "note": "ACDS"
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18120000,
+    "toHz": 18168000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21000000,
+    "toHz": 21070000,
+    "use": "CW",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21070000,
+    "toHz": 21090000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21090000,
+    "toHz": 21110000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21110000,
+    "toHz": 21120000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21120000,
+    "toHz": 21149000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "(ver Nota 4) — O uso de aplicações satelitais (uplink) na faixa entre 21.125 kHz e 21.450 kHz é compartilhado com as demais aplicações indicadas."
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21149000,
+    "toHz": 21150000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "IBP (exclusivo) (ver Notas 4 e 5)"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21150000,
+    "toHz": 21151000,
+    "use": "CW",
+    "classes": "Classes A, B",
+    "note": "IBP (exclusivo) (ver Notas 4 e 5)"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21151000,
+    "toHz": 21300000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B",
+    "note": "(ver Nota 4) — O uso de aplicações satelitais (uplink) na faixa entre 21.125 kHz e 21.450 kHz é compartilhado com as demais aplicações indicadas."
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21300000,
+    "toHz": 21380000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A",
+    "note": "(ver Nota 4) — O uso de aplicações satelitais (uplink) na faixa entre 21.125 kHz e 21.450 kHz é compartilhado com as demais aplicações indicadas."
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21380000,
+    "toHz": 21450000,
+    "use": "CW, SSB, AM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A",
+    "note": "(ver Nota 4) — O uso de aplicações satelitais (uplink) na faixa entre 21.125 kHz e 21.450 kHz é compartilhado com as demais aplicações indicadas."
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24890000,
+    "toHz": 24915000,
+    "use": "CW",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24915000,
+    "toHz": 24925000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24925000,
+    "toHz": 24929000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24929000,
+    "toHz": 24931000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "IBP (exclusivo)"
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24931000,
+    "toHz": 24940000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24940000,
+    "toHz": 24990000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28000000,
+    "toHz": 28070000,
+    "use": "CW",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28070000,
+    "toHz": 28120000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28120000,
+    "toHz": 28150000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28150000,
+    "toHz": 28190000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28190000,
+    "toHz": 28199000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28199000,
+    "toHz": 28201000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "IBP (exclusivo)"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28201000,
+    "toHz": 28225000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28225000,
+    "toHz": 28300000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28300000,
+    "toHz": 28320000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28320000,
+    "toHz": 29000000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29000000,
+    "toHz": 29200000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "AM"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29200000,
+    "toHz": 29300000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29300000,
+    "toHz": 29510000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Satélites"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29510000,
+    "toHz": 29520000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29520000,
+    "toHz": 29590000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Entradas de repetidoras (saídas +100 kHz) (exclusivo)"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29590000,
+    "toHz": 29620000,
+    "use": "CW, FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Frequência de chamada FM: 29.600 kHz"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29620000,
+    "toHz": 29700000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Saídas de repetidoras (entradas -100 kHz) (exclusivo)"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50000000,
+    "toHz": 50100000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50100000,
+    "toHz": 50125000,
+    "use": "CW, SSB",
+    "classes": "Classes A, B, C",
+    "note": "DX. Frequência de chamada: 50,110 MHz"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50125000,
+    "toHz": 50400000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "(ver Nota 3)"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50400000,
+    "toHz": 50500000,
+    "use": "CW, SSB, AM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto, ACDS"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50500000,
+    "toHz": 50600000,
+    "use": "CW, SSB, AM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50600000,
+    "toHz": 50800000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50800000,
+    "toHz": 51000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 51000000,
+    "toHz": 51110000,
+    "use": "CW, SSB",
+    "classes": "Classes A, B, C",
+    "note": "DX"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 51110000,
+    "toHz": 51500000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Entradas de repetidoras (saídas +500 kHz) (exclusivo)"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 51500000,
+    "toHz": 51610000,
+    "use": "CW, FM, digital voice",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 51610000,
+    "toHz": 52000000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Saídas de repetidoras (entradas -500 kHz) (exclusivo)"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 52000000,
+    "toHz": 52100000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "IVG"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 52100000,
+    "toHz": 54000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144000000,
+    "toHz": 144025000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "Satélites (ver Nota 6) — Para transmissões que envolvam o uso de satélites nesta subfaixa, podem ser utilizados todos os modos requeridos para o estabelecimento da comunicação. Aplicações satelitais devem evitar transmissão abaixo de 144,0025 MHz."
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144025000,
+    "toHz": 144110000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "Reflexão Lunar, DX"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144110000,
+    "toHz": 144150000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Reflexão Lunar, DX"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144150000,
+    "toHz": 144180000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "DX"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144180000,
+    "toHz": 144275000,
+    "use": "CW, SSB",
+    "classes": "Classes A, B, C",
+    "note": "DX. Frequência de chamada: 144,2 MHz"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144275000,
+    "toHz": 144300000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144300000,
+    "toHz": 144360000,
+    "use": "CW, SSB",
+    "classes": "Classes A, B, C",
+    "note": "Frequência de chamada: 144,3 MHz"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144360000,
+    "toHz": 144400000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144400000,
+    "toHz": 144500000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto, ACDS (ver Nota 7) — A frequência de 144,490 MHz pode ser utilizada para enlace de subida com a Estação Espacial Internacional e podem ser utilizados todos os modos requeridos para o estabelecimento desta comunicação."
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144500000,
+    "toHz": 144600000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144600000,
+    "toHz": 144900000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Entradas de Repetidoras (saídas +600 kHz) (exclusivo)"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144900000,
+    "toHz": 145000000,
+    "use": "CW, FM, digital voice, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "DX, ACDS"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 145000000,
+    "toHz": 145100000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "ACDS, IVG"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 145100000,
+    "toHz": 145200000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "IVG"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 145200000,
+    "toHz": 145500000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Saídas de Repetidoras (entradas -600 kHz) (exclusivo)"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 145500000,
+    "toHz": 145565000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 145565000,
+    "toHz": 145575000,
+    "use": "digital modes",
+    "classes": "Classes A, B, C",
+    "note": "ACDS (APRS)"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 145575000,
+    "toHz": 145790000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 145790000,
+    "toHz": 145800000,
+    "use": "Guard band / reserved",
+    "classes": "Classes A, B, C",
+    "note": "Faixa de guarda"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 145800000,
+    "toHz": 146000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Satélites (exclusivo)"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 146000000,
+    "toHz": 146390000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Entradas de Repetidoras (saídas +600 kHz) (exclusivo)"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 146390000,
+    "toHz": 146600000,
+    "use": "CW, FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Frequência de chamada FM: 146,520 MHz"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 146600000,
+    "toHz": 146990000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Saídas de Repetidoras (entradas -600 kHz) (exclusivo)"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 146990000,
+    "toHz": 147400000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Saídas de Repetidoras (entradas +600 kHz) (exclusivo)"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 147400000,
+    "toHz": 147590000,
+    "use": "CW, FM, digital voice",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 147590000,
+    "toHz": 148000000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Entradas de Repetidoras (saídas -600 kHz) (exclusivo)"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 220000000,
+    "toHz": 222000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 222000000,
+    "toHz": 222050000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Reflexão Lunar, DX"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 222050000,
+    "toHz": 222060000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 222060000,
+    "toHz": 222070000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto, ACDS"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 222070000,
+    "toHz": 222100000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "DX. Frequência de chamada: 222,100 MHz"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 222100000,
+    "toHz": 222150000,
+    "use": "CW, SSB",
+    "classes": "Classes A, B, C",
+    "note": "DX"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 222150000,
+    "toHz": 222250000,
+    "use": "CW, SSB",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 222250000,
+    "toHz": 223400000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Entradas de Repetidoras (saídas +1600 kHz) (exclusivo)"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 223400000,
+    "toHz": 223520000,
+    "use": "CW, FM, digital voice",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 223520000,
+    "toHz": 223640000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 223640000,
+    "toHz": 223700000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "ACDS, links e controles auxiliares de repetidoras."
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 223700000,
+    "toHz": 223750000,
+    "use": "CW, FM, digital voice, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "ACDS, IVG"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 223750000,
+    "toHz": 223850000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 223850000,
+    "toHz": 225000000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Saídas de Repetidoras (entradas -1600 kHz) (exclusivo)"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 430000000,
+    "toHz": 432000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 432000000,
+    "toHz": 432025000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "Reflexão Lunar"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 432025000,
+    "toHz": 432100000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Reflexão Lunar, DX"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 432100000,
+    "toHz": 432300000,
+    "use": "CW, SSB",
+    "classes": "Classes A, B, C",
+    "note": "DX. Frequência de chamada: 432,100 MHz"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 432300000,
+    "toHz": 432400000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto (ver Nota 3)"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 432400000,
+    "toHz": 432420000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto, ACDS"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 432420000,
+    "toHz": 433000000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 433000000,
+    "toHz": 433050000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "ACDS"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 433050000,
+    "toHz": 433150000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "IVG"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 433150000,
+    "toHz": 434000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 434000000,
+    "toHz": 435000000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Entradas de Repetidoras (saídas +5 MHz) (exclusivo)"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 435000000,
+    "toHz": 438000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Satélites (exclusivo)"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 438000000,
+    "toHz": 439000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 439000000,
+    "toHz": 440000000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Saídas de Repetidoras (entradas -5 MHz) (exclusivo)"
+   },
+   {
+    "band": "33 cm",
+    "fromHz": 902000000,
+    "toHz": 902075000,
+    "use": "CW",
+    "classes": "Classes A, B, C",
+    "note": "Reflexão Lunar"
+   },
+   {
+    "band": "33 cm",
+    "fromHz": 902075000,
+    "toHz": 902125000,
+    "use": "CW, SSB",
+    "classes": "Classes A, B, C",
+    "note": "DX. Frequência de Chamada: 902,1 MHz"
+   },
+   {
+    "band": "33 cm",
+    "fromHz": 902125000,
+    "toHz": 903000000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Entradas de Repetidoras (saídas +25 MHz) (exclusivo)"
+   },
+   {
+    "band": "33 cm",
+    "fromHz": 903000000,
+    "toHz": 903100000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "DX, Emissões Piloto, ACDS"
+   },
+   {
+    "band": "33 cm",
+    "fromHz": 903100000,
+    "toHz": 903400000,
+    "use": "CW, SSB",
+    "classes": "Classes A, B, C",
+    "note": "DX. Frequência de Chamada: 903,1 MHz"
+   },
+   {
+    "band": "33 cm",
+    "fromHz": 903400000,
+    "toHz": 907500000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "33 cm",
+    "fromHz": 915000000,
+    "toHz": 927125000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "33 cm",
+    "fromHz": 927125000,
+    "toHz": 928000000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Saídas de Repetidoras (entradas -25 MHz) (exclusivo)"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1240000000,
+    "toHz": 1260000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1260000000,
+    "toHz": 1270000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Satélites"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1270000000,
+    "toHz": 1276000000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Entradas de Repetidoras (saídas +12 MHz) (exclusivo)"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1276000000,
+    "toHz": 1282000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1282000000,
+    "toHz": 1288000000,
+    "use": "FM, digital voice",
+    "classes": "Classes A, B, C",
+    "note": "Saídas de Repetidoras (entradas -12 MHz) (exclusivo)"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1288000000,
+    "toHz": 1295800000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Frequência de Chamada FM: 1.294,5 MHz"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1295800000,
+    "toHz": 1296080000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "DX, Reflexão Lunar"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1296080000,
+    "toHz": 1296200000,
+    "use": "CW, SSB",
+    "classes": "Classes A, B, C",
+    "note": "DX. Frequência de Chamada: 1.296,1 MHz"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1296200000,
+    "toHz": 1296400000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto, ACDS"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1296400000,
+    "toHz": 1300000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "(ver Nota 3)"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2300000000,
+    "toHz": 2303750000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2303750000,
+    "toHz": 2304000000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "DX"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2304000000,
+    "toHz": 2304100000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Reflexão Lunar, DX"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2304100000,
+    "toHz": 2304300000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "DX. Frequência de Chamada: 2.304,1 MHz"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2304300000,
+    "toHz": 2304400000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto, ACDS"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2304400000,
+    "toHz": 2304750000,
+    "use": "CW, SSB, FM, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "DX"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2304750000,
+    "toHz": 2400000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "(ver Nota 8) — Reflexão Lunar pode ser realizada entre 2320,0 MHz – 2320,1 MHz."
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2400000000,
+    "toHz": 2450000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Satélites"
+   },
+   {
+    "band": "9 cm",
+    "fromHz": 3300000000,
+    "toHz": 3400000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "9 cm",
+    "fromHz": 3400000000,
+    "toHz": 3400300000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Reflexão Lunar, Satélites (ver Nota 9) — São autorizados todos os modos exigidos para estabelecimento da comunicação via satélites nesta subfaixa."
+   },
+   {
+    "band": "9 cm",
+    "fromHz": 3400300000,
+    "toHz": 3401000000,
+    "use": "CW, SSB, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "DX, Satélites (ver Nota 9) — São autorizados todos os modos exigidos para estabelecimento da comunicação via satélites nesta subfaixa."
+   },
+   {
+    "band": "9 cm",
+    "fromHz": 3401000000,
+    "toHz": 3410000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Satélites"
+   },
+   {
+    "band": "9 cm",
+    "fromHz": 3410000000,
+    "toHz": 3455500000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "9 cm",
+    "fromHz": 3455500000,
+    "toHz": 3456300000,
+    "use": "CW, SSB, FM, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "DX. Frequência de Chamada: 3.456,1 MHz"
+   },
+   {
+    "band": "9 cm",
+    "fromHz": 3456300000,
+    "toHz": 3457000000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto, ACDS"
+   },
+   {
+    "band": "9 cm",
+    "fromHz": 3457000000,
+    "toHz": 3500000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5650000000,
+    "toHz": 5670000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Satélites (subida)"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5670000000,
+    "toHz": 5760000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5760000000,
+    "toHz": 5760300000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Reflexão Lunar, DX. Frequência de Chamada: 5.760,1 MHz"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5760300000,
+    "toHz": 5761000000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5761000000,
+    "toHz": 5765000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "DX"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5765000000,
+    "toHz": 5830000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5830000000,
+    "toHz": 5850000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Satélites (descida)"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5850000000,
+    "toHz": 5925000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10000000000,
+    "toHz": 10368000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Frequência de Chamada: 10.364 MHz"
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10368000000,
+    "toHz": 10368300000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "DX. Frequência de Chamada Banda Estreita: 10.368,1 MHz"
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10368300000,
+    "toHz": 10368400000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto"
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10368400000,
+    "toHz": 10450000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10450000000,
+    "toHz": 10500000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Satélites (ver Nota 10) — O segmento entre 10,450 GHz e 10,452 GHz pode ser utilizado também para modos de banda estreita e Reflexão Lunar, para comunicações com países onde as frequências usuais de Reflexão Lunar e DX próximas de 10.368 MHz não estiverem autorizadas."
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24000000000,
+    "toHz": 24048000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24048000000,
+    "toHz": 24048750000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Centro de atividade para modos com banda estreita: 24,0482 GHz. Satélites (ver Nota 11) — Podem ser utilizados todos os modos requeridos para o estabelecimento de comunicação com satélites."
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24048750000,
+    "toHz": 24049000000,
+    "use": "CW, digital modes",
+    "classes": "Classes A, B, C",
+    "note": "Emissões Piloto"
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24049000000,
+    "toHz": 24050000000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Modos de banda estreita. Satélites (ver Nota 11) — Podem ser utilizados todos os modos requeridos para o estabelecimento de comunicação com satélites."
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24050000000,
+    "toHz": 24250000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Frequência preferencial para operação em banda larga: 24,125 GHz (ver Nota 12) — Utilizar preferencialmente o segmento compreendido entre 24 GHz e 24,050 GHz."
+   },
+   {
+    "band": "6 mm",
+    "fromHz": 47000000000,
+    "toHz": 47088000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "6 mm",
+    "fromHz": 47088000000,
+    "toHz": 47090000000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Centro de atividade para modos com banda estreita: 47,0882 GHz. Satélites (ver Nota 13) — São autorizados todos os modos exigidos para estabelecimento da comunicação espacial nesta subfaixa."
+   },
+   {
+    "band": "6 mm",
+    "fromHz": 47090000000,
+    "toHz": 47200000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 76000000000,
+    "toHz": 77500000000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Centro de atividade para modos com banda estreita: 76,0322 GHz"
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 77500000000,
+    "toHz": 77501000000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Centro de atividade para modos com banda estreita: 77,5002 GHz. Satélites (ver Nota 14) — São autorizados todos os modos exigidos para estabelecimento da comunicação espacial nesta subfaixa."
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 77501000000,
+    "toHz": 78000000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 78000000000,
+    "toHz": 81500000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "(ver Nota 15) — Utilizar preferencialmente segmento compreendido entre 77,5 GHz e 78 GHz."
+   },
+   {
+    "band": "2.5 mm",
+    "fromHz": 122250000000,
+    "toHz": 122251000000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Modos de banda estreita"
+   },
+   {
+    "band": "2.5 mm",
+    "fromHz": 122251000000,
+    "toHz": 123000000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "2 mm",
+    "fromHz": 134000000000,
+    "toHz": 134928000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Satélites"
+   },
+   {
+    "band": "2 mm",
+    "fromHz": 134928000000,
+    "toHz": 134930000000,
+    "use": "CW, SSB, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Centro de atividade para modos com banda estreita: 134,930 GHz"
+   },
+   {
+    "band": "2 mm",
+    "fromHz": 134930000000,
+    "toHz": 136000000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   },
+   {
+    "band": "2 mm",
+    "fromHz": 136000000000,
+    "toHz": 141000000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "(ver Nota 16) — Utilizar preferencialmente segmento compreendido entre 134 GHz e 136 GHz."
+   },
+   {
+    "band": "1 mm",
+    "fromHz": 241000000000,
+    "toHz": 248000000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "(ver Nota 17) — Utilizar preferencialmente segmento compreendido entre 248 GHz e 250 GHz."
+   },
+   {
+    "band": "1 mm",
+    "fromHz": 248000000000,
+    "toHz": 248001000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C",
+    "note": "Satélites e modos com banda estreita"
+   },
+   {
+    "band": "1 mm",
+    "fromHz": 248001000000,
+    "toHz": 250000000000,
+    "use": "CW, SSB, AM, FM, digital voice, digital modes, other modes (Morse AM/FM, image, experimental)",
+    "classes": "Classes A, B, C"
+   }
+  ]
+ }
+}

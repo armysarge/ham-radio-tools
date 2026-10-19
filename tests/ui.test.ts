@@ -197,3 +197,20 @@ describe('about and callsign setting', () => {
     state.callsign = ''
   })
 })
+
+import GithubLink from '../src/components/GithubLink.vue'
+import { REPO_URL } from '../src/core/meta'
+describe('GitHub link', () => {
+  it('points to the repository, opens safely in a new tab, and has an accessible name', () => {
+    const w = mount(GithubLink, { props: { label: true } })
+    const a = w.find('a')
+    expect(a.attributes('href')).toBe(REPO_URL); expect(REPO_URL).toMatch(/^https:\/\/github\.com\/[\w-]+\/[\w-]+$/)
+    expect(a.attributes('target')).toBe('_blank'); expect(a.attributes('rel')).toContain('noopener'); expect(a.attributes('rel')).toContain('noreferrer')
+    expect(a.attributes('aria-label')).toContain('GitHub'); expect(w.find('svg').attributes('aria-hidden')).toBe('true')
+    expect(w.text()).toContain('View on GitHub')
+    expect(mount(GithubLink).text()).toBe('') // icon-only variant has no visible text
+  })
+  it('appears in Settings > About', () => {
+    expect(mount(Settings, { global }).find('a[href="' + REPO_URL + '"]').exists()).toBe(true)
+  })
+})

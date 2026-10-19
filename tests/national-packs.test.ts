@@ -8,8 +8,8 @@ const at = (id: string, hz: number) => pack(id).segments.filter((s) => hz >= s.f
 const inside = (id: string, hz: number) => at(id, hz).length > 0
 
 describe('bundled national band plans', () => {
-  it('ships the five countries with full provenance', () => {
-    expect(BUNDLED_PACKS.map((p) => p.jurisdiction).sort()).toEqual(['Australia', 'Canada', 'Germany', 'South Africa', 'United States'])
+  it('ships the seven countries with full provenance', () => {
+    expect(BUNDLED_PACKS.map((p) => p.jurisdiction).sort()).toEqual(['Australia', 'Brazil', 'Canada', 'Germany', 'Japan', 'South Africa', 'United States'])
     for (const p of BUNDLED_PACKS) {
       expect(p.source.length, p.id).toBeGreaterThan(30); expect(p.sourceUrl, p.id).toMatch(/^https:\/\//); expect(p.license).toBeTruthy()
       expect(p.revision).toMatch(/^\d{4}-\d{2}-\d{2}$/); expect(p.notes!.length, p.id).toBeGreaterThan(80); expect(p.segments.length).toBeGreaterThan(20)
@@ -58,6 +58,23 @@ describe('bundled national band plans', () => {
     expect(at('ca-ised-rbr4', 14.1e6)[0].note).toContain('6 kHz'); expect(at('ca-ised-rbr4', 28.5e6)[0].note).toContain('20 kHz')
     expect(inside('ca-ised-rbr4', 221e6)).toBe(false) // 220–222 omitted (exceptional circumstances only)
   })
+  it('Japan: MIC chart segments (CW / narrow-band / repeater / satellite)', () => {
+    const j = (hz: number) => at('jp-mic-notification-80', hz)[0]?.use
+    expect(j(3.52e6)).toBe('CW (Morse) only'); expect(j(3.54e6)).toBe('Narrow-band, all emission types'); expect(inside('jp-mic-notification-80', 3.59e6)).toBe(false) // gap 3580–3599
+    expect(j(7.1e6)).toBe('Narrow-band, all emission types'); expect(inside('jp-mic-notification-80', 7.25e6)).toBe(false) // 40 m ends at 7.2 MHz
+    expect(j(145.9e6)).toBe('Satellite'); expect(j(145.2e6)).toContain('Wide-band'); expect(j(434.5e6)).toBe('Repeaters'); expect(j(436e6)).toBe('Satellite')
+    expect(inside('jp-mic-notification-80', 5.35e6)).toBe(false) // no 60 m allocation on the chart
+    expect(pack('jp-mic-notification-80').notes).toContain('1st class 1 kW')
+  })
+  it('Brazil: Ato 926 classes, power and sub-band modes', () => {
+    const b = (hz: number) => at('br-anatel-ato-926', hz)[0]
+    expect(b(14.2e6).classes).toBe('Classes A'); expect(b(7.02e6).classes).toBe('Classes A, B, C'); expect(b(7.2e6).classes).toBe('Classes A, B')
+    expect(b(3.9e6).classes).toBe('Classes A'); expect(b(1.82e6).classes).toBe('Classes A, B, C'); expect(b(1.9e6).classes).toBe('Classes A')
+    expect(b(14.15e6).use).toContain('SSB'); expect(b(14.05e6).use).toBe('CW'); expect(b(14.1e6).note).toContain('IBP')
+    expect(b(137e3).power).toBe('1 W EIRP'); expect(b(5.36e6).power).toBe('25 W EIRP')
+    expect(inside('br-anatel-ato-926', 14.4e6)).toBe(false); expect(pack('br-anatel-ato-926').notes).toContain('Class A 1,500 W')
+    expect(b(145.5e6).use).toContain('FM')
+  })
   it('Australia: Advanced licence gaps are preserved', () => {
     expect(inside('au-acma-class-licence', 3.65e6)).toBe(true); expect(inside('au-acma-class-licence', 3.75e6)).toBe(false); expect(inside('au-acma-class-licence', 3.79e6)).toBe(true)
     expect(inside('au-acma-class-licence', 7.2e6)).toBe(true); expect(inside('au-acma-class-licence', 1.9e6)).toBe(false)
@@ -70,7 +87,7 @@ describe('band plan tool with bundled countries', () => {
   it('lists countries, shows source and revision, and answers a frequency lookup per class', async () => {
     const w = mount(BandPlans, { global }); await flushPromises()
     const opts = w.findAll('select option').map((o) => o.text())
-    expect(opts).toEqual(expect.arrayContaining(['United States', 'South Africa', 'Germany', 'Canada', 'Australia']))
+    expect(opts).toEqual(expect.arrayContaining(['United States', 'South Africa', 'Germany', 'Canada', 'Australia', 'Japan', 'Brazil']))
     await w.find('select').setValue('b:us-fcc-part97'); await flushPromises()
     expect(w.text()).toContain('47 CFR'.replace('47 CFR', 'Code of Federal Regulations')); expect(w.text()).toContain('Revision 2026-10-19')
     expect(w.text()).toContain('Extra, Advanced') // 14.2 MHz lookup result shows who may use it

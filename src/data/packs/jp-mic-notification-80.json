@@ -1,0 +1,462 @@
+{
+ "format": "ham-radio-tools-pack",
+ "version": 1,
+ "kind": "band-plan",
+ "id": "jp-mic-notification-80",
+ "revision": "2026-10-19",
+ "title": "Japan — MIC usage chart (告示第80号)",
+ "jurisdiction": "Japan",
+ "source": "Ministry of Internal Affairs and Communications (総務省), “アマチュア業務に使用する電波の型式及び周波数の使用区別” (令和5年総務省告示第80号), usage chart, last amended 令和7年7月17日総務省告示第259号; power from the MIC leaflet “周波数等の一括表示記号” (June 2023)",
+ "sourceUrl": "https://www.soumu.go.jp/main_content/001040318.pdf",
+ "license": "Japanese government publication (MIC terms of use)",
+ "notes": "ITU Region 3. The chart shows which kinds of emission are allowed in each part of each band; it is a picture, so every boundary here was read from it by hand and must be checked against the original. Where the chart overlays a use on another (repeaters, VoIP, moon-bounce) the overlay is described in the note. Bands above 10.5 GHz (24, 47, 77, 135 and 249 GHz) are not on this chart and are not listed; the licence leaflet shows power limits for them. Maximum antenna power depends on the licence symbol (first to fourth class operator, F = fixed / M = mobile): 1.9–28 MHz — 1st class 1 kW (F) / 50 W (M), 2nd class 200 W / 50 W, 3rd class 50 W, 4th class 10 W; 50 MHz — 500 W, 200 W, 50 W, 20 W; 144 and 430 MHz — 50 W (1st to 3rd class), 20 W (4th class); 1200 MHz — 10 W (F) / 1 W (M); 2.4–10.5 GHz — 2 W; 47 GHz and up — 0.2 W (249 GHz: 0.1 W). 3rd and 4th class operators may not use the 10 MHz or 14 MHz bands, and 4th class may not use 18 MHz; 135 kHz and 472 kHz are limited to 200 W (2nd class and above, F). Terrestrial use above these limits needs the exact symbol on your licence. Revision of this pack: the chart as amended 17 July 2025; an earlier MIC notification (令和5年告示第80号 of March 2023) is superseded by it.",
+ "data": {
+  "segments": [
+   {
+    "band": "2200 m",
+    "fromHz": 135700,
+    "toHz": 137800,
+    "use": "Narrow-band, all emission types",
+    "note": "Chart bracket: occupied bandwidth 500 Hz or less."
+   },
+   {
+    "band": "630 m",
+    "fromHz": 472000,
+    "toHz": 479000,
+    "use": "Narrow-band, all emission types",
+    "note": "Chart bracket: occupied bandwidth 500 Hz or less."
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1800000,
+    "toHz": 1830000,
+    "use": "CW (Morse) only"
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1830000,
+    "toHz": 1875000,
+    "use": "Narrow-band, all emission types",
+    "note": "Occupied bandwidth 3 kHz or less (A3E 6 kHz or less)."
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1907500,
+    "toHz": 1912500,
+    "use": "Narrow-band, all emission types",
+    "note": "Chart bracket: occupied bandwidth 500 Hz or less."
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3500000,
+    "toHz": 3530000,
+    "use": "CW (Morse) only"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3530000,
+    "toHz": 3580000,
+    "use": "Narrow-band, all emission types"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3599000,
+    "toHz": 3612000,
+    "use": "Narrow-band, all emission types"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3662000,
+    "toHz": 3687000,
+    "use": "Narrow-band, all emission types"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3702000,
+    "toHz": 3716000,
+    "use": "Narrow-band, all emission types"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3745000,
+    "toHz": 3770000,
+    "use": "Narrow-band, all emission types"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3791000,
+    "toHz": 3805000,
+    "use": "Narrow-band, all emission types"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7000000,
+    "toHz": 7030000,
+    "use": "CW (Morse) only"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7030000,
+    "toHz": 7200000,
+    "use": "Narrow-band, all emission types"
+   },
+   {
+    "band": "30 m",
+    "fromHz": 10100000,
+    "toHz": 10120000,
+    "use": "CW (Morse) only"
+   },
+   {
+    "band": "30 m",
+    "fromHz": 10120000,
+    "toHz": 10150000,
+    "use": "Narrow-band, all emission types",
+    "note": "Occupied bandwidth 2 kHz or less."
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14000000,
+    "toHz": 14070000,
+    "use": "CW (Morse) only"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14070000,
+    "toHz": 14350000,
+    "use": "Narrow-band, all emission types",
+    "note": "Beacon (marker) signal 14,100 kHz."
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18068000,
+    "toHz": 18080000,
+    "use": "CW (Morse) only"
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18080000,
+    "toHz": 18168000,
+    "use": "Narrow-band, all emission types",
+    "note": "Beacon (marker) signal 18,110 kHz."
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21000000,
+    "toHz": 21070000,
+    "use": "CW (Morse) only"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21070000,
+    "toHz": 21450000,
+    "use": "Narrow-band, all emission types",
+    "note": "Beacon (marker) signal 21,150 kHz."
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24890000,
+    "toHz": 24900000,
+    "use": "CW (Morse) only"
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24900000,
+    "toHz": 24990000,
+    "use": "Narrow-band, all emission types",
+    "note": "Beacon (marker) signal 24,930 kHz."
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28000000,
+    "toHz": 28070000,
+    "use": "CW (Morse) only"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28070000,
+    "toHz": 29000000,
+    "use": "Narrow-band, all emission types",
+    "note": "Beacon (marker) signal 28.2 MHz."
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29000000,
+    "toHz": 29300000,
+    "use": "All emission types"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29300000,
+    "toHz": 29510000,
+    "use": "Satellite"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29510000,
+    "toHz": 29590000,
+    "use": "Repeaters (all emission types)"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29590000,
+    "toHz": 29610000,
+    "use": "All emission types"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29610000,
+    "toHz": 29700000,
+    "use": "Repeaters (all emission types)"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50000000,
+    "toHz": 50070000,
+    "use": "Narrow-band, all emission types",
+    "note": "Occupied bandwidth 2 kHz or less; beacon 50.01 MHz; the chart also marks moon-bounce (EME) use at the bottom of the band."
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50070000,
+    "toHz": 51000000,
+    "use": "Narrow-band, all emission types"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 51000000,
+    "toHz": 54000000,
+    "use": "All emission types",
+    "note": "Calling frequency 51.0 MHz."
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144000000,
+    "toHz": 144020000,
+    "use": "Moon-bounce (EME)"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144020000,
+    "toHz": 144500000,
+    "use": "Narrow-band, all emission types",
+    "note": "The chart marks EME use at the bottom, up to about 144.2 MHz."
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144500000,
+    "toHz": 144600000,
+    "use": "All emission types (VoIP also)"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144600000,
+    "toHz": 144700000,
+    "use": "All emission types"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144700000,
+    "toHz": 145650000,
+    "use": "Wide-band telegraphy, telephony and image",
+    "note": "Calling frequency 145.0 MHz."
+   },
+   {
+    "band": "2 m",
+    "fromHz": 145650000,
+    "toHz": 145800000,
+    "use": "All emission types (VoIP also)"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 145800000,
+    "toHz": 146000000,
+    "use": "Satellite"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 430000000,
+    "toHz": 430100000,
+    "use": "CW (Morse) only"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 430100000,
+    "toHz": 430700000,
+    "use": "Narrow-band, all emission types"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 430700000,
+    "toHz": 431400000,
+    "use": "All emission types (VoIP 430.7–431.0)"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 431400000,
+    "toHz": 431900000,
+    "use": "Wide-band telegraphy, telephony and image"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 431900000,
+    "toHz": 432100000,
+    "use": "Moon-bounce (EME)"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 432100000,
+    "toHz": 434000000,
+    "use": "Wide-band telegraphy, telephony and image",
+    "note": "Calling frequency 433.0 MHz."
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 434000000,
+    "toHz": 435000000,
+    "use": "Repeaters"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 435000000,
+    "toHz": 438000000,
+    "use": "Satellite"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 438000000,
+    "toHz": 439000000,
+    "use": "All emission types (VoIP also)"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 439000000,
+    "toHz": 440000000,
+    "use": "Repeaters"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1260000000,
+    "toHz": 1270000000,
+    "use": "Satellite"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1270000000,
+    "toHz": 1273000000,
+    "use": "Repeaters"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1273000000,
+    "toHz": 1290000000,
+    "use": "All emission types"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1290000000,
+    "toHz": 1293000000,
+    "use": "Repeaters"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1293000000,
+    "toHz": 1295800000,
+    "use": "All emission types",
+    "note": "Calling frequency 1295.0 MHz."
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1295800000,
+    "toHz": 1296200000,
+    "use": "Moon-bounce (EME)"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1296200000,
+    "toHz": 1299000000,
+    "use": "All emission types"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1299000000,
+    "toHz": 1300000000,
+    "use": "Repeaters"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2400000000,
+    "toHz": 2405000000,
+    "use": "Satellite and moon-bounce (EME)"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2405000000,
+    "toHz": 2407000000,
+    "use": "Repeaters"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2407000000,
+    "toHz": 2424000000,
+    "use": "All emission types"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2424000000,
+    "toHz": 2424500000,
+    "use": "Moon-bounce (EME)"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2424500000,
+    "toHz": 2425000000,
+    "use": "All emission types"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2425000000,
+    "toHz": 2427000000,
+    "use": "Repeaters",
+    "note": "Calling frequency 2427.0 MHz (just above)."
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2427000000,
+    "toHz": 2450000000,
+    "use": "All emission types"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5650000000,
+    "toHz": 5670000000,
+    "use": "Satellite (repeaters also)"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5670000000,
+    "toHz": 5830000000,
+    "use": "All emission types",
+    "note": "Repeaters at 5670–5690, 5725–5730, 5765–5770 and 5810–5830 MHz; moon-bounce (EME) at 5760–5762 MHz; calling frequency 5760.0 MHz."
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5830000000,
+    "toHz": 5850000000,
+    "use": "Satellite (repeaters also)"
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10000000000,
+    "toHz": 10250000000,
+    "use": "All emission types",
+    "note": "Repeaters at 10.0–10.025, 10.15–10.18 and 10.245–10.25 GHz; calling frequency 10.24 GHz."
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10450000000,
+    "toHz": 10500000000,
+    "use": "All emission types, satellite and moon-bounce (EME)"
+   }
+  ]
+ }
+}

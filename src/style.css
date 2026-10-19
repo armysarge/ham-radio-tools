@@ -155,3 +155,7 @@ svg.diagram { width: 100%; height: auto; display: block; }
 *::-webkit-scrollbar-thumb:hover { background: var(--muted); background-clip: content-box; }
 *::-webkit-scrollbar-thumb:active { background: var(--accent); background-clip: content-box; }
 *::-webkit-scrollbar-corner { background: transparent; }
+
+.gh-link { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; min-width: 44px; justify-content: center; color: var(--ink); text-decoration: none; border-radius: 8px; padding: 0 .4rem; }
+.gh-link:hover { color: var(--accent); background: var(--panel2); }
+.gh-text { font-size: .95rem; text-decoration: underline; text-underline-offset: 3px; }
