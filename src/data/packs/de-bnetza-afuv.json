@@ -1,0 +1,457 @@
+{
+ "format": "ham-radio-tools-pack",
+ "version": 1,
+ "kind": "band-plan",
+ "id": "de-bnetza-afuv",
+ "revision": "2026-10-19",
+ "title": "Germany — AFuV Anlage 1",
+ "jurisdiction": "Germany",
+ "source": "Amateurfunkverordnung (AFuV), Anlage 1 “Nutzungsbedingungen für die im Frequenzplan für den Amateurfunkdienst ausgewiesenen Frequenzbereiche” (BGBl. 2024 I Nr. 175, S. 1–4), gesetze-im-internet.de",
+ "sourceUrl": "https://www.gesetze-im-internet.de/afuv_2005/anlage_1.html",
+ "license": "German federal law (official work, no copyright)",
+ "notes": "ITU Region 1. Classes A, E and N are the German amateur licence classes (N = entry class). Powers are as stated in the table (PEP or ERP). The extra conditions are an unofficial English paraphrase of the German footnotes (Teil B); the German text is authoritative. The row for frequencies above 275 GHz and the terahertz ranges (footnote 14) are not listed.",
+ "data": {
+  "segments": [
+   {
+    "band": "2200 m",
+    "fromHz": 135700,
+    "toHz": 137800,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A",
+    "power": "A: 1 W ERP",
+    "note": "Max occupied bandwidth 800 Hz. Operating locations must be notified to the BNetzA; decouple the antenna from other installations; stop if primary services are disturbed. No remote-controlled stations (remote operation excepted) and no contests."
+   },
+   {
+    "band": "630 m",
+    "fromHz": 472000,
+    "toHz": 479000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A",
+    "power": "A: 1 W ERP",
+    "note": "Max occupied bandwidth 800 Hz."
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1810000,
+    "toHz": 1850000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A, Class E",
+    "power": "A: 750 W PEP · E: 100 W PEP",
+    "note": "Max occupied bandwidth 2.7 kHz."
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1850000,
+    "toHz": 1890000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 75 W PEP",
+    "note": "Max occupied bandwidth 2.7 kHz. No remote-controlled stations (remote operation excepted) and no contests. Automatic stations: max 50 W ERP. Weekends: up to 750 W PEP (Class A) or 100 W PEP (Class E) on 1850–2000 kHz, and contests are allowed."
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1890000,
+    "toHz": 2000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 10 W PEP · E: 10 W PEP",
+    "note": "Max occupied bandwidth 2.7 kHz. No remote-controlled stations (remote operation excepted) and no contests. Weekends: up to 750 W PEP (Class A) or 100 W PEP (Class E) on 1850–2000 kHz, and contests are allowed."
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3500000,
+    "toHz": 3800000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A, Class E",
+    "power": "A: 750 W PEP · E: 100 W PEP",
+    "note": "Max occupied bandwidth 2.7 kHz."
+   },
+   {
+    "band": "60 m",
+    "fromHz": 5351500,
+    "toHz": 5366500,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A",
+    "power": "A: 9.14 W ERP",
+    "note": "Max occupied bandwidth 2.7 kHz."
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7000000,
+    "toHz": 7200000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A",
+    "power": "A: 750 W PEP",
+    "note": "Max occupied bandwidth 2.7 kHz. Parts of this range may also be used by the amateur-satellite service."
+   },
+   {
+    "band": "30 m",
+    "fromHz": 10100000,
+    "toHz": 10150000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A",
+    "power": "A: 150 W PEP",
+    "note": "Max occupied bandwidth 800 Hz. No remote-controlled stations (remote operation excepted) and no contests. Automatic stations: max 50 W ERP."
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14000000,
+    "toHz": 14350000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A",
+    "power": "A: 750 W PEP",
+    "note": "Max occupied bandwidth 2.7 kHz. Parts of this range may also be used by the amateur-satellite service."
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18068000,
+    "toHz": 18168000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A",
+    "power": "A: 750 W PEP",
+    "note": "Max occupied bandwidth 2.7 kHz. Parts of this range may also be used by the amateur-satellite service."
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21000000,
+    "toHz": 21450000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A, Class E",
+    "power": "A: 750 W PEP · E: 100 W PEP",
+    "note": "Max occupied bandwidth 2.7 kHz. Parts of this range may also be used by the amateur-satellite service."
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24890000,
+    "toHz": 24990000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A",
+    "power": "A: 750 W PEP",
+    "note": "Max occupied bandwidth 2.7 kHz. Parts of this range may also be used by the amateur-satellite service."
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28000000,
+    "toHz": 29700000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A, Class E, Class N",
+    "power": "A: 750 W PEP · E: 100 W PEP · N: 10 W ERP",
+    "note": "Max occupied bandwidth 7 kHz below 29 MHz, 40 kHz above. Parts of this range may also be used by the amateur-satellite service."
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50000000,
+    "toHz": 50400000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A",
+    "power": "A: 750 W PEP",
+    "note": "No harmful interference to broadcast reception; 50–52 MHz: protect wind-profiler radars, horizontal polarisation only, fixed stations only. Max occupied bandwidth 12 kHz."
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50400000,
+    "toHz": 52000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A",
+    "power": "A: 25 W PEP",
+    "note": "No harmful interference to broadcast reception; 50–52 MHz: protect wind-profiler radars, horizontal polarisation only, fixed stations only. Max occupied bandwidth 12 kHz."
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144000000,
+    "toHz": 146000000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A, Class E, Class N",
+    "power": "A: 750 W PEP · E: 75 W PEP · N: 6.1 W ERP",
+    "note": "Max occupied bandwidth 40 kHz. Parts of this range may also be used by the amateur-satellite service."
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 430000000,
+    "toHz": 440000000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A, Class E, Class N",
+    "power": "A: 750 W PEP · E: 75 W PEP · N: 6.1 W ERP",
+    "note": "Max occupied bandwidth 2 MHz (7 MHz for AM television). Parts of this range may also be used by the amateur-satellite service."
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1240000000,
+    "toHz": 1250000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 750 W PEP · E: 75 W PEP",
+    "note": "Max occupied bandwidth 2 MHz (7 MHz AM/digital TV, 18 MHz FM TV). 1247–1263 MHz: max 3.05 W ERP; no remote-controlled or automatic stations there. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1250000000,
+    "toHz": 1260000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 750 W PEP · E: 75 W PEP",
+    "note": "Max occupied bandwidth 2 MHz (7 MHz AM/digital TV, 18 MHz FM TV). 1247–1263 MHz: max 3.05 W ERP; no remote-controlled or automatic stations there. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1260000000,
+    "toHz": 1300000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 750 W PEP · E: 75 W PEP",
+    "note": "Max occupied bandwidth 2 MHz (7 MHz AM/digital TV, 18 MHz FM TV). 1247–1263 MHz: max 3.05 W ERP; no remote-controlled or automatic stations there. Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2320000000,
+    "toHz": 2400000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2400000000,
+    "toHz": 2450000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "9 cm",
+    "fromHz": 3400000000,
+    "toHz": 3475000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5650000000,
+    "toHz": 5670000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5670000000,
+    "toHz": 5725000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5725000000,
+    "toHz": 5755000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5755000000,
+    "toHz": 5830000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5830000000,
+    "toHz": 5850000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10000000000,
+    "toHz": 10400000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10400000000,
+    "toHz": 10450000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10450000000,
+    "toHz": 10500000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24000000000,
+    "toHz": 24050000000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24050000000,
+    "toHz": 24250000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "6 mm",
+    "fromHz": 47000000000,
+    "toHz": 47200000000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 76000000000,
+    "toHz": 77500000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 77500000000,
+    "toHz": 78000000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 78000000000,
+    "toHz": 79000000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 79000000000,
+    "toHz": 81000000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "2.5 mm",
+    "fromHz": 122250000000,
+    "toHz": 123000000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "2 mm",
+    "fromHz": 134000000000,
+    "toHz": 136000000000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "2 mm",
+    "fromHz": 136000000000,
+    "toHz": 141000000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Max occupied bandwidth 10 MHz (20 MHz for television). Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "1 mm",
+    "fromHz": 241000000000,
+    "toHz": 248000000000,
+    "use": "Amateur service",
+    "status": "secondary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   },
+   {
+    "band": "1 mm",
+    "fromHz": 248000000000,
+    "toHz": 250000000000,
+    "use": "Amateur service",
+    "status": "primary",
+    "classes": "Class A, Class E",
+    "power": "A: 75 W PEP · E: 5 W PEP",
+    "note": "Parts of this range may also be used by the amateur-satellite service. Links of remote/automatic stations may use up to 1000 W ERP in justified cases."
+   }
+  ]
+ }
+}

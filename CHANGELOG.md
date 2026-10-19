@@ -5,6 +5,8 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 ## [0.2.0] - 2026-10-19
 
 ### Added
+- National band tables for the USA, Canada, Germany, Australia (Advanced class) and South Africa, bundled with source, licence and revision date.
+- ITU Radio Regulations explainer.
 - End-fed half-wave (EFHW) antenna tool.
 - Menu icons, themed scrollbars, 1 px smaller base text.
 - Metric / Imperial selector in the top bar (Metric by default); distances, lengths and unit defaults follow it.

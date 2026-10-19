@@ -1,0 +1,402 @@
+{
+ "format": "ham-radio-tools-pack",
+ "version": 1,
+ "kind": "band-plan",
+ "id": "us-fcc-part97",
+ "revision": "2026-10-19",
+ "title": "United States — FCC Part 97",
+ "jurisdiction": "United States",
+ "source": "US Code of Federal Regulations, Title 47, §§ 97.301, 97.303, 97.305, 97.313 (eCFR, current to 2026-10-01; last amended 91 FR 1430–1431, 14 Jan 2026)",
+ "sourceUrl": "https://www.ecfr.gov/current/title-47/chapter-I/subchapter-D/part-97",
+ "license": "US federal regulation (public domain)",
+ "notes": "Frequencies shown are for stations in ITU Region 2 (the continental US). “Classes” lists which operator classes may use each segment: Extra, Advanced (no longer issued but still valid), General and Technician (Novice lapsed). The general power limit is 1.5 kW PEP (§97.313(b)); lower limits are shown where they apply. CW may be used anywhere a licence allows (§97.305(a)); modes listed are those §97.305 authorises. Further limits (bandwidth, symbol rate, sharing duties) are in Part 97, which prevails over this summary.",
+ "data": {
+  "segments": [
+   {
+    "band": "2200 m",
+    "fromHz": 135700,
+    "toHz": 137800,
+    "use": "CW, phone, image, RTTY, data",
+    "classes": "Extra, Advanced, General",
+    "note": "Fixed locations only. Notify the Utilities Telecom Council before operating; keep 1 km from power-line-carrier lines (§97.303(g)).",
+    "power": "1.5 kW PEP, 1 W EIRP"
+   },
+   {
+    "band": "630 m",
+    "fromHz": 472000,
+    "toHz": 479000,
+    "use": "CW, phone, image, RTTY, data",
+    "classes": "Extra, Advanced, General",
+    "note": "Fixed locations only; same utility notification as 2200 m (§97.303(g)).",
+    "power": "500 W PEP, 5 W EIRP"
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1800000,
+    "toHz": 2000000,
+    "use": "CW, phone, image, RTTY, data",
+    "classes": "Extra, Advanced, General"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3500000,
+    "toHz": 3525000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3525000,
+    "toHz": 3600000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3600000,
+    "toHz": 3700000,
+    "use": "CW, phone, image",
+    "classes": "Extra"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3700000,
+    "toHz": 3800000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3800000,
+    "toHz": 4000000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced, General"
+   },
+   {
+    "band": "60 m",
+    "fromHz": 5351500,
+    "toHz": 5366500,
+    "use": "CW, phone, RTTY, data",
+    "classes": "Extra, Advanced, General",
+    "note": "Also the channels 5.332, 5.348, 5.373 and 5.405 MHz (§97.305), at up to 100 W ERP (§97.313(i)).",
+    "power": "9.15 W ERP"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7000000,
+    "toHz": 7025000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra",
+    "note": "In ITU Regions 1 and 3 only, 7.075–7.100 MHz also allows phone (§97.305(c)(3)(v)) and 7.050–7.075 MHz is limited to 200 W PEP."
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7025000,
+    "toHz": 7100000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra, Advanced, General, Technician",
+    "note": "In ITU Regions 1 and 3 only, 7.075–7.100 MHz also allows phone (§97.305(c)(3)(v)) and 7.050–7.075 MHz is limited to 200 W PEP."
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7100000,
+    "toHz": 7125000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7125000,
+    "toHz": 7175000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7175000,
+    "toHz": 7300000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced, General"
+   },
+   {
+    "band": "30 m",
+    "fromHz": 10100000,
+    "toHz": 10150000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra, Advanced, General",
+    "power": "200 W PEP (§97.313(c)(1))"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14000000,
+    "toHz": 14025000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14025000,
+    "toHz": 14150000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra, Advanced, General"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14150000,
+    "toHz": 14175000,
+    "use": "CW, phone, image",
+    "classes": "Extra"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14175000,
+    "toHz": 14225000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14225000,
+    "toHz": 14350000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced, General"
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18068000,
+    "toHz": 18110000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra, Advanced, General"
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18110000,
+    "toHz": 18168000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced, General"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21000000,
+    "toHz": 21025000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21025000,
+    "toHz": 21200000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21200000,
+    "toHz": 21225000,
+    "use": "CW, phone, image",
+    "classes": "Extra"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21225000,
+    "toHz": 21275000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21275000,
+    "toHz": 21450000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced, General"
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24890000,
+    "toHz": 24930000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra, Advanced, General"
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24930000,
+    "toHz": 24990000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced, General"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28000000,
+    "toHz": 28300000,
+    "use": "CW, RTTY, data",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28300000,
+    "toHz": 28500000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced, General, Technician",
+    "note": "Technician HF operation is limited to 200 W PEP on 28.0–28.5 MHz (§97.313(c)(2))."
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28500000,
+    "toHz": 29000000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced, General"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 29000000,
+    "toHz": 29700000,
+    "use": "CW, phone, image",
+    "classes": "Extra, Advanced, General"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50000000,
+    "toHz": 50100000,
+    "use": "CW only",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50100000,
+    "toHz": 51000000,
+    "use": "MCW, phone, image, RTTY, data",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 51000000,
+    "toHz": 54000000,
+    "use": "MCW, phone, image, RTTY, data, test",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144000000,
+    "toHz": 144100000,
+    "use": "CW only",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144100000,
+    "toHz": 148000000,
+    "use": "MCW, phone, image, RTTY, data, test",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 219000000,
+    "toHz": 220000000,
+    "use": "Data",
+    "classes": "Extra, Advanced, General, Technician",
+    "note": "Data emissions only (§97.305).",
+    "power": "50 W PEP (§97.313(h))"
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 222000000,
+    "toHz": 225000000,
+    "use": "RTTY, data, test, MCW, phone, SS, image",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 420000000,
+    "toHz": 450000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test",
+    "classes": "Extra, Advanced, General, Technician",
+    "note": "Radiolocation has priority; power limits near some military sites (§97.313(f))."
+   },
+   {
+    "band": "33 cm",
+    "fromHz": 902000000,
+    "toHz": 928000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test, pulse",
+    "classes": "Extra, Advanced, General, Technician",
+    "note": "50 W PEP limit near White Sands Missile Range (§97.313(g))."
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1240000000,
+    "toHz": 1300000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2300000000,
+    "toHz": 2310000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test, pulse",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2390000000,
+    "toHz": 2450000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test, pulse",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5650000000,
+    "toHz": 5925000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test, pulse",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10000000000,
+    "toHz": 10500000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24000000000,
+    "toHz": 24250000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test, pulse",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "6 mm",
+    "fromHz": 47000000000,
+    "toHz": 47200000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test, pulse",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 76000000000,
+    "toHz": 81000000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test, pulse",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "2.5 mm",
+    "fromHz": 122250000000,
+    "toHz": 123000000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test, pulse",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "2 mm",
+    "fromHz": 134000000000,
+    "toHz": 141000000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test, pulse",
+    "classes": "Extra, Advanced, General, Technician"
+   },
+   {
+    "band": "1 mm",
+    "fromHz": 241000000000,
+    "toHz": 250000000000,
+    "use": "MCW, phone, image, RTTY, data, SS, test, pulse",
+    "classes": "Extra, Advanced, General, Technician"
+   }
+  ]
+ }
+}

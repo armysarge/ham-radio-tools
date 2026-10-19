@@ -1,0 +1,294 @@
+{
+ "format": "ham-radio-tools-pack",
+ "version": 1,
+ "kind": "band-plan",
+ "id": "ca-ised-rbr4",
+ "revision": "2026-10-19",
+ "title": "Canada — ISED RBR-4 Schedule I",
+ "jurisdiction": "Canada",
+ "source": "Innovation, Science and Economic Development Canada, RBR-4 “Standards for the Operation of Radio Stations in the Amateur Radio Service”, Issue 3, July 2022, Schedule I (stations operating in Canada)",
+ "sourceUrl": "https://publications.gc.ca/site/eng/440360/publication.html",
+ "license": "Government of Canada publication (reproduced for non-commercial reference)",
+ "notes": "Below 30 MHz a Basic certificate alone is not enough: it needs Morse 5 wpm, Basic with Honours (80%+), or Advanced qualification; above 30 MHz Basic is enough. Power limits (RBR-4 section 10): Basic — 250 W DC input, or 560 W PEP (SSB) / 190 W carrier (other); Advanced — 1000 W DC input, or 2250 W PEP (SSB) / 750 W carrier (other). Also available on the 60 m channels 5.332, 5.348, 5.373 and 5.405 MHz (2.8 kHz). 220–222 MHz appears in the source for exceptional circumstances only and is omitted here. Mode sub-bands are the voluntary RAC band plan and are not included. Revision of this pack: compiled from the July 2022 issue; check ISED for a newer one.",
+ "data": {
+  "segments": [
+   {
+    "band": "2200 m",
+    "fromHz": 135700,
+    "toHz": 137800,
+    "use": "Amateur service",
+    "classes": "Basic + Morse 5 wpm, or Basic with Honours, or Basic + Advanced",
+    "note": "Max bandwidth 100 Hz. Operating provision 5.67A (Canadian/ITU footnote in RBR-4)."
+   },
+   {
+    "band": "630 m",
+    "fromHz": 472000,
+    "toHz": 479000,
+    "use": "Amateur service",
+    "classes": "Basic + Morse 5 wpm, or Basic with Honours, or Basic + Advanced",
+    "note": "Max bandwidth 1 kHz. Operating provision 5.80A (Canadian/ITU footnote in RBR-4)."
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1800000,
+    "toHz": 2000000,
+    "use": "Amateur service",
+    "classes": "Basic + Morse 5 wpm, or Basic with Honours, or Basic + Advanced",
+    "note": "Max bandwidth 6 kHz."
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3500000,
+    "toHz": 4000000,
+    "use": "Amateur service",
+    "classes": "Basic + Morse 5 wpm, or Basic with Honours, or Basic + Advanced",
+    "note": "Max bandwidth 6 kHz."
+   },
+   {
+    "band": "60 m",
+    "fromHz": 5351500,
+    "toHz": 5366500,
+    "use": "Amateur service",
+    "classes": "Basic + Morse 5 wpm, or Basic with Honours, or Basic + Advanced",
+    "note": "Max bandwidth 2.8 kHz. Operating provision C21 (Canadian/ITU footnote in RBR-4)."
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7000000,
+    "toHz": 7300000,
+    "use": "Amateur service",
+    "classes": "Basic + Morse 5 wpm, or Basic with Honours, or Basic + Advanced",
+    "note": "Max bandwidth 6 kHz. Operating provision 5.142 (Canadian/ITU footnote in RBR-4)."
+   },
+   {
+    "band": "30 m",
+    "fromHz": 10100000,
+    "toHz": 10150000,
+    "use": "Amateur service",
+    "classes": "Basic + Morse 5 wpm, or Basic with Honours, or Basic + Advanced",
+    "note": "Max bandwidth 1 kHz. Operating provision C6 (Canadian/ITU footnote in RBR-4)."
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14000000,
+    "toHz": 14350000,
+    "use": "Amateur service",
+    "classes": "Basic + Morse 5 wpm, or Basic with Honours, or Basic + Advanced",
+    "note": "Max bandwidth 6 kHz."
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18068000,
+    "toHz": 18168000,
+    "use": "Amateur service",
+    "classes": "Basic + Morse 5 wpm, or Basic with Honours, or Basic + Advanced",
+    "note": "Max bandwidth 6 kHz."
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21000000,
+    "toHz": 21450000,
+    "use": "Amateur service",
+    "classes": "Basic + Morse 5 wpm, or Basic with Honours, or Basic + Advanced",
+    "note": "Max bandwidth 6 kHz."
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24890000,
+    "toHz": 24990000,
+    "use": "Amateur service",
+    "classes": "Basic + Morse 5 wpm, or Basic with Honours, or Basic + Advanced",
+    "note": "Max bandwidth 6 kHz."
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28000000,
+    "toHz": 29700000,
+    "use": "Amateur service",
+    "classes": "Basic + Morse 5 wpm, or Basic with Honours, or Basic + Advanced",
+    "note": "Max bandwidth 20 kHz."
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50000000,
+    "toHz": 54000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "note": "Max bandwidth 30 kHz."
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144000000,
+    "toHz": 148000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "note": "Max bandwidth 30 kHz."
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 219000000,
+    "toHz": 220000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "note": "Max bandwidth 100 kHz. Operating provision C11 (Canadian/ITU footnote in RBR-4)."
+   },
+   {
+    "band": "1.25 m",
+    "fromHz": 222000000,
+    "toHz": 225000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "note": "Max bandwidth 100 kHz."
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 430000000,
+    "toHz": 450000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services",
+    "note": "Max bandwidth 12 MHz."
+   },
+   {
+    "band": "33 cm",
+    "fromHz": 902000000,
+    "toHz": 928000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services",
+    "note": "Max bandwidth 12 MHz."
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1240000000,
+    "toHz": 1300000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2300000000,
+    "toHz": 2450000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services"
+   },
+   {
+    "band": "9 cm",
+    "fromHz": 3300000000,
+    "toHz": 3500000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5650000000,
+    "toHz": 5925000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services"
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10000000000,
+    "toHz": 10500000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services"
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24000000000,
+    "toHz": 24050000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)"
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24050000000,
+    "toHz": 24250000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services"
+   },
+   {
+    "band": "6 mm",
+    "fromHz": 47000000000,
+    "toHz": 47200000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)"
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 76000000000,
+    "toHz": 77500000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services"
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 77500000000,
+    "toHz": 78000000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)"
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 78000000000,
+    "toHz": 81000000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services"
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 81000000000,
+    "toHz": 81500000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "note": "Operating provision 5.561A (Canadian/ITU footnote in RBR-4)."
+   },
+   {
+    "band": "2.5 mm",
+    "fromHz": 122250000000,
+    "toHz": 123000000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services"
+   },
+   {
+    "band": "2 mm",
+    "fromHz": 134000000000,
+    "toHz": 136000000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)"
+   },
+   {
+    "band": "2 mm",
+    "fromHz": 136000000000,
+    "toHz": 141000000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services"
+   },
+   {
+    "band": "1 mm",
+    "fromHz": 241000000000,
+    "toHz": 248000000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)",
+    "status": "no interference to, and no protection from, other services"
+   },
+   {
+    "band": "1 mm",
+    "fromHz": 248000000000,
+    "toHz": 250000000000,
+    "use": "Amateur service",
+    "classes": "Basic (any certificate)"
+   }
+  ]
+ }
+}

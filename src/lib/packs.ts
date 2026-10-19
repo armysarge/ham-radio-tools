@@ -4,11 +4,11 @@ export const PACK_FORMAT = 'ham-radio-tools-pack'
 export const PACK_VERSION = 1
 export type PackKind = 'band-plan' | 'broadcast-schedule'
 
-export interface BandSegment { band: string; fromHz: number; toHz: number; use: string; modes?: string; power?: string; status?: string; note?: string }
+export interface BandSegment { band: string; fromHz: number; toHz: number; use: string; modes?: string; power?: string; status?: string; classes?: string; note?: string }
 export interface BroadcastEntry { freqKhz: number; startUtc: string; endUtc: string; days: string; station: string; language?: string; target?: string; country?: string; note?: string }
 export interface Pack<D = unknown> {
   format: typeof PACK_FORMAT; version: number; kind: PackKind
-  id: string; title: string; jurisdiction?: string; source: string; sourceUrl?: string
+  id: string; title: string; jurisdiction?: string; source: string; sourceUrl?: string; notes?: string
   revision: string // YYYY-MM-DD
   license: string; data: D
 }
@@ -16,7 +16,7 @@ export type PackMeta = Omit<Pack, 'data'> & { rows: number; installed: string }
 
 const MAX_BYTES = 25 * 1024 * 1024, MAX_ROWS = 200_000
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
-const s = (v: unknown, max = 300) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null)
+const s = (v: unknown, max = 600) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null)
 const optS = (v: unknown, max = 300) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : undefined)
 const DATE = /^\d{4}-\d{2}-\d{2}$/
 
@@ -44,7 +44,7 @@ export function parsePack(text: string): { pack: Pack; skipped: string[]; rows: 
     list.forEach((x, i) => {
       const band = isObj(x) ? s(x.band, 40) : null, use = isObj(x) ? s(x.use) : null
       if (!isObj(x) || !band || !use || typeof x.fromHz !== 'number' || typeof x.toHz !== 'number' || !(x.fromHz > 0) || !(x.toHz > x.fromHz)) { skipped.push(`segment #${i + 1}: needs band, use, and 0 < fromHz < toHz`); return }
-      segments.push({ band, fromHz: x.fromHz, toHz: x.toHz, use, modes: optS(x.modes), power: optS(x.power), status: optS(x.status), note: optS(x.note) })
+      segments.push({ band, fromHz: x.fromHz, toHz: x.toHz, use, modes: optS(x.modes), power: optS(x.power, 500), status: optS(x.status, 200), classes: optS(x.classes, 300), note: optS(x.note, 1000) })
     })
     if (!segments.length) throw new Error('The pack contains no usable band segments.')
     data = { segments }; rows = segments.length
@@ -62,7 +62,7 @@ export function parsePack(text: string): { pack: Pack; skipped: string[]; rows: 
     if (!entries.length) throw new Error('The pack contains no usable schedule entries.')
     data = { entries }; rows = entries.length
   }
-  const pack: Pack = { format: PACK_FORMAT, version: PACK_VERSION, kind: raw.kind, id, title, jurisdiction: optS(raw.jurisdiction, 80), source, sourceUrl: optS(raw.sourceUrl, 300), revision: raw.revision, license, data }
+  const pack: Pack = { format: PACK_FORMAT, version: PACK_VERSION, kind: raw.kind, id, title, jurisdiction: optS(raw.jurisdiction, 80), source, sourceUrl: optS(raw.sourceUrl, 300), notes: optS(raw.notes, 3000), revision: raw.revision, license, data }
   return { pack, skipped, rows }
 }
 

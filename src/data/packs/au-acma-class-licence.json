@@ -1,0 +1,271 @@
+{
+ "format": "ham-radio-tools-pack",
+ "version": 1,
+ "kind": "band-plan",
+ "id": "au-acma-class-licence",
+ "revision": "2026-10-19",
+ "title": "Australia — ACMA Amateur Class Licence (Advanced)",
+ "jurisdiction": "Australia",
+ "source": "Radiocommunications (Amateur Stations) Class Licence 2023 [F2023L01648], Schedule 2 Table C (Advanced), as made 7 December 2023, commencing 19 February 2024",
+ "sourceUrl": "https://legislation.gov.au/F2023L01648/asmade/2023-12-12/text/original/pdf",
+ "license": "Commonwealth of Australia legislation (CC BY 4.0)",
+ "notes": "ITU Region 3. This pack covers the Advanced class only: Standard and Foundation licences have narrower bands and lower powers (Tables A and B in the Schedule) and are not listed here. pX = peak envelope power, pY = mean power (Radio Regulations definitions). Bandwidth and spectral-density limitations vary by band in the source and are not reproduced, so read Table C before relying on this. The instrument may have been amended since it was made; check the Federal Register of Legislation. WIA voluntary band plans (modes within these bands) are not included.",
+ "data": {
+  "segments": [
+   {
+    "band": "2200 m",
+    "fromHz": 135700,
+    "toHz": 137800,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "1 W pX EIRP",
+    "note": "Necessary bandwidth must not exceed 2.1 kHz."
+   },
+   {
+    "band": "630 m",
+    "fromHz": 472000,
+    "toHz": 479000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "5 W pX EIRP",
+    "note": "Necessary bandwidth must not exceed 2.1 kHz."
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1800000,
+    "toHz": 1875000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)",
+    "note": "Bandwidth and power-spectral-density limitations apply; see Schedule 2 Table C."
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3500000,
+    "toHz": 3700000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)",
+    "note": "Bandwidth and power-spectral-density limitations apply; see Schedule 2 Table C."
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7000000,
+    "toHz": 7100000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)",
+    "note": "Bandwidth and power-spectral-density limitations apply; see Schedule 2 Table C."
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14000000,
+    "toHz": 14350000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)",
+    "note": "Bandwidth and power-spectral-density limitations apply; see Schedule 2 Table C."
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18068000,
+    "toHz": 18168000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)",
+    "note": "Bandwidth and power-spectral-density limitations apply; see Schedule 2 Table C."
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21000000,
+    "toHz": 21450000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)",
+    "note": "Bandwidth and power-spectral-density limitations apply; see Schedule 2 Table C."
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24890000,
+    "toHz": 24990000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)",
+    "note": "Bandwidth and power-spectral-density limitations apply; see Schedule 2 Table C."
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3776000,
+    "toHz": 3800000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)",
+    "note": "Bandwidth and power-spectral-density limitations apply; see Schedule 2 Table C."
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7100000,
+    "toHz": 7300000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)",
+    "note": "Bandwidth and power-spectral-density limitations apply; see Schedule 2 Table C."
+   },
+   {
+    "band": "30 m",
+    "fromHz": 10100000,
+    "toHz": 10150000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)",
+    "note": "Bandwidth and power-spectral-density limitations apply; see Schedule 2 Table C."
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28000000,
+    "toHz": 29700000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)",
+    "note": "Bandwidth and power-spectral-density limitations apply; see Schedule 2 Table C."
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50000000,
+    "toHz": 52000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)",
+    "note": "Bandwidth and power-spectral-density limitations apply; see Schedule 2 Table C."
+   },
+   {
+    "band": "6 m",
+    "fromHz": 52000000,
+    "toHz": 54000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144000000,
+    "toHz": 148000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 430000000,
+    "toHz": 450000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1240000000,
+    "toHz": 1300000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2300000000,
+    "toHz": 2302000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2400000000,
+    "toHz": 2450000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "9 cm",
+    "fromHz": 3300000000,
+    "toHz": 3400000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "9 cm",
+    "fromHz": 3400000000,
+    "toHz": 3600000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5650000000,
+    "toHz": 5850000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10000000000,
+    "toHz": 10500000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24000000000,
+    "toHz": 24250000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "6 mm",
+    "fromHz": 47000000000,
+    "toHz": 47200000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 76000000000,
+    "toHz": 81000000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "2.5 mm",
+    "fromHz": 122250000000,
+    "toHz": 123000000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "2 mm",
+    "fromHz": 134000000000,
+    "toHz": 141000000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   },
+   {
+    "band": "1 mm",
+    "fromHz": 241000000000,
+    "toHz": 250000000000,
+    "use": "Amateur service",
+    "classes": "Advanced",
+    "power": "400 W pX (PEP) for C3F, J3E or R3E emissions; otherwise 120 W pY (mean power)"
+   }
+  ]
+ }
+}

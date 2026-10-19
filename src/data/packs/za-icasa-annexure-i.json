@@ -1,0 +1,313 @@
+{
+ "format": "ham-radio-tools-pack",
+ "version": 1,
+ "kind": "band-plan",
+ "id": "za-icasa-annexure-i",
+ "revision": "2026-10-19",
+ "title": "South Africa — ICASA Annexure I",
+ "jurisdiction": "South Africa",
+ "source": "ICASA Radio Frequency Spectrum Regulations, Annexure I “Amateur radio frequency bands” (as amended 2021, reproduced at acts.co.za); 60 m from the ICASA National Radio Frequency Plan 2018 via ARRL/IARU news",
+ "sourceUrl": "https://api.acts.co.za/electronic-communications-act-2005/n279_annexure_i.php",
+ "license": "South African government regulation",
+ "notes": "ITU Region 1. Class A and Class B are the two ICASA amateur licence classes; a segment’s “classes” shows who may use it. Powers are quoted in dBW relative to 1 W PEP with watt equivalents added. A 2025 draft National Radio Frequency Plan and SARL submissions propose changes that may not yet be in force, so check ICASA and the SARL for the current position. This is the allocation table only: mode sub-bands inside it are voluntary SARL band-plan matters and are not included.",
+ "data": {
+  "segments": [
+   {
+    "band": "2200 m",
+    "fromHz": 135700,
+    "toHz": 137800,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "secondary",
+    "power": "1 W EIRP (Class A)",
+    "classes": "Class A"
+   },
+   {
+    "band": "630 m",
+    "fromHz": 472000,
+    "toHz": 479000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "secondary",
+    "power": "5 W EIRP",
+    "note": "Per WRC-12; Government Gazette 354 of 2013"
+   },
+   {
+    "band": "160 m",
+    "fromHz": 1810000,
+    "toHz": 2000000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "primary",
+    "power": "30 dBW (1 kW PEP)",
+    "classes": "Class A",
+    "note": "No Class B operation"
+   },
+   {
+    "band": "80 m",
+    "fromHz": 3500000,
+    "toHz": 3800000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "co-primary",
+    "power": "Class A 30 dBW (1 kW PEP) · Class B 20 dBW (100 W PEP)",
+    "classes": "Class A, Class B",
+    "note": "Music transmission permitted"
+   },
+   {
+    "band": "40 m",
+    "fromHz": 7000000,
+    "toHz": 7200000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "primary",
+    "power": "Class A 30 dBW (1 kW PEP) · Class B 20 dBW (100 W PEP)",
+    "classes": "Class A, Class B",
+    "note": "Also allocated to amateur satellites"
+   },
+   {
+    "band": "30 m",
+    "fromHz": 10100000,
+    "toHz": 10150000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "secondary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A",
+    "note": "No Class B operation"
+   },
+   {
+    "band": "20 m",
+    "fromHz": 14000000,
+    "toHz": 14350000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "primary",
+    "power": "30 dBW (1 kW PEP) (Class A)",
+    "classes": "Class A",
+    "note": "No Class B operation; also allocated to amateur satellites"
+   },
+   {
+    "band": "17 m",
+    "fromHz": 18068000,
+    "toHz": 18168000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "primary",
+    "power": "30 dBW (1 kW PEP) (Class A)",
+    "classes": "Class A",
+    "note": "No Class B operation"
+   },
+   {
+    "band": "15 m",
+    "fromHz": 21000000,
+    "toHz": 21450000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "primary",
+    "power": "30 dBW (1 kW PEP) (Class A)",
+    "classes": "Class A",
+    "note": "No Class B operation; also allocated to amateur satellites"
+   },
+   {
+    "band": "12 m",
+    "fromHz": 24890000,
+    "toHz": 24990000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "primary",
+    "power": "30 dBW (1 kW PEP) (Class A)",
+    "classes": "Class A",
+    "note": "No Class B operation"
+   },
+   {
+    "band": "10 m",
+    "fromHz": 28000000,
+    "toHz": 29700000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "primary",
+    "power": "30 dBW (1 kW PEP) (Class A)",
+    "classes": "Class A",
+    "note": "Class B: 28.050–28.150 and 28.300–28.500 MHz only, at 20 dBW (100 W PEP); also allocated to amateur satellites"
+   },
+   {
+    "band": "10 m (above)",
+    "fromHz": 29700000,
+    "toHz": 30000000,
+    "use": "All emissions",
+    "status": "secondary",
+    "power": "26 dBW (≈400 W PEP)",
+    "note": "Secondary basis during disaster exercises and emergencies"
+   },
+   {
+    "band": "8 m",
+    "fromHz": 40675000,
+    "toHz": 40685000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "primary",
+    "power": "26 dBW (≈400 W PEP)",
+    "note": "Propagation studies only"
+   },
+   {
+    "band": "6 m",
+    "fromHz": 50000000,
+    "toHz": 54000000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "co-primary",
+    "power": "50–52 MHz: 30 dBW (1 kW PEP); 53–54 MHz: 26 dBW (≈400 W PEP); the source gives no figure for 52–53 MHz",
+    "note": "Music transmission permitted"
+   },
+   {
+    "band": "4 m",
+    "fromHz": 70000000,
+    "toHz": 70300000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "secondary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A"
+   },
+   {
+    "band": "2 m",
+    "fromHz": 144000000,
+    "toHz": 146000000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "primary",
+    "power": "Class A 30 dBW (1 kW PEP) · Class B 20 dBW (100 W PEP)",
+    "classes": "Class A, Class B",
+    "note": "Also allocated to amateur satellites"
+   },
+   {
+    "band": "70 cm",
+    "fromHz": 430000000,
+    "toHz": 440000000,
+    "use": "All emissions except pulse and fast-scan TV",
+    "status": "co-primary",
+    "power": "Class A 30 dBW (1 kW PEP) · Class B 20 dBW (100 W PEP)",
+    "classes": "Class A, Class B",
+    "note": "Music transmission permitted; 435–438 MHz also for amateur satellites"
+   },
+   {
+    "band": "23 cm",
+    "fromHz": 1240000000,
+    "toHz": 1300000000,
+    "use": "All emissions except pulse",
+    "status": "secondary",
+    "power": "30 dBW (1 kW PEP) (Class A)",
+    "classes": "Class A",
+    "note": "Music transmission permitted; also allocated to amateur satellites"
+   },
+   {
+    "band": "13 cm",
+    "fromHz": 2300000000,
+    "toHz": 2450000000,
+    "use": "All emissions except pulse",
+    "status": "secondary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A",
+    "note": "Must accept interference from ISM users"
+   },
+   {
+    "band": "5 cm",
+    "fromHz": 5650000000,
+    "toHz": 5850000000,
+    "use": "All emissions except pulse",
+    "status": "secondary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A",
+    "note": "Must accept interference from ISM users; also allocated to amateur satellites"
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10000000000,
+    "toHz": 10450000000,
+    "use": "All emissions including pulse",
+    "status": "secondary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A"
+   },
+   {
+    "band": "3 cm",
+    "fromHz": 10450000000,
+    "toHz": 10500000000,
+    "use": "All emissions including pulse",
+    "status": "secondary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A"
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24000000000,
+    "toHz": 24050000000,
+    "use": "All emissions including pulse",
+    "status": "primary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A"
+   },
+   {
+    "band": "1.2 cm",
+    "fromHz": 24050000000,
+    "toHz": 24250000000,
+    "use": "All emissions including pulse",
+    "status": "secondary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A",
+    "note": "Must accept interference from ISM users"
+   },
+   {
+    "band": "6 mm",
+    "fromHz": 47000000000,
+    "toHz": 47200000000,
+    "use": "All emissions including pulse",
+    "status": "primary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A"
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 75500000000,
+    "toHz": 76000000000,
+    "use": "All emissions including pulse",
+    "status": "primary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A"
+   },
+   {
+    "band": "4 mm",
+    "fromHz": 76000000000,
+    "toHz": 81000000000,
+    "use": "All emissions including pulse",
+    "status": "secondary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A",
+    "note": "Must accept interference from ISM users"
+   },
+   {
+    "band": "2.5 mm",
+    "fromHz": 122250000000,
+    "toHz": 123000000000,
+    "use": "All emissions including pulse",
+    "status": "secondary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A",
+    "note": "Must accept interference from ISM users"
+   },
+   {
+    "band": "2 mm",
+    "fromHz": 134000000000,
+    "toHz": 136000000000,
+    "use": "All emissions including pulse",
+    "status": "primary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A"
+   },
+   {
+    "band": "2 mm",
+    "fromHz": 136000000000,
+    "toHz": 141000000000,
+    "use": "All emissions including pulse",
+    "status": "secondary",
+    "power": "26 dBW (≈400 W PEP) (Class A)",
+    "classes": "Class A"
+   },
+   {
+    "band": "60 m",
+    "fromHz": 5350000,
+    "toHz": 5450000,
+    "use": "Amateur service (shared)",
+    "status": "secondary",
+    "power": "15 W EIRP in 5351.5–5366.5 kHz",
+    "note": "From ICASA’s National Radio Frequency Plan 2018 as reported by the ARRL and IARU Region 1; it is not in the Annexure I table used for the other rows. Check the current plan."
+   }
+  ]
+ }
+}

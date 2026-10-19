@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { installPack, installedPacks, packsError, refreshPacks, removePack } from '../core/packs'
 import { ageDays, parsePack, type Pack } from '../lib/packs'
 import { parseScheduleText } from '../lib/scheduleImport'
+import { BUNDLED_PACKS } from '../data/packs'
 import { platform } from '../platform'
 
 const err = ref(''), msg = ref('')
@@ -10,6 +11,7 @@ const pending = ref<{ pack: Pack; rows: number; skipped: string[]; file: string 
 const STALE: Record<string, number> = { 'band-plan': 365, 'broadcast-schedule': 45 }
 const KIND: Record<string, string> = { 'band-plan': 'Band plan', 'broadcast-schedule': 'Broadcast schedule' }
 onMounted(refreshPacks)
+const bundledNames = BUNDLED_PACKS.map((p) => p.jurisdiction ?? p.title).join(', ')
 
 async function onFile(e: Event) {
   const input = e.target as HTMLInputElement, file = input.files?.[0]
@@ -65,6 +67,7 @@ function saveConverted() {
       <tbody>
         <tr><td>Application, calculators, diagrams</td><td>Bundled</td><td>Included in the install</td></tr>
         <tr><td>World basemap (country outlines)</td><td>Bundled</td><td>Natural Earth 1:110m, public domain</td></tr>
+        <tr><td>National band plans: {{ bundledNames }}</td><td>Bundled</td><td>Official tables, dated 2026-10-19; sources shown in the Band Plans tool</td></tr>
         <tr><td>ITU region amateur allocations, CTCSS tones, constants, abbreviations, Q codes, callsign prefixes</td><td>Bundled</td><td>Dated in each tool</td></tr>
         <tr v-for="p in installedPacks" :key="p.id">
           <td>{{ p.title }}<div class="hint">{{ KIND[p.kind] }} · {{ p.rows }} rows{{ p.jurisdiction ? ' · ' + p.jurisdiction : '' }}</div></td>

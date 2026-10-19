@@ -13,7 +13,10 @@ const ok = (m) => console.log('ok  :', m)
 
 // 1. Static scan: no external URLs in shipped files (XML namespace URIs are identifiers, not requests).
 async function* walk(d) { for (const e of await readdir(d, { withFileTypes: true })) e.isDirectory() ? yield* walk(join(d, e.name)) : yield join(d, e.name) }
-const allowed = /^https?:\/\/(www\.w3\.org\/|localhost|vuejs\.org|github\.com\/vuejs|vue-router|router\.vuejs\.org)/
+// Allowed: XML namespace identifiers, framework doc strings, and the "official source" links inside bundled band-plan packs.
+// Those links are plain data that the user may click (they open the web in a new tab); the app itself never requests them.
+const PACK_SOURCES = ['legislation.gov.au', 'publications.gc.ca', 'www.gesetze-im-internet.de', 'www.ecfr.gov', 'api.acts.co.za'].map((h) => h.replace(/\./g, '\\.')).join('|')
+const allowed = new RegExp('^https?://(www\\.w3\\.org/|localhost|vuejs\\.org|github\\.com/vuejs|vue-router|router\\.vuejs\\.org|' + PACK_SOURCES + ')')
 let found = 0
 for await (const f of walk(dist)) {
   const t = await readFile(f, 'utf8').catch(() => '')
@@ -84,7 +87,7 @@ await step('content pack: import a band plan into IndexedDB, survives reload, dr
   await page.goto(base + '#/settings'); await page.getByLabel('Import content pack').setInputFiles(file)
   await page.getByRole('button', { name: 'Install pack' }).click(); await page.getByText('Installed “Testland plan”').waitFor()
   await page.reload(); await page.getByText('Testland plan').first().waitFor()
-  await page.goto(base + '#/tool/band-plans'); await page.getByLabel('Band plan').selectOption('test-land')
+  await page.goto(base + '#/tool/band-plans'); await page.getByLabel('Band plan').selectOption('i:test-land')
   await page.getByText('CW and narrow digital').first().waitFor()
   await page.goto(base + '#/settings'); await page.getByRole('button', { name: 'Remove Testland plan' }).click(); await page.getByText('Import a pack file below').waitFor()
 })
