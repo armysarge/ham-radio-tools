@@ -1,5 +1,5 @@
 // The only module allowed to touch OS-level capabilities. The web build implements the minimum;
-// a desktop shell (Tauri) can later swap these for native dialogs/serial access without touching tools.
+// Electron currently uses the same browser downloads and clipboard; future native access belongs here.
 export interface Platform {
   saveFile(name: string, data: string | Blob, mime?: string): void
   copyText(text: string): Promise<void>

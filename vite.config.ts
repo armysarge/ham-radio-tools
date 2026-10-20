@@ -35,7 +35,10 @@ export default defineConfig(({ mode }) => {
   const headers = frameHeaders(allowed)
   return {
     plugins: [vue(), pageMeta, frameGuard(allowed), ...(mode === 'demo' ? [gaCsp] : [])],
-    define: { __APP_VERSION__: JSON.stringify(pkg.version) }, // single source of truth: package.json
+    define: {
+      __APP_VERSION__: JSON.stringify(pkg.version),
+      ...(mode === 'demo' ? {} : { 'import.meta.env.VITE_GA_ID': JSON.stringify('') }),
+    }, // analytics is possible only in the explicitly selected demo build
     base: './', // relative paths so dist/ works from any folder, a USB stick, or a desktop shell
     server: { headers },
     preview: { allowedHosts: ['hamradiotools.armysarge.co.za'], headers }, // the public demo host serves `vite preview`

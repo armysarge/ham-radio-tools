@@ -1,0 +1,26 @@
+appId: za.co.armysarge.hamradiotools
+productName: Ham Radio Tools
+asar: true
+directories:
+  output: desktop-out
+files:
+  - dist/**
+  - desktop/*.cjs
+  - package.json
+  - LICENSE
+  - THIRD_PARTY_NOTICES.txt
+  # Vite already bundled these dependencies. No Node packages are needed by the main process.
+  - '!node_modules/**/*'
+artifactName: ham-radio-tools-${version}-${os}-${arch}.${ext}
+win:
+  target: nsis
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+linux:
+  target: [AppImage, deb]
+  category: HamRadio
+  maintainer: ZS6SHZ <shauns@jasper.co.za>
+publish: null

@@ -2,6 +2,17 @@
 
 All notable changes are listed here, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) (while below 1.0, a minor bump may include breaking changes to saved data formats; those are always called out).
 
+## [0.3.0] - 2026-10-20
+
+### Added
+- Electron desktop shell, local-only protocol, stable saved-data profile, explicit external-link and microphone prompts, desktop smoke test and Windows/Linux packaging configuration.
+- Version-tag release workflow builds web/demo zips and Windows/Linux installers, collects checksums and creates a draft release for review.
+
+### Changed
+- README rewritten for users. Developer details moved to docs/DEVELOPMENT.md; desktop testing and release instructions have dedicated guides.
+- Roadmap moved to ROADMAP.md with desktop verification, signing and opt-in updating tracked separately.
+- Third-party licence notices included in packages.
+
 ## [0.2.0] - 2026-10-19
 
 ### Added
