@@ -21,4 +21,10 @@ describe('desktop window restoration in screen-independent pixels', () => {
     const area = { x: 0, y: 0, width: 360, height: 480 }
     expect(restoreWindowState({ bounds: { x: -10, y: -20, width: 5000, height: 5000 }, maximized: 'yes' }, [area], area)).toEqual({ bounds: area, maximized: false })
   })
+  it('clamps the original CI fixture on a 1024×720 runner', () => {
+    const area = { x: 0, y: 0, width: 1024, height: 720 }
+    expect(restoreWindowState({ bounds: { x: 40, y: 50, width: 1000, height: 700 } }, [area], area).bounds).toEqual({ x: 24, y: 20, width: 1000, height: 700 })
+    const fitted = { x: 12, y: 10, width: 1000, height: 700 }
+    expect(restoreWindowState({ bounds: fitted }, [area], area).bounds).toEqual(fitted)
+  })
 })

@@ -165,7 +165,12 @@ try {
   assert.equal(boundary.remoteBlocked, true)
   assert.equal(boundary.persistent, true)
   assert.deepEqual(errors, [])
-  await desktop.evaluate(({ BrowserWindow }) => { const win = BrowserWindow.getAllWindows()[0]; win.show(); win.setBounds({ x: 40, y: 50, width: 1000, height: 700 }) })
+  await desktop.evaluate(({ BrowserWindow, screen }) => {
+    const win = BrowserWindow.getAllWindows()[0], area = screen.getPrimaryDisplay().workArea
+    const width = Math.min(1000, area.width), height = Math.min(700, area.height)
+    // Keep the fixture on-screen: restoration correctly clamps bounds beyond the work area.
+    win.show(); win.setBounds({ x: area.x + Math.floor((area.width - width) / 2), y: area.y + Math.floor((area.height - height) / 2), width, height })
+  })
   await page.getByRole('button', { name: 'Maximize window', exact: true }).click()
   await page.getByRole('button', { name: 'Restore window', exact: true }).waitFor()
   await page.getByRole('button', { name: 'Restore window', exact: true }).click()

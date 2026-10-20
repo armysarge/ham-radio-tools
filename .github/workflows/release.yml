@@ -52,12 +52,17 @@ jobs:
       - run: npm ci
       - name: Install Electron runtime
         run: npx install-electron --no
+      - name: Install Linux display and window manager
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y xvfb openbox x11-utils
       - name: Windows desktop smoke check
         if: runner.os == 'Windows'
         run: npm run check:desktop
       - name: Linux desktop smoke check
         if: runner.os == 'Linux'
-        run: xvfb-run -a npm run check:desktop
+        run: bash scripts/with-linux-display.sh npm run check:desktop
       - run: npm run desktop:dist
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
@@ -69,7 +74,7 @@ jobs:
           node scripts/check-desktop.mjs
       - name: Verify packaged Linux application
         if: runner.os == 'Linux'
-        run: HRT_DESKTOP_EXEC="$PWD/desktop-out/linux-unpacked/ham-radio-tools" xvfb-run -a node scripts/check-desktop.mjs
+        run: HRT_DESKTOP_EXEC="$PWD/desktop-out/linux-unpacked/ham-radio-tools" bash scripts/with-linux-display.sh node scripts/check-desktop.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: desktop-${{ runner.os }}

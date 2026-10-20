@@ -21,7 +21,7 @@ npm run check:desktop
 
 For a packaged executable, set `HRT_DESKTOP_EXEC` to its absolute path and run `node scripts/check-desktop.mjs`. The same checks run against that executable with a disposable profile.
 
-This uses a temporary profile to test startup, a calculation, the bundled map, saved designs across an app restart, window controls, saved window bounds/maximized state, renderer isolation and a blocked external fetch. Your regular desktop data is untouched. Linux graphical tests need a display, for example `xvfb-run -a npm run check:desktop` in CI. Do not disable Electron's sandbox to work around a Linux configuration problem.
+This uses a temporary profile to test startup, a calculation, the bundled map, saved designs across an app restart, window controls, saved window bounds/maximized state, renderer isolation and a blocked external fetch. Your regular desktop data is untouched. Linux headless checks need both Xvfb and a window manager for maximize/restore/minimize. Install `xvfb`, `openbox` and `x11-utils`, then run `bash scripts/with-linux-display.sh npm run check:desktop`. The helper starts an isolated display and waits for Openbox before testing. Do not disable Electron's sandbox to work around a Linux configuration problem. These are test-machine dependencies, not bundled application dependencies.
 
 ## Build an executable or installer
 

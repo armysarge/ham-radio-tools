@@ -31,9 +31,11 @@ Use `MAJOR.MINOR.PATCH`: patch for fixes, minor for new features, major for inco
 
 `npm version` runs tests, updates `package.json` and `package-lock.json`, commits them and creates the matching tag. Replace the example version in **both commands**. For a preview release use a version such as `0.4.0-rc.1`.
 
-If `package.json` has already been changed manually to the intended version (currently 0.3.0), first ensure the lockfile matches, commit it with the matching changelog, then use `git tag -a v0.3.0 -m "Release 0.3.0"`. Do not run `npm version minor` if you intend to release the already-selected version: it would increment it again.
+If `package.json` already contains the intended version (currently 0.3.1), ensure the lockfile matches and commit it with the matching changelog, then use `git tag -a v0.3.1 -m "Release 0.3.1"`. Do not run `npm version` again if you intend to release the already-selected version: it would increment it again.
 
 Never move a published tag. Fix a released problem with a new patch version.
+
+If a failed workflow needs a code or workflow fix, commit it and create a new matching version/tag. **Re-run failed jobs** uses the old tag's commit and cannot pick up a fix pushed only to `main`. The failed `v0.3.0` desktop checks are addressed in `0.3.1`: the window persistence fixture now fits small screens, and Linux checks run a window manager inside Xvfb. The new CI run still needs to confirm Linux results.
 
 ## What GitHub Actions does
 

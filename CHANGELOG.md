@@ -2,6 +2,12 @@
 
 All notable changes are listed here, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) (while below 1.0, a minor bump may include breaking changes to saved data formats; those are always called out).
 
+## [0.3.1] - 2026-10-20
+
+### Fixed
+- Release smoke tests choose window bounds that fit small runner screens; intentional off-screen recovery no longer fails the persistence assertion.
+- Linux GUI checks start Openbox inside Xvfb so maximize, restore and minimize have a window manager.
+
 ## [0.3.0] - 2026-10-20
 
 ### Added
