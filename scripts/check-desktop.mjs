@@ -40,6 +40,23 @@ try {
   assert.equal(layout.rootOverflow, 'hidden', 'no root scrollbar beside the window controls')
   assert.equal(layout.scrollTop, 44, 'page scrolling begins below the title bar')
   assert.equal(layout.closeRight, layout.width, 'close button reaches the window edge')
+  async function checkContentScroll(page) {
+    const result = await page.evaluate(() => {
+      const header = document.querySelector('header.topbar')
+      const main = document.querySelector('main')
+      const before = header.getBoundingClientRect().bottom
+      main.scrollTop = 100
+      return { before, after: header.getBoundingClientRect().bottom, top: main.getBoundingClientRect().top, scrolled: main.scrollTop, overflow: getComputedStyle(main).overflowY }
+    })
+    assert.equal(result.top, result.before, 'content scrollbar starts below the header element')
+    assert.equal(result.after, result.before, 'header stays fixed while content scrolls')
+    assert.equal(result.overflow, 'auto')
+    assert(result.scrolled > 0, 'content remains scrollable')
+  }
+  await checkContentScroll(page)
+  await page.setViewportSize({ width: 375, height: 700 })
+  await checkContentScroll(page)
+  await page.setViewportSize({ width: initial.bounds.width, height: initial.bounds.height })
   const base = 'hrt://app/'
   await page.goto(base + '#/tool/frequency-wavelength')
   await page.getByText('21.11', { exact: true }).waitFor()

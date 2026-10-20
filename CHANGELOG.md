@@ -10,7 +10,7 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 - Version-tag release workflow builds web/demo zips and Windows/Linux installers, collects checksums and creates a draft release for review.
 
 ### Changed
-- Desktop scrolling stays below the title bar; first-launch centering is checked by the native smoke test.
+- Desktop content scrolling starts below the application header, keeping both the header and title bar fixed; first-launch centering is checked by the native smoke test.
 - README rewritten for users. Developer details moved to docs/DEVELOPMENT.md; desktop testing and release instructions have dedicated guides.
 - Roadmap moved to ROADMAP.md with desktop verification, signing and opt-in updating tracked separately.
 - Third-party licence notices included in packages.

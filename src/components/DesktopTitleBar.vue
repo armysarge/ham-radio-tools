@@ -32,11 +32,14 @@ onUnmounted(() => { unsubscribe?.(); document.documentElement.classList.remove('
 .desktop-controls .desktop-close:hover{background:#c42b35;color:white}
 .desktop-controls svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.2}
 .desktop-app,.desktop-app body{height:100%;overflow:hidden}
-.desktop-app .shell{position:absolute;inset:44px 0 0;min-height:0;overflow:auto}
+.desktop-app .shell{position:absolute;inset:44px 0 0;min-height:0;overflow:hidden;grid-template-rows:auto minmax(0,1fr)}
 .desktop-app .topbar{top:0}
-.desktop-app .sidebar{top:61px;height:calc(100vh - 105px)}
+.desktop-app main{min-height:0;max-width:none;overflow:auto}
+.desktop-app main>*{max-width:1152px}
+.desktop-app .sidebar{min-height:0}
+@media(min-width:901px){.desktop-app .sidebar{position:static;height:auto}}
 @media(max-width:900px){.desktop-app .sidebar{top:44px;height:auto}.desktop-app .backdrop{top:44px}}
-@media print{.desktop-titlebar{display:none}.desktop-app,.desktop-app body{height:auto;overflow:visible}.desktop-app .shell{position:static;overflow:visible}}
+@media print{.desktop-titlebar{display:none}.desktop-app,.desktop-app body{height:auto;overflow:visible}.desktop-app .shell{position:static;overflow:visible}.desktop-app main{overflow:visible}}
 </style>
 
 
