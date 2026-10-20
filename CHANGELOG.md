@@ -5,11 +5,14 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 ## [0.3.0] - 2026-10-20
 
 ### Added
+- Desktop Settings update controls: explicit GitHub release check, separate size/SHA-256 verified download and confirmed Windows installer launch or Linux AppImage reveal; no background network activity.
+- Clean-machine acceptance checklist and packaged-executable CI smoke checks, including project export/import, native clipboard probe and mocked update transport.
 - Desktop application/installer icons, custom draggable title bar and window controls; saved position, size and maximized state with off-screen recovery.
 - Electron desktop shell, local-only protocol, stable saved-data profile, explicit external-link and microphone prompts, desktop smoke test and Windows/Linux packaging configuration.
 - Version-tag release workflow builds web/demo zips and Windows/Linux installers, collects checksums and creates a draft release for review.
 
 ### Changed
+- Electron exports use a native Save dialog; copying uses a narrow native bridge.
 - Desktop content scrolling starts below the application header, keeping both the header and title bar fixed; first-launch centering is checked by the native smoke test.
 - README rewritten for users. Developer details moved to docs/DEVELOPMENT.md; desktop testing and release instructions have dedicated guides.
 - Roadmap moved to ROADMAP.md with desktop verification, signing and opt-in updating tracked separately.

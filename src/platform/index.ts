@@ -1,18 +1,24 @@
 // The only module allowed to touch OS-level capabilities. The web build implements the minimum;
-// Electron currently uses the same browser downloads and clipboard; future native access belongs here.
+// Electron uses narrow copy/export bridges; future native access belongs here.
+import type {} from './desktop'
 export interface Platform {
   saveFile(name: string, data: string | Blob, mime?: string): void
   copyText(text: string): Promise<void>
 }
 
 export const platform: Platform = {
-  saveFile(name, data, mime = 'text/plain') {
+  async saveFile(name, data, mime = 'text/plain') {
+    if (window.hrtDesktop) {
+      const bytes = typeof data === 'string' ? new TextEncoder().encode(data) : new Uint8Array(await data.arrayBuffer())
+      return window.hrtDesktop.saveFile(name, bytes)
+    }
     const url = URL.createObjectURL(data instanceof Blob ? data : new Blob([data], { type: mime }))
     const a = Object.assign(document.createElement('a'), { href: url, download: name })
     document.body.appendChild(a); a.click(); a.remove()
     setTimeout(() => URL.revokeObjectURL(url), 1000)
   },
   async copyText(text) {
+    if (window.hrtDesktop) return window.hrtDesktop.copyText(text)
     try { await navigator.clipboard.writeText(text) } catch {
       const t = Object.assign(document.createElement('textarea'), { value: text })
       document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove()

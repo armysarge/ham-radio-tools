@@ -1,6 +1,6 @@
 // Exercises the actual Electron shell with a disposable profile; no edits to the user's saved data.
 import { _electron } from 'playwright-core'
-import { mkdtemp, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import assert from 'node:assert/strict'
@@ -60,14 +60,101 @@ try {
   const base = 'hrt://app/'
   await page.goto(base + '#/tool/frequency-wavelength')
   await page.getByText('21.11', { exact: true }).waitFor()
+  const clipboardAvailable = await desktop.evaluate(async ({ clipboard, ClipboardItem }) => {
+    const items = await Promise.all((await clipboard.read()).filter(item => item.types.length).map(async item => new ClipboardItem(Object.fromEntries(await Promise.all(item.types.map(async type => [type, await item.getType(type)]))))))
+    globalThis.hrtClipboardFixture = { items, write: clipboard.writeText, copied: '' }
+    await clipboard.writeText('hrt clipboard probe')
+    const available = await clipboard.readText() === 'hrt clipboard probe'
+    clipboard.writeText = async text => { globalThis.hrtClipboardFixture.copied = text; return globalThis.hrtClipboardFixture.write.call(clipboard, text) }
+    return available
+  })
+  try {
+    await desktop.evaluate(({ BrowserWindow }) => { const win = BrowserWindow.getAllWindows()[0]; win.show(); win.focus() })
+    await page.getByRole('button', { name: /Copy.*21.11/ }).first().click()
+    const copied = await desktop.evaluate(async () => {
+      for (let i = 0; i < 30; i++) { if (globalThis.hrtClipboardFixture.copied) return globalThis.hrtClipboardFixture.copied; await new Promise(resolve => setTimeout(resolve, 50)) }
+      return globalThis.hrtClipboardFixture.copied
+    })
+    assert.match(copied, /21\.11/)
+    if (clipboardAvailable) assert.match(await desktop.evaluate(({ clipboard }) => clipboard.readText()), /21\.11/)
+    else {
+      console.warn('UNVERIFIED: native OS clipboard round trip failed its direct Electron probe in this environment; app bridge invocation passed.')
+      assert.notEqual(process.env.HRT_REQUIRE_CLIPBOARD, '1', 'native clipboard must be available when explicitly required')
+    }
+  } finally { await desktop.evaluate(async ({ clipboard }) => { const fixture = globalThis.hrtClipboardFixture; clipboard.writeText = fixture.write; await clipboard.write(fixture.items); delete globalThis.hrtClipboardFixture }) }
   await page.goto(base + '#/tool/maidenhead')
   await page.locator('.map path.land').waitFor()
   assert((await page.locator('.map path.land').getAttribute('d')).length > 20000)
   await page.goto(base + '#/tool/dipole')
   await page.getByRole('button', { name: 'Save design' }).click()
+  const pdf = await desktop.evaluate(async ({ BrowserWindow }) => {
+    const bytes = await BrowserWindow.getAllWindows()[0].webContents.printToPDF({ printBackground: true })
+    return { header: bytes.subarray(0, 5).toString(), length: bytes.length }
+  })
+  assert.equal(pdf.header, '%PDF-'); assert(pdf.length > 1000, 'dipole renders through the PDF print engine')
   await page.reload()
   await page.goto(base + '#/saved')
   await page.getByText('Dipole 7.1 MHz').waitFor()
+  await page.goto(base + '#/settings')
+  const exportPath = path.join(profile, 'project.json')
+  await desktop.evaluate(({ dialog }, filePath) => { globalThis.hrtOriginalSaveDialog = dialog.showSaveDialog; dialog.showSaveDialog = async () => ({ canceled: false, filePath }) }, exportPath)
+  await page.getByRole('button', { name: 'Export project file' }).click()
+  await desktop.evaluate(async ({ app }) => { const fs = process.getBuiltinModule('fs/promises'); for (let i = 0; i < 50; i++) { try { await fs.access(process.getBuiltinModule('path').join(app.getPath('userData'), 'project.json')); return } catch {} await new Promise(r => setTimeout(r, 50)) } throw new Error('Export file was not written') })
+  await desktop.evaluate(({ dialog }) => { dialog.showSaveDialog = globalThis.hrtOriginalSaveDialog; delete globalThis.hrtOriginalSaveDialog })
+  await desktop.evaluate(({ dialog, app }) => { globalThis.hrtOriginalSaveDialog = dialog.showSaveDialog; dialog.showSaveDialog = async () => ({ canceled: false, filePath: process.getBuiltinModule('path').join(app.getPath('userData'), 'disallowed.cmd') }) })
+  const rejectedExtension = await page.evaluate(async () => {
+    try { await window.hrtDesktop.saveFile('project.json', new TextEncoder().encode('{}')); return false }
+    catch (error) { return /extension unchanged/.test(error.message) }
+  })
+  assert.equal(rejectedExtension, true, 'export cannot change its extension to an executable')
+  assert.equal(await desktop.evaluate(({ app }) => process.getBuiltinModule('fs').existsSync(process.getBuiltinModule('path').join(app.getPath('userData'), 'disallowed.cmd'))), false)
+  await desktop.evaluate(({ dialog }) => { dialog.showSaveDialog = globalThis.hrtOriginalSaveDialog; delete globalThis.hrtOriginalSaveDialog })
+  assert.equal(JSON.parse(await readFile(exportPath, 'utf8')).designs.length, 1)
+  await page.goto(base + '#/saved')
+  await page.getByRole('button', { name: 'Delete Dipole 7.1 MHz' }).click()
+  await page.goto(base + '#/settings')
+  await page.getByLabel('Import project file').setInputFiles(exportPath)
+  await page.getByRole('button', { name: 'Import', exact: true }).click()
+  await page.getByText(/Imported 0 location\(s\) and 1 design/).waitFor()
+  // Main-process transport fixture: no live release or actual installer is used.
+  await desktop.evaluate(({ app, dialog }) => {
+    const bytes = Buffer.from('offline test installer, never executed')
+    const hash = process.getBuiltinModule('crypto').createHash('sha256').update(bytes).digest('hex')
+    const version = '999.0.0'
+    const name = `ham-radio-tools-${version}-${process.platform === 'win32' ? 'win' : 'linux'}-${process.arch}.${process.platform === 'win32' ? 'exe' : 'AppImage'}`
+    const prefix = `https://github.com/armysarge/ham-radio-tools/releases/download/v${version}/`
+    globalThis.hrtUpdateFixture = { original: globalThis.fetch, dialog: dialog.showSaveDialog, calls: 0 }
+    globalThis.fetch = async url => {
+      globalThis.hrtUpdateFixture.calls++
+      if (String(url).endsWith('/latest')) return new Response(JSON.stringify({ tag_name: `v${version}`, draft: false, prerelease: false, assets: [{ name, size: bytes.length, browser_download_url: prefix + name }, { name: 'SHA256SUMS.txt', size: 200, browser_download_url: prefix + 'SHA256SUMS.txt' }] }))
+      if (String(url).endsWith('SHA256SUMS.txt')) return new Response(`${hash}  ${name}`)
+      if (String(url).endsWith(name)) return new Response(bytes)
+      throw new Error('Unexpected updater request')
+    }
+    dialog.showSaveDialog = async () => ({ canceled: false, filePath: process.getBuiltinModule('path').join(app.getPath('userData'), name) })
+  })
+  await page.reload()
+  await page.getByRole('button', { name: 'Check for updates' }).waitFor()
+  assert.equal(await desktop.evaluate(() => globalThis.hrtUpdateFixture.calls), 0, 'settings must not initiate update checks')
+  await page.getByRole('button', { name: 'Check for updates' }).click()
+  await page.getByText('Version 999.0.0 is available.', { exact: true }).waitFor()
+  assert.equal(await desktop.evaluate(() => globalThis.hrtUpdateFixture.calls), 1, 'checking must not download the installer')
+  await page.getByRole('button', { name: /^Download 999/ }).click()
+  await page.getByText('Download complete. SHA-256 verified.', { exact: true }).waitFor()
+  await page.goto(base + '#/tool/frequency-wavelength')
+  await page.goto(base + '#/settings')
+  await page.getByRole('button', { name: /Open update installer|Show downloaded AppImage/ }).waitFor()
+  await desktop.evaluate(async ({ app }) => {
+    const name = `ham-radio-tools-999.0.0-${process.platform === 'win32' ? 'win' : 'linux'}-${process.arch}.${process.platform === 'win32' ? 'exe' : 'AppImage'}`
+    await process.getBuiltinModule('fs/promises').writeFile(process.getBuiltinModule('path').join(app.getPath('userData'), name), 'tampered fixture')
+  })
+  await page.getByRole('button', { name: /Open update installer|Show downloaded AppImage/ }).click()
+  await page.getByRole('alert').filter({ hasText: 'The downloaded installer has changed' }).waitFor()
+  await desktop.evaluate(({ dialog }) => {
+    globalThis.fetch = globalThis.hrtUpdateFixture.original
+    dialog.showSaveDialog = globalThis.hrtUpdateFixture.dialog
+    delete globalThis.hrtUpdateFixture
+  })
   assert.deepEqual(externalRequests, [], 'startup and core tools must not attempt external requests')
   const boundary = await page.evaluate(async () => ({
     nodeExposed: typeof window.require !== 'undefined',
@@ -108,7 +195,7 @@ try {
   const closed = desktop.waitForEvent('close')
   await maximized.getByRole('button', { name: 'Close window', exact: true }).click()
   await closed; desktop = undefined
-  console.log(`PASS: Electron on ${process.platform}: offline tools, saved data, window controls, position/size/maximized restoration, isolated renderer and blocked external fetch`)
+  console.log(`PASS: Electron on ${process.platform}: offline tools, clipboard bridge${clipboardAvailable ? ' and OS round trip' : ' (OS round trip unverified)'}, project export/import, explicit update check/download (mock transport), window controls/restoration, isolated renderer and blocked external fetch`)
 } finally {
   await desktop?.close()
   await rm(profile, { recursive: true, force: true })

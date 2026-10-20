@@ -5,6 +5,7 @@ import { tools } from '../core/registry'
 import { platform } from '../platform'
 import PackManager from '../components/PackManager.vue'
 import GithubLink from '../components/GithubLink.vue'
+import DesktopUpdates from '../components/DesktopUpdates.vue'
 import { analyticsAvailable } from '../core/analytics'
 import { applyImport, exportProject, parseProject, type ImportReport } from '../lib/project'
 import { fmt } from '../lib/units'
@@ -39,6 +40,7 @@ function doImport() {
 <template>
   <h1>Settings &amp; content</h1>
   <div class="stack">
+    <DesktopUpdates />
     <div class="card">
       <h2>Appearance &amp; units</h2>
       <div class="cols" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">

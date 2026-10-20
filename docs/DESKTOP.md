@@ -58,7 +58,9 @@ It is separate from data on the hosted demo. Export a project JSON and an ADIF l
 
 ## Security and networking
 
-The renderer is sandboxed, uses context isolation and has no Node.js API. A narrow preload bridge exposes only window controls and window state. Only bundled app files can load through its custom protocol. HTTP requests from the app session are blocked. Spellchecking is disabled to prevent automatic dictionary downloads. Clicking an external reference prompts before opening the system browser. Microphone requests prompt separately. There is no updater yet; download and install a newer release manually.
+The renderer is sandboxed, uses context isolation and has no Node.js API. A narrow preload bridge exposes window controls, explicit update actions, copy-to-clipboard and file export through a native save dialog. It cannot read arbitrary files or run arbitrary commands. Only bundled app files can load through its custom protocol. HTTP requests from the renderer session are blocked. Spellchecking is disabled to prevent automatic dictionary downloads. Clicking an external reference prompts before opening the system browser. Microphone requests prompt separately.
+
+In Settings, **Check for updates** contacts the fixed public GitHub repository from the main process. A separate **Download** action saves the matching Windows installer or Linux AppImage and verifies its size and SHA-256 against `SHA256SUMS.txt`. Windows installer launch requires a further click and confirmation; Linux reveals the AppImage for manual replacement. There are no startup checks, tokens, background downloads, npm installs or repository clones. Network failures leave the installed app usable. See [release instructions](RELEASING.md#desktop-updates).
 
 The implementation follows [Electron's security guidance](https://www.electronjs.org/docs/latest/tutorial/security). Packaging uses [electron-builder](https://www.electron.build/configuration/). Vite bundles Vue and the tools; Electron packages the runtime, `dist/`, the desktop entry files and licences. Users do not run `npm install` inside a release.
 
@@ -71,7 +73,8 @@ Record actual outcomes here after testing. A build or automated smoke check does
 - Windows 10 build 19045, Node 24, Electron 44.9.1: development shell and packaged `win-unpacked` executable passed startup, calculation, map, saved-design persistence across restart, renderer isolation and blocked external-fetch checks on 2026-10-20.
 - Windows x64 NSIS installer was generated as `ham-radio-tools-0.3.0-win-x64.exe`. It has not been installed on a clean machine and is unsigned.
 - Linux packaging and runtime: configured for CI, not exercised locally.
-- Clean-machine installation, offline first launch, microphone, clipboard and printer checks: pending.
+- Expanded Windows development and packaged-executable checks on 2026-10-20 passed project file export/import, copy bridge and native clipboard round trip, PDF print-engine rendering, plus explicit update check/download and tampered-file rejection using mocked GitHub responses. The clipboard probe previously returned empty in this environment; the harness reports this limitation explicitly if it recurs. These are not hardware or real release upgrade tests.
+- Clean-machine installation, offline first launch, microphone hardware and printer checks: pending. Follow [the desktop acceptance checklist](DESKTOP_ACCEPTANCE.md) and record actual OS versions and results.
 
 ### Windows development sandbox access
 

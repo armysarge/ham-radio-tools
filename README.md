@@ -27,7 +27,7 @@ Search for a tool, add favourites, choose Metric or Imperial, and switch between
 
 **Windows and Linux:** Electron desktop packaging is available for testing. When desktop assets are attached to a [release](https://github.com/armysarge/ham-radio-tools/releases), Windows uses an `.exe` installer; Linux uses an `.AppImage` or `.deb`. Node.js is bundled with Electron, so users do not install it separately. See the [desktop testing guide](docs/DESKTOP.md) to run or package it from source.
 
-The desktop and standard web builds bundle the calculators, diagrams, reference tables and basic world map. No account is needed. Updates are currently installed manually from Releases.
+The desktop and standard web builds bundle the calculators, diagrams, reference tables and basic world map. No account is needed. In Electron, use **Settings & content → Desktop updates** to check for a release and choose whether to download it. Nothing checks or downloads automatically. Windows can open the downloaded installer after confirmation; Linux shows the AppImage for manual replacement.
 
 ## Your saved work
 

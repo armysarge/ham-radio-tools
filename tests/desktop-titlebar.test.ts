@@ -10,8 +10,8 @@ it('leaves the web app without desktop controls', () => {
 it('connects accessible controls and updates restore state, then unsubscribes', async () => {
   let listener: (state: { maximized: boolean }) => void = () => {}
   const unsubscribe = vi.fn()
-  const bridge = { minimize: vi.fn(), toggleMaximize: vi.fn(), close: vi.fn(), getState: async () => ({ maximized: false }), onState: (cb: typeof listener) => { listener = cb; return unsubscribe } }
-  window.hrtDesktop = bridge
+  const bridge = { minimize: vi.fn(), toggleMaximize: vi.fn(), close: vi.fn(), getState: async () => ({ maximized: false }), onState: (cb: typeof listener) => { listener = cb; return unsubscribe }, checkUpdate: vi.fn(), downloadUpdate: vi.fn(), installUpdate: vi.fn(), onUpdateProgress: vi.fn(() => () => {}) }
+  window.hrtDesktop = { ...bridge, copyText: vi.fn(), saveFile: vi.fn() }
   const wrapper = mount(DesktopTitleBar)
   await flushPromises()
   await wrapper.get('[aria-label="Minimize window"]').trigger('click')

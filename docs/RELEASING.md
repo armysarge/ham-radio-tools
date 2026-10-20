@@ -93,4 +93,14 @@ The in-page guard is a fallback; response headers provide the browser-enforced p
 
 ## Desktop updates
 
-Updating inside Electron is still on the roadmap. Currently users install the newer release manually; saved data remains in the stable profile. A future updater should read signed release metadata after an explicit click, show the download size and version, then require a separate download/install action. It must never clone the repository, run npm or embed a GitHub token.
+Settings provides explicit **Check for updates**, **Download**, and **Open update installer** actions in Electron. Checks use GitHub's latest published stable release; drafts and prereleases are excluded. Keep the exact asset names above and include `SHA256SUMS.txt` when publishing, or the app refuses the update. Architecture must match; an x64 release does not update an ARM build. The main process permits only the fixed repository's initial asset URLs and HTTPS redirects on GitHub's download hosts.
+
+Download size is capped at 400 MiB. Incomplete or mismatched downloads are deleted without replacing an existing local file. The file is hashed again before installer launch. SHA-256 from the same release checks integrity; it is **not signed update metadata** and does not protect against compromise of the release account. GitHub account security and Windows publisher signing remain separate responsibilities.
+
+Windows asks for confirmation before opening the downloaded installer and closing the packaged app. Development builds can download but do not launch installers. Linux reveals the AppImage for manual replacement; users may need to allow execution in file properties. The app does not invoke a package manager, request elevation for normal use, clone the repository, run npm or embed a GitHub token. AppImage and Windows builds keep the stable profile across versions.
+
+Before a public release, follow [DESKTOP_ACCEPTANCE.md](DESKTOP_ACCEPTANCE.md), including a real older-version-to-newer-version upgrade on a disposable machine. Automated updater tests use fixtures and never execute an installer.
+
+## Windows signing
+
+Current builds are unsigned. To sign, obtain a trusted code-signing certificate or supported signing service in your own publisher identity; a self-signed development certificate does not provide public trust. Keep credentials out of the repository. Once credentials are available, configure the Windows packaging job using electron-builder's supported signing environment/settings and verify the resulting executable and installer with `Get-AuthenticodeSignature` before publishing. Record publisher, timestamp and status. Signing is not marked complete until a signed artifact is verified. No certificate has been supplied or configured here.
