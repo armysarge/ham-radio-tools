@@ -50,13 +50,37 @@ try {
   assert.equal(boundary.remoteBlocked, true)
   assert.equal(boundary.persistent, true)
   assert.deepEqual(errors, [])
+  await desktop.evaluate(({ BrowserWindow }) => { const win = BrowserWindow.getAllWindows()[0]; win.show(); win.setBounds({ x: 40, y: 50, width: 1000, height: 700 }) })
+  await page.getByRole('button', { name: 'Maximize window', exact: true }).click()
+  await page.getByRole('button', { name: 'Restore window', exact: true }).waitFor()
+  await page.getByRole('button', { name: 'Restore window', exact: true }).click()
+  await page.getByRole('button', { name: 'Maximize window', exact: true }).waitFor()
+  const bounds = await desktop.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].getBounds())
+  await page.getByRole('button', { name: 'Minimize window', exact: true }).click()
+  await desktop.evaluate(async ({ BrowserWindow }) => {
+    const win = BrowserWindow.getAllWindows()[0]
+    for (let i = 0; i < 30 && !win.isMinimized(); i++) await new Promise(resolve => setTimeout(resolve, 50))
+    if (!win.isMinimized()) throw new Error('Minimize control failed')
+    win.restore()
+  })
   await desktop.close(); desktop = undefined
   desktop = await _electron.launch({ args, executablePath, env })
   const reopened = await desktop.firstWindow()
   await reopened.getByRole('heading', { level: 1, name: 'Ham Radio Tools' }).waitFor()
   await reopened.goto(base + '#/saved')
   await reopened.getByText('Dipole 7.1 MHz').waitFor()
-  console.log(`PASS: Electron on ${process.platform}: startup, calculator, map, persistence across restart, isolated renderer and blocked external fetch`)
+  assert.deepEqual(await desktop.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].getBounds()), bounds, 'normal window bounds survive restart')
+  await desktop.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].show())
+  await reopened.getByRole('button', { name: 'Maximize window', exact: true }).click()
+  await reopened.getByRole('button', { name: 'Restore window', exact: true }).waitFor()
+  await desktop.close(); desktop = undefined
+  desktop = await _electron.launch({ args, executablePath, env })
+  const maximized = await desktop.firstWindow()
+  await maximized.getByRole('button', { name: 'Restore window', exact: true }).waitFor()
+  const closed = desktop.waitForEvent('close')
+  await maximized.getByRole('button', { name: 'Close window', exact: true }).click()
+  await closed; desktop = undefined
+  console.log(`PASS: Electron on ${process.platform}: offline tools, saved data, window controls, position/size/maximized restoration, isolated renderer and blocked external fetch`)
 } finally {
   await desktop?.close()
   await rm(profile, { recursive: true, force: true })

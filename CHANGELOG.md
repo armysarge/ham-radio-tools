@@ -5,6 +5,7 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 ## [0.3.0] - 2026-10-20
 
 ### Added
+- Desktop application/installer icons, custom draggable title bar and window controls; saved position, size and maximized state with off-screen recovery.
 - Electron desktop shell, local-only protocol, stable saved-data profile, explicit external-link and microphone prompts, desktop smoke test and Windows/Linux packaging configuration.
 - Version-tag release workflow builds web/demo zips and Windows/Linux installers, collects checksums and creates a draft release for review.
 

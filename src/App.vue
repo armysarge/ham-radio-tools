@@ -6,6 +6,7 @@ import { state } from './core/store'
 import NavIcon from './components/NavIcon.vue'
 import GithubLink from './components/GithubLink.vue'
 import ConsentBanner from './components/ConsentBanner.vue'
+import DesktopTitleBar from './components/DesktopTitleBar.vue'
 
 const route = useRoute(), router = useRouter()
 const q = ref(typeof route.query.q === 'string' ? route.query.q : '')
@@ -29,6 +30,7 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
 </script>
 
 <template>
+  <DesktopTitleBar />
   <a href="#main" class="sr-only">Skip to content</a>
   <div class="shell">
     <header class="topbar">

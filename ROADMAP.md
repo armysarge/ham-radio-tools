@@ -23,7 +23,8 @@ The desktop wrapper is **Electron**, following the request to test Electron. It 
 - [x] Windows NSIS and Linux AppImage/deb packaging configuration and release jobs.
 - [ ] Test installers on clean Windows and Linux machines with networking disabled, without Node.js installed.
 - [ ] Verify microphone, file import/export, printing and clipboard on each supported OS.
-- [ ] Windows code signing and final release artwork.
+- [x] Application icon, custom title bar and persistent window position, size and maximized state.
+- [ ] Windows code signing.
 - [ ] Explicit check/download/install update controls using GitHub Releases; no background checks.
 
 ## Reference and mapping improvements

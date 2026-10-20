@@ -21,7 +21,7 @@ npm run check:desktop
 
 For a packaged executable, set `HRT_DESKTOP_EXEC` to its absolute path and run `node scripts/check-desktop.mjs`. The same checks run against that executable with a disposable profile.
 
-This uses a temporary profile to test startup, a calculation, the bundled map, saved designs across an app restart, renderer isolation and a blocked external fetch. Your regular desktop data is untouched. Linux graphical tests need a display, for example `xvfb-run -a npm run check:desktop` in CI. Do not disable Electron's sandbox to work around a Linux configuration problem.
+This uses a temporary profile to test startup, a calculation, the bundled map, saved designs across an app restart, window controls, saved window bounds/maximized state, renderer isolation and a blocked external fetch. Your regular desktop data is untouched. Linux graphical tests need a display, for example `xvfb-run -a npm run check:desktop` in CI. Do not disable Electron's sandbox to work around a Linux configuration problem.
 
 ## Build an executable or installer
 
@@ -41,6 +41,12 @@ The second command builds installers for the current OS:
 
 Build Windows on Windows and Linux on Linux. The GitHub release workflow does this with separate runners. Default configuration is unsigned: Windows may display a reputation warning. Do not describe unsigned builds as signed or verified by Microsoft.
 
+## Window controls and appearance
+
+The desktop app uses the Ham Radio Tools icon and its own draggable title bar. Use its buttons to minimize, maximize/restore or close. Double-click the title area to maximize/restore. Normal window position, size and maximized state are saved in `window-state.json` in the profile below. A disconnected monitor or smaller screen causes the window to be brought back into the available work area. Minimized state is not restored.
+
+Icon assets are committed for packaging. To regenerate them from `public/app-icon.svg`, run `node scripts/build-icons.mjs` on a development machine with Microsoft Edge installed; release builds do not need Edge.
+
 ## Saved work
 
 Desktop data uses the stable origin `hrt://app` and a profile directory named `ham-radio-tools`:
@@ -52,7 +58,7 @@ It is separate from data on the hosted demo. Export a project JSON and an ADIF l
 
 ## Security and networking
 
-The renderer is sandboxed, uses context isolation and has no Node.js API or preload bridge. Only bundled app files can load through its custom protocol. HTTP requests from the app session are blocked. Spellchecking is disabled to prevent automatic dictionary downloads. Clicking an external reference prompts before opening the system browser. Microphone requests prompt separately. There is no updater yet; download and install a newer release manually.
+The renderer is sandboxed, uses context isolation and has no Node.js API. A narrow preload bridge exposes only window controls and window state. Only bundled app files can load through its custom protocol. HTTP requests from the app session are blocked. Spellchecking is disabled to prevent automatic dictionary downloads. Clicking an external reference prompts before opening the system browser. Microphone requests prompt separately. There is no updater yet; download and install a newer release manually.
 
 The implementation follows [Electron's security guidance](https://www.electronjs.org/docs/latest/tutorial/security). Packaging uses [electron-builder](https://www.electron.build/configuration/). Vite bundles Vue and the tools; Electron packages the runtime, `dist/`, the desktop entry files and licences. Users do not run `npm install` inside a release.
 

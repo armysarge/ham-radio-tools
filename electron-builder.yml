@@ -6,6 +6,7 @@ directories:
 files:
   - dist/**
   - desktop/*.cjs
+  - desktop/assets/**
   - package.json
   - LICENSE
   - THIRD_PARTY_NOTICES.txt
@@ -13,13 +14,17 @@ files:
   - '!node_modules/**/*'
 artifactName: ham-radio-tools-${version}-${os}-${arch}.${ext}
 win:
+  icon: desktop/assets/icon.ico
   target: nsis
 nsis:
+  installerIcon: desktop/assets/icon.ico
+  uninstallerIcon: desktop/assets/icon.ico
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
   deleteAppDataOnUninstall: false
 linux:
+  icon: desktop/assets/icon.png
   target: [AppImage, deb]
   category: HamRadio
   maintainer: ZS6SHZ <shauns@jasper.co.za>
