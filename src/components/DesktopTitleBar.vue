@@ -31,12 +31,12 @@ onUnmounted(() => { unsubscribe?.(); document.documentElement.classList.remove('
 .desktop-controls button:hover{background:var(--line)}
 .desktop-controls .desktop-close:hover{background:#c42b35;color:white}
 .desktop-controls svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.2}
-.desktop-app body{padding-top:44px}
-.desktop-app .shell{min-height:calc(100vh - 44px)}
-.desktop-app .topbar{top:44px}
-.desktop-app .sidebar{top:105px;height:calc(100vh - 105px)}
+.desktop-app,.desktop-app body{height:100%;overflow:hidden}
+.desktop-app .shell{position:absolute;inset:44px 0 0;min-height:0;overflow:auto}
+.desktop-app .topbar{top:0}
+.desktop-app .sidebar{top:61px;height:calc(100vh - 105px)}
 @media(max-width:900px){.desktop-app .sidebar{top:44px;height:auto}.desktop-app .backdrop{top:44px}}
-@media print{.desktop-titlebar{display:none}.desktop-app body{padding-top:0}}
+@media print{.desktop-titlebar{display:none}.desktop-app,.desktop-app body{height:auto;overflow:visible}.desktop-app .shell{position:static;overflow:visible}}
 </style>
 
 

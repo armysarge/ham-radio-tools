@@ -29,6 +29,17 @@ try {
   page.on('pageerror', (e) => errors.push(e.message))
   page.on('request', (request) => { if (/^https?:/.test(request.url())) externalRequests.push(request.url()) })
   await page.getByRole('heading', { level: 1, name: 'Ham Radio Tools' }).waitFor()
+  const initial = await desktop.evaluate(({ BrowserWindow, screen }) => ({ bounds: BrowserWindow.getAllWindows()[0].getBounds(), area: screen.getPrimaryDisplay().workArea }))
+  assert(Math.abs(initial.bounds.x - (initial.area.x + (initial.area.width - initial.bounds.width) / 2)) <= 1, 'first launch is horizontally centred')
+  assert(Math.abs(initial.bounds.y - (initial.area.y + (initial.area.height - initial.bounds.height) / 2)) <= 1, 'first launch is vertically centred')
+  const layout = await page.evaluate(() => {
+    const shell = document.querySelector('.shell')
+    const close = document.querySelector('[aria-label="Close window"]')
+    return { rootOverflow: getComputedStyle(document.documentElement).overflowY, scrollTop: shell.getBoundingClientRect().top, closeRight: close.getBoundingClientRect().right, width: innerWidth }
+  })
+  assert.equal(layout.rootOverflow, 'hidden', 'no root scrollbar beside the window controls')
+  assert.equal(layout.scrollTop, 44, 'page scrolling begins below the title bar')
+  assert.equal(layout.closeRight, layout.width, 'close button reaches the window edge')
   const base = 'hrt://app/'
   await page.goto(base + '#/tool/frequency-wavelength')
   await page.getByText('21.11', { exact: true }).waitFor()
