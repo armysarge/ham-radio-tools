@@ -41,6 +41,8 @@ Reconnect only after offline checks. Publish a test stable release with the exac
 
 ## Record the result
 
+`npm run report:desktop` (after `npm run desktop:dist`) writes `desktop-out/acceptance-<version>-<os>.md` with the installer's SHA-256, size, signature status and build-machine details already filled in, and every manual row set to **not tested**. Copy it to the test machine's notes and complete the rest by hand.
+
 Copy this table into the release notes or a dated report. Use **pass**, **fail**, **not tested**, or **not applicable**, with evidence. Never convert an untested row to a pass because the app compiled.
 
 | Field | Result |

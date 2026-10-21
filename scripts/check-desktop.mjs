@@ -85,6 +85,11 @@ try {
   await page.goto(base + '#/tool/maidenhead')
   await page.locator('.map path.land').waitFor()
   assert((await page.locator('.map path.land').getAttribute('d')).length > 20000)
+  // The propagation engine and its coefficient data load lazily from the bundle, with no network.
+  await page.goto(base + '#/tool/propagation-report')
+  await page.locator('td[role="gridcell"]').first().waitFor({ timeout: 30000 })
+  assert.equal(await page.locator('td[role="gridcell"]').count(), 8 * 24, 'propagation report renders its band-by-hour grid')
+  assert.doesNotMatch(await page.locator('table.heat').innerText(), /NaN/)
   await page.goto(base + '#/tool/dipole')
   await page.getByRole('button', { name: 'Save design' }).click()
   const pdf = await desktop.evaluate(async ({ BrowserWindow }) => {
