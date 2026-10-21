@@ -4,11 +4,16 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+### Added
 - Added new feature for proper propagation reporting using DVOACAP engine.
 - Added a clear download page with links to the demo for the github releases.
-- Improved the UI on some pages.
-- Fixed an issue with maps having selectable text.
 - Added more amateur bands (6m, etc) to various band plans
+
+### Fixed
+- Fixed an issue with maps having selectable text.
+
+### Changed
+- Improved the UI on some pages.
 - Improved the band plans UI for better readability and usability.
 - Removed various 'Analytical', 'Design estimate', 'Reference', etc label elements from the UI.
 - Removed top menu 'Works offline' element.
