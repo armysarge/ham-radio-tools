@@ -2,6 +2,19 @@
 
 All notable changes are listed here, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) (while below 1.0, a minor bump may include breaking changes to saved data formats; those are always called out).
 
+## [Unreleased]
+
+- Added new feature for proper propagation reporting using DVOACAP engine.
+- Added a clear download page with links to the demo for the github releases.
+- Improved the UI on some pages.
+- Fixed an issue with maps having selectable text.
+- Added more amateur bands (6m, etc) to various band plans
+- Improved the band plans UI for better readability and usability.
+- Removed various 'Analytical', 'Design estimate', 'Reference', etc label elements from the UI.
+- Removed top menu 'Works offline' element.
+- Updated the favourite button to just have a star icon.
+- Improved side menu for better navigation and usability.
+
 ## [0.3.1] - 2026-10-20
 
 ### Fixed

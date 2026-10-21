@@ -109,7 +109,7 @@ export const tools: ToolDef[] = [
   { id: 'maidenhead', title: 'Grid Squares, Distance & Bearing', category: 'maps', kind: 'analytical',
     summary: 'Coordinates ↔ Maidenhead locators on an offline world map, with beam heading.',
     keywords: ['locator', 'qth', 'grid', 'bearing', 'distance', 'great circle', 'map', 'latitude'], component: load(() => import('../tools/Maidenhead.vue')) },
-  { id: 'propagation-report', title: 'Propagation Report (DVOACAP)', category: 'prop', kind: 'empirical',
+  { id: 'propagation-report', title: 'Propagation Report', category: 'prop', kind: 'empirical',
     summary: 'Band-by-hour reliability between two locations (grid squares or coordinates) from a built-in port of the DVOACAP/VOACAP model, with MUF, SNR and path mode.',
     keywords: ['voacap', 'dvoacap', 'reliability', 'band conditions', 'muf', 'path', 'prediction', 'forecast', 'hf', 'dx', 'circuit', 'sunspot', 'ssn', 'heatmap'], component: load(() => import('../tools/PropagationReport.vue')) },
   { id: 'propagation', title: 'Propagation Basics', category: 'prop', kind: 'analytical',

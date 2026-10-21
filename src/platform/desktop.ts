@@ -6,6 +6,7 @@ export interface DesktopControls {
   toggleMaximize(): void
   close(): void
   getState(): Promise<DesktopWindowState>
+
   copyText(text: string): Promise<void>
   saveFile(name: string, bytes: Uint8Array): Promise<void>
   checkUpdate(): Promise<UpdateResult>
