@@ -128,6 +128,7 @@ Band-plan pack format (`data.segments`): `{ "band": "20 m", "fromHz": 14000000, 
 | Battery & solar | Wh = A·h·V; panel = Wh/(sun hours × efficiency) | Planning figures; weather, ageing and temperature are not modelled |
 | Yagi / quad | Rule-of-thumb proportions (reflector +5 %, director −5 %; quad 1005/1030/975 per f) | Empirical starting point: **no gain or pattern is claimed** |
 | Logbook | ADIF 3.1.4 fields, ASCII only; duplicate = call + band + mode + UTC day | Stored in this browser: export regularly; no DXCC entity is written |
+| Propagation report | DVOACAP (VE3NEA, MIT), a reimplementation of the VOACAP/ITS model, translated to TypeScript: CCIR/URSI Fourier ionospheric maps, ray-mode search, absorption/ground/spreading loss, ITU-R P.372 noise, monthly median reliability | Matches DVOACAP's own sample output to the printed digit (about 8 000 values, `tests/voacap.test.ts`). Monthly median for the SSN you enter; no sporadic E; constant-gain antennas; the 7 000 km+ long-path model is checked for sanity only |
 | Propagation | NOAA solar position (~1 min); MUF = foF2·sec θ on a spherical Earth | foF2 must be supplied; no D-layer absorption, no forecast |
 | Satellite passes | SGP4 via satellite.js 6 (MIT) from a pasted TLE | Accuracy depends on the age of the element set; no Doppler; passes in progress at the end of the window are not listed |
 | DIY components | C = ε₀εᵣA/d; Wheeler air coil; N = √(L/AL); resistor arrays for 50 Ω | Home-made parts vary ±20 % or more; fringing ignored; plastic-film thickness must be measured; air-gap voltage ceiling is one-fifth of dry-air breakdown |
@@ -148,6 +149,7 @@ Band-preset buttons are convenience design frequencies, **not** a band plan; all
 ## Architecture
 
 ```
+src/lib/voacap/ DVOACAP port: types, geo, maps, iono, muf, reflectrix, noise, engine, and generated coefficient data (scripts/build-voacap-data.mjs)
 src/lib/        pure logic (rf, antenna, maidenhead, geo, units, morse, callsign, qrm, packs, project, scheduleImport, station, beams, log, trainer, timers, propagation, sat) — no Vue, fully unit-tested
 src/data/       dated reference data kept apart from logic (Q codes, ITU bands, CTCSS, constants, callsign blocks, time stations, antenna mods, materials, toroid cores, QRM sources)
 src/core/       registry.ts (typed tool list, categories, search) · store.ts (settings, favorites, locations, designs → localStorage) · packs.ts (content packs → IndexedDB)

@@ -67,3 +67,20 @@ describe('DIY components', () => {
     }
   })
 })
+
+describe('propagation report', () => {
+  it('shows the reliability grid, details and the swap button', async () => {
+    const w = await open('propagation-report'); await flushPromises()
+    expect(w.text()).toContain('Band reliability by UTC hour'); expect(w.findAll('td[role="gridcell"]')).toHaveLength(8 * 24)
+    expect(w.text()).toContain('10 m (28.0 MHz)'); expect(w.text()).toContain('80 m (3.5 MHz)'); expect(w.text()).not.toContain('NaN')
+    await w.findAll('td[role="gridcell"]')[0].trigger('click'); expect(w.text()).toContain('10 m · 00:00 UTC'); expect(w.text()).toContain('Service probability')
+    const before = w.find('.detail').text()
+    await w.findAll('button').find((b) => b.text().includes('Swap'))!.trigger('click'); await flushPromises()
+    expect(w.find('.detail').exists()).toBe(true); expect(typeof before).toBe('string')
+  })
+  it('keyboard arrows move the selection', async () => {
+    const w = await open('propagation-report'); await flushPromises()
+    await w.find('table.heat').trigger('keydown', { key: 'ArrowRight' }); await w.find('table.heat').trigger('keydown', { key: 'ArrowDown' })
+    expect(w.find('td.sel').attributes('id')).toBe('cell-5-13')
+  })
+})

@@ -27,6 +27,7 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 ## [0.2.0] - 2026-10-19
 
 ### Added
+- Propagation Report: band-by-UTC-hour reliability heat map between two locations (grid square or coordinates, saved locations, swap, short or long path), with operating-mode thresholds, antenna gain, noise environment, circuit-MUF chart and a map. Runs a TypeScript port of the DVOACAP engine (MIT, VE3NEA) with the CCIR/URSI ionospheric data, offline; checked against DVOACAP's own sample output.
 - DIY Components page: air-core coil, toroid, foil-and-film capacitor, air-variable capacitor, dummy load and ferrite choke, each with a drawing, sizes, test steps and safety notes.
 - Search and social metadata: description, Open Graph and Twitter cards with a generated preview image, canonical link, JSON-LD (WebSite, WebApplication, SoftwareSourceCode), robots.txt and sitemap; per-tool title and description at run time.
 - Anti-framing: `frame-ancestors` headers (preview server and `_headers` file) plus an in-page guard; allowed embedding sites are set in `ALLOWED_FRAME_ANCESTORS` in `.env`.

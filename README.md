@@ -16,7 +16,7 @@ Ham Radio Tools is a free, open-source collection of practical tools for radio a
 | Maps | Offline world map, Maidenhead grids, saved locations, distance and bearing |
 | Operating | Band tables, callsign lookup, Q codes, phonetics, CTCSS, clocks and timers |
 | CW & logging | Morse player and trainer, experimental decoder, logbook with ADIF import/export |
-| Listening & propagation | QRM hunting and a sniffer-loop build guide, broadcast schedules, grey line, MUF estimates and satellite passes from your own TLE |
+| Listening & propagation | QRM hunting and a sniffer-loop build guide, broadcast schedules, grey line, MUF estimates, a band-by-hour **propagation report** between two places (built-in DVOACAP model, offline) and satellite passes from your own TLE |
 | DIY components | Build coils, capacitors, dummy loads and ferrite chokes with illustrated instructions |
 
 Search for a tool, add favourites, choose Metric or Imperial, and switch between light and dark themes. Open **Show** below a tool for its explanation and references.

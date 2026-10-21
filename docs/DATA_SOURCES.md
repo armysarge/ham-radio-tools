@@ -57,3 +57,9 @@ Limits to be aware of (also listed per source in `sources.json`):
 - **Toroid AL values** (`src/data/cores.ts`): typical catalogue figures for Amidon / Micrometals iron-powder (T-xx-2, -6) and ferrite (FT-xx-43, -61) cores, rounded; tolerance ±10–25 %. Not compiled from a single document: check a supplier datasheet when buying a core.
 - **Cable loss presets** (`src/tools/FeedlineLoss.vue`): approximate dB per 100 ft at 100 MHz for RG-174, RG-58, RG-8X, RG-213 and LMR-400 types; users should enter their datasheet value.
 - **Satellite elements** are never bundled; users paste a TLE from CelesTrak, AMSAT or Space-Track.
+
+## Propagation model data (DVOACAP)
+
+- **Engine and data:** DVOACAP by Alex Shovkoplyas VE3NEA, <https://github.com/VE3NEA/DVOACAP>, MIT licence (copyright 2025). The engine is translated to TypeScript in `src/lib/voacap/`; the monthly CCIR/URSI coefficient files (`DVoaData/Coeff01..12.dat`, `FOF2CCIR01..12.dat`, 556 608 bytes) are packed into `src/lib/voacap/coeffs.ts` by `node scripts/build-voacap-data.mjs <DVOACAP checkout>`; each month's SHA-256 prefix is recorded in the generated file's header.
+- **To update:** re-run the packer on a newer DVOACAP checkout, then run `npm test`: `tests/voacap.test.ts` compares the port with DVOACAP's `SampleIO` output (kept in `tests/fixtures/dvoacap/`).
+- **Not bundled:** the sunspot number. The report asks for it; it is never fetched.

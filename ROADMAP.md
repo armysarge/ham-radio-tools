@@ -10,7 +10,7 @@ Working features and future plans are tracked separately. A packaged build alone
 - [x] Offline map, Maidenhead, bearings and saved station locations.
 - [x] Station calculators, battery/solar planning and DIY components.
 - [x] Morse tools and Koch trainer, clocks/timers and ADIF logbook.
-- [x] Propagation basics and satellite passes from imported elements.
+- [x] Propagation basics, satellite passes from imported elements and a band-by-hour propagation report (DVOACAP engine, offline).
 - [x] National band tables, reference tools, QRM guide and dated content packs.
 - [x] Project import/export and a repeatable web offline acceptance check.
 
