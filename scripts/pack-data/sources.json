@@ -163,6 +163,26 @@
         }
       ],
       "gaps": "Ato 3448/2026 (11 Mar 2026) consolidates operational rules and exams and was not read; check whether it changes bands, classes or power. Repeater and IVG channelisation not reproduced. Anatel says the site text does not replace the Diario Oficial publication."
+    },
+    {
+      "pack": "itu-overview",
+      "jurisdiction": "ITU Regions 1, 2 and 3",
+      "publisher": "ITU international table reproduced by FCC/eCFR",
+      "document": "47 CFR 2.106: international allocations and footnotes 5.67A/B, 5.80A/B and 5.164–5.170",
+      "version": "eCFR title 47 current to 2026-10-21",
+      "officialUrl": "https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-2/subpart-B/section-2.106",
+      "retrieved": "2026-10-23",
+      "licence": "US federal regulation reproduction (public domain)",
+      "reviewEveryDays": 180,
+      "extraction": "Simplified international overview in src/data/reference.ts. Added LF/MF and region-specific 6 m entries; country exceptions remain in notes. National packs are separate and not expanded by inference.",
+      "check": [
+        {
+          "url": "https://www.ecfr.gov/api/versioner/v1/full/{ecfrDate}/title-47.xml?part=2&section=2.106",
+          "kind": "text",
+          "sha256": "2e1ae071cafe987f81d647e941390899204102ae0fb10eb98547e07a29eb1b09"
+        }
+      ],
+      "gaps": "Simplified overview only: manually review the international table, country exclusions and national authorizations. The hash includes other FCC footnotes and may change for unrelated reasons."
     }
   ],
   "notIncluded": [

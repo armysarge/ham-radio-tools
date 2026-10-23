@@ -60,11 +60,13 @@ export const CONSTANTS: Constant[] = [
 
 // ITU Radio Regulations Article 5 amateur allocations, simplified: one row per band and region.
 // Region 1 = Europe, Africa, Middle East, former USSR; Region 2 = the Americas; Region 3 = most of Asia and Oceania.
-export const ITU_META: Meta = { source: 'ITU Radio Regulations, Article 5 (frequency allocations), simplified to amateur bands', revision: '2026-10-19',
+export const ITU_META: Meta = { source: 'ITU Radio Regulations, Article 5; international table and footnotes reproduced in 47 CFR 2.106. Simplified amateur overview.', revision: '2026-10-23',
   note: 'Simplified overview. National rules are narrower or different, many bands are shared with other services, and footnotes add conditions. Always check the current Radio Regulations and your licence.' }
 export interface ItuBand { band: string; region: 1 | 2 | 3; fromHz: number; toHz: number; status: 'primary' | 'secondary' | 'shared'; note?: string }
 const all = (band: string, f: number, t: number, status: ItuBand['status'], note?: string): ItuBand[] => [1, 2, 3].map((r) => ({ band, region: r as 1 | 2 | 3, fromHz: f, toHz: t, status, note }))
 export const ITU_BANDS: ItuBand[] = [
+  ...all('2200 m', 135.7e3, 137.8e3, 'secondary', 'RR 5.67A/B: 1 W EIRP; country exclusions and radionavigation protection apply. National authorization required.'),
+  ...all('630 m', 472e3, 479e3, 'secondary', 'RR 5.80A/B: normally 1 W EIRP, up to 5 W where permitted; geographic protection and country exclusions apply.'),
   { band: '160 m', region: 1, fromHz: 1.81e6, toHz: 2.0e6, status: 'shared', note: 'Shared with other services; upper part depends on national rules' },
   { band: '160 m', region: 2, fromHz: 1.8e6, toHz: 2.0e6, status: 'shared' },
   { band: '160 m', region: 3, fromHz: 1.8e6, toHz: 2.0e6, status: 'shared' },
@@ -81,6 +83,9 @@ export const ITU_BANDS: ItuBand[] = [
   ...all('15 m', 21.0e6, 21.45e6, 'primary'),
   ...all('12 m', 24.89e6, 24.99e6, 'primary'),
   ...all('10 m', 28.0e6, 29.7e6, 'primary'),
+  { band: '6 m', region: 1, fromHz: 50e6, toHz: 52e6, status: 'secondary', note: 'WRC-19 baseline. RR 5.164–5.169B include country exceptions, different primary segments and broadcasting protection. Some national plans extend to 54 MHz; this row is not worldwide permission.' },
+  { band: '6 m', region: 2, fromHz: 50e6, toHz: 54e6, status: 'primary', note: 'Country footnotes and national licensing conditions still apply.' },
+  { band: '6 m', region: 3, fromHz: 50e6, toHz: 54e6, status: 'primary', note: 'Primary amateur allocation baseline; country footnotes include different service categories and broadcasting/fixed/mobile uses. Check the national table.' },
   { band: '2 m', region: 1, fromHz: 144e6, toHz: 146e6, status: 'primary' },
   { band: '2 m', region: 2, fromHz: 144e6, toHz: 148e6, status: 'primary' },
   { band: '2 m', region: 3, fromHz: 144e6, toHz: 148e6, status: 'primary' },

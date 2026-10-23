@@ -110,10 +110,28 @@ await step('schedule: convert a text file to a pack, install it, find it in Broa
   await page.getByRole('status').getByText(/more than 45 days old/).waitFor() // revision 2026-01-01 is well over 45 days old
   await page.goto(base + '#/settings'); await page.getByRole('button', { name: /Remove EiBi shortwave schedule/ }).click()
 })
+await step('downloads, clean tool headers, band filtering and non-selectable map labels', async () => {
+  await page.goto(base + '#/downloads')
+  await page.getByRole('heading', { name: 'Download Ham Radio Tools' }).waitFor()
+  const win = await page.getByRole('link', { name: 'Download Windows', exact: true }).getAttribute('href')
+  if (!/github\.com\/armysarge\/ham-radio-tools\/releases\/download\/v[\d.]+\/ham-radio-tools-[\d.]+-win-x64\.exe$/.test(win)) throw new Error('incorrect Windows release link')
+  await page.goto(base + '#/tool/band-plans')
+  await page.getByLabel('Filter by band').selectOption('6 m')
+  const table = await page.locator('.band-table').innerText()
+  if (!table.includes('50–52') || table.includes('14–14.35')) throw new Error('band filter did not isolate Region 1 six metres')
+  if (await page.locator('.tool-head .kind, .badge-offline').count()) throw new Error('classification or offline badge remains')
+  const favorite = page.locator('.tool-head button[aria-pressed]')
+  if (!/^[★☆]$/.test((await favorite.innerText()).trim())) throw new Error('favorite should be icon only')
+  await page.goto(base + '#/tool/maidenhead')
+  await page.locator('.map svg text').first().waitFor()
+  if (await page.locator('.map svg text').first().evaluate(el => getComputedStyle(el).userSelect) !== 'none') throw new Error('map labels can still be selected')
+  await page.locator('.map svg').focus()
+  await page.keyboard.press('ArrowRight')
+})
 await step('no uncaught errors', async () => { if (errors.length) throw new Error(errors.join(' | ')) })
 await step('phone width (375px): no horizontal overflow on any page, menu drawer opens', async () => {
   const m = await ctx.newPage(); await m.setViewportSize({ width: 375, height: 812 })
-  const routes = ['', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/components', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/efhw', 'tool/jpole', 'tool/vertical', 'tool/loop', 'tool/maidenhead', 'tool/q-codes', 'tool/band-plans', 'tool/itu-regulations', 'tool/ctcss', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'tool/feedline-loss', 'tool/link-budget', 'tool/l-network', 'tool/low-pass-filter', 'tool/coils', 'tool/power-planner', 'tool/yagi', 'tool/quad', 'tool/radial-planner', 'tool/logbook', 'tool/clock', 'tool/morse-trainer', 'tool/propagation', 'tool/propagation-report', 'tool/satellite-passes', 'tool/diy-components', 'settings', 'saved']
+  const routes = ['', 'downloads', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/components', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/efhw', 'tool/jpole', 'tool/vertical', 'tool/loop', 'tool/maidenhead', 'tool/q-codes', 'tool/band-plans', 'tool/itu-regulations', 'tool/ctcss', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'tool/feedline-loss', 'tool/link-budget', 'tool/l-network', 'tool/low-pass-filter', 'tool/coils', 'tool/power-planner', 'tool/yagi', 'tool/quad', 'tool/radial-planner', 'tool/logbook', 'tool/clock', 'tool/morse-trainer', 'tool/propagation', 'tool/propagation-report', 'tool/satellite-passes', 'tool/diy-components', 'settings', 'saved']
   const bad = []
   for (const r of routes) { await m.goto(base + '#/' + r); await m.waitForTimeout(400); const w = await m.evaluate(() => [document.documentElement.scrollWidth, innerWidth]); if (w[0] > w[1]) bad.push(r + ' ' + w.join('>')) }
   if (bad.length) throw new Error('overflow: ' + bad.join(', '))

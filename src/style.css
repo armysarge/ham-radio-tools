@@ -24,7 +24,7 @@ button:hover { border-color: var(--accent); }
 button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
 button.ghost { border-color: transparent; background: transparent; }
 button[aria-pressed='true'] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-input[type='text'], input:not([type]), input[type='date'], input[type='time'], input[type='datetime-local'], select, textarea { min-height: 44px; padding: .35rem .6rem; border: 1.5px solid var(--line); border-radius: 8px; background: var(--panel); width: 100%; }
+input[type='text'], input[type='search'], input:not([type]), input[type='date'], input[type='time'], input[type='datetime-local'], select, textarea { min-height: 44px; padding: .35rem .6rem; border: 1.5px solid var(--line); border-radius: 8px; background: var(--panel); width: 100%; }
 input[type='text'].mono { font-family: var(--mono); }
 input[aria-invalid='true'] { border-color: var(--bad); }
 input[type='range'] { width: 100%; height: 32px; accent-color: var(--accent); }
@@ -100,7 +100,7 @@ svg.diagram { width: 100%; height: auto; display: block; }
 .dg-curve2 { stroke: var(--wire); fill: none; stroke-width: 2.5; stroke-dasharray: 7 4; }
 .dg-mark { fill: var(--wire); stroke: var(--bg); stroke-width: 2; }
 .dg-tick { fill: var(--muted); font-size: 12px; font-family: var(--font); }
-.map { border: 1.5px solid var(--line); border-radius: var(--radius); overflow: hidden; touch-action: none; background: var(--sea); }
+.map { border: 1.5px solid var(--line); border-radius: var(--radius); overflow: hidden; touch-action: none; background: var(--sea); user-select:none; -webkit-user-select:none; }
 .map svg { display: block; width: 100%; aspect-ratio: 2 / 1; cursor: grab; }
 .map .land { fill: var(--land); stroke: var(--grid); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .map .gridline { stroke: var(--grid); stroke-width: 1; opacity: .55; vector-effect: non-scaling-stroke; }
@@ -158,6 +158,16 @@ svg.diagram { width: 100%; height: auto; display: block; }
 
 .gh-link { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; min-width: 44px; justify-content: center; color: var(--ink); text-decoration: none; border-radius: 8px; padding: 0 .4rem; }
 .gh-link:hover { color: var(--accent); background: var(--panel2); }
+.favorite-icon{width:44px;height:44px;min-width:44px;padding:0;flex:none;font-size:1.6rem;line-height:1}
+.nav-groups-heading{display:flex;align-items:center;justify-content:space-between;gap:.4rem;margin:.9rem .3rem .3rem;color:var(--muted);font-size:.8rem}
+.nav-groups-heading button{padding:.15rem .35rem;font-size:.75rem;min-height:32px}
+.sidebar details{border-bottom:1px solid var(--line);padding:.2rem 0}
+.sidebar summary::after{content:'›';margin-left:auto;font-size:1.3rem;color:var(--muted)}
+.sidebar details[open]>summary::after{transform:rotate(90deg)}
+.sidebar details>a{margin-left:.45rem;border-left:2px solid transparent;border-radius:0 6px 6px 0}
+.sidebar details>a.router-link-exact-active{border-left-color:var(--accent);background:var(--panel2);color:var(--ink);font-weight:650}
+.map svg,.map svg *{user-select:none;-webkit-user-select:none}
+@media(max-width:700px){.brand-name{display:none}.topbar .brand{flex:0 0 auto}}
 .gh-text { font-size: .95rem; text-decoration: underline; text-underline-offset: 3px; }
 
 /* ---- “expandable” sections: look like something you can open downward ---- */

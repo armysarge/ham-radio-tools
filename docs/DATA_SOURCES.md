@@ -40,6 +40,8 @@ Limits to be aware of (also listed per source in `sources.json`):
 
 ## Updating a pack (the routine)
 
+The simplified ITU overview is maintained separately in `src/data/reference.ts`. Its 2026-10-23 additions (2200 m, 630 m and 6 m) were checked against the international allocations/footnotes reproduced in [47 CFR 2.106](https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-2/subpart-B/section-2.106), current to 2026-10-21. `scripts/pack-data/sources.json` records the official XML fingerprint as `itu-overview`. Country exceptions are summarized, not removed: Region 1 six metres uses the 50–52 MHz secondary baseline, while some national authorizations are primary or extend to 54 MHz. Region 3 has alternative allocations and sharing footnotes. National packs already contain 6 m and retain their own source/revision dates. A regional overview never grants permission to transmit.
+
 1. `npm run check:sources` and read the report. Open the official document for anything `CHANGED`, or when its review date has passed.
 2. Edit that country's table in [`scripts/build-packs.mjs`](../scripts/build-packs.mjs). The Germany and Brazil tables are parsed into `scripts/pack-data/*.json` first; the other countries' rows are in the script.
 3. Bump `REVISION` in the script, then `npm run build:packs` (rewrites `src/data/packs/*.json`).

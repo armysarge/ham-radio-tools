@@ -16,6 +16,7 @@ const router = createRouter({
     { path: '/', component: () => import('./views/Dashboard.vue') },
     { path: '/settings', component: () => import('./views/Settings.vue') },
     { path: '/saved', component: () => import('./views/SavedDesigns.vue') },
+    { path: '/downloads', component: () => import('./views/Downloads.vue'), meta: { title: 'Downloads', summary: 'Windows, Linux and web downloads for Ham Radio Tools, plus the online demo.' } },
     ...tools.map((t) => ({ path: `/tool/${t.id}`, component: t.component, meta: { title: t.title, summary: t.summary } })),
     { path: '/:pathMatch(.*)*', component: () => import('./views/NotFound.vue') },
   ],

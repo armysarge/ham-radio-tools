@@ -22,6 +22,12 @@ jobs:
           test "$VERSION" = "$(node -p "require('./package.json').version")"
           awk -v v="$VERSION" 'index($0, "## [" v "]") == 1 {f=1; next} /^## \[/ {f=0} f' CHANGELOG.md > NOTES.md
           test -s NOTES.md
+          cat >> NOTES.md <<'EOF'
+
+          ### Try or download
+          - [Downloads and installation guide](https://hamradiotools.armysarge.co.za/#/downloads)
+          - [Open the browser demo](https://hamradiotools.armysarge.co.za/)
+          EOF
       - run: npm test
       - run: npm run build
       - run: npm run check:offline

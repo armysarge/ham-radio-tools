@@ -14,6 +14,15 @@ const version = __APP_VERSION__
 const menu = ref(false)
 const searchEl = ref<HTMLInputElement>()
 const favTools = computed(() => tools.filter((t) => state.favorites.includes(t.id)))
+const expanded = ref<string[]>(['rf'])
+function toggleGroup(id: string, e: Event) {
+  const open = (e.target as HTMLDetailsElement).open
+  expanded.value = open ? [...new Set([...expanded.value, id])] : expanded.value.filter(x => x !== id)
+}
+watch(() => route.path, path => {
+  const tool = tools.find(t => path === `/tool/${t.id}`)
+  if (tool && !expanded.value.includes(tool.category)) expanded.value.push(tool.category)
+}, { immediate: true })
 
 watch(q, (v) => router.replace({ path: '/', query: v ? { q: v } : {} }))
 watch(() => route.fullPath, () => { menu.value = false })
@@ -35,9 +44,9 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
   <div class="shell">
     <header class="topbar">
       <button class="menu-btn" aria-label="Toggle navigation menu" :aria-expanded="menu" @click="menu = !menu">☰ Menu</button>
-      <router-link to="/" class="brand">
+      <router-link to="/" class="brand" aria-label="Ham Radio Tools home">
         <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6" fill="#f2b84b" /><path d="M4 16h5l3-9 5 18 3-9h8" fill="none" stroke="#11161b" stroke-width="2.5" /></svg>
-        Ham Radio Tools
+        <span class="brand-name">Ham Radio Tools</span>
       </router-link>
       <input ref="searchEl" v-model="q" class="search" type="text" placeholder="Search tools — press / to jump here" aria-label="Search tools" />
       <select v-model="state.units" class="unit-select" aria-label="Measurement system"><option value="metric">Metric</option><option value="imperial">Imperial</option></select>
@@ -45,7 +54,6 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
         {{ state.theme === 'system' ? '◐ Auto' : state.theme === 'light' ? '☀ Light' : '☾ Dark' }}
       </button>
       <GithubLink />
-      <span class="badge-offline" title="No network access is used by this app">Works offline</span>
     </header>
 
     <div class="backdrop" :class="{ on: menu }" @click="menu = false"></div>
@@ -57,13 +65,15 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
           <div class="group-title">Favorites</div>
           <router-link v-for="t in favTools" :key="'f' + t.id" :to="`/tool/${t.id}`"><NavIcon name="star" />{{ t.title }}</router-link>
         </template>
-        <details v-for="c in CATEGORIES" :key="c.id" open>
+        <div class="nav-groups-heading"><span>Browse tools</span><button class="ghost" :aria-label="expanded.length ? 'Collapse all tool categories' : 'Expand all tool categories'" @click="expanded = expanded.length ? [] : CATEGORIES.map(c => c.id)">{{ expanded.length ? 'Collapse all' : 'Expand all' }}</button></div>
+        <details v-for="c in CATEGORIES" :key="c.id" :open="expanded.includes(c.id)" @toggle="toggleGroup(c.id, $event)">
           <summary><NavIcon :name="CATEGORY_ICON[c.id]" />{{ c.name }}</summary>
-          <router-link v-for="t in tools.filter((x) => x.category === c.id)" :key="t.id" :to="`/tool/${t.id}`"><NavIcon :name="iconFor(t.id)" />{{ t.title }}</router-link>
+          <router-link v-for="t in tools.filter((x) => x.category === c.id)" :key="t.id" :to="`/tool/${t.id}`" :title="t.summary"><NavIcon :name="iconFor(t.id)" />{{ t.title }}</router-link>
         </details>
         <div class="group-title">Your data</div>
         <router-link to="/saved"><NavIcon name="saved" />Saved designs</router-link>
         <router-link to="/settings"><NavIcon name="settings" />Settings &amp; content</router-link>
+        <router-link to="/downloads"><NavIcon name="saved" />Download the app</router-link>
         <p class="muted" style="font-size:.8rem;margin:.8rem .6rem">Ham Radio Tools v{{ version }} · by ZS6SHZ</p>
         <div style="margin:0 .6rem"><GithubLink label /></div>
       </nav>

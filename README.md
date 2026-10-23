@@ -1,6 +1,6 @@
 <p align="center"><img src="docs/logo.svg" alt="Ham Radio Tools" width="336" /></p>
 <p align="center"><b>Your amateur-radio workbench: calculate, design, build and operate.</b></p>
-<p align="center"><a href="https://hamradiotools.armysarge.co.za/">Try it in your browser</a> · <a href="https://github.com/armysarge/ham-radio-tools/releases">Downloads</a> · <a href="ROADMAP.md">Roadmap</a></p>
+<p align="center"><a href="https://hamradiotools.armysarge.co.za/">Try it in your browser</a> · <a href="https://hamradiotools.armysarge.co.za/#/downloads">Downloads &amp; installation</a> · <a href="https://github.com/armysarge/ham-radio-tools/releases">GitHub releases</a> · <a href="ROADMAP.md">Roadmap</a></p>
 
 Ham Radio Tools is a free, open-source collection of practical tools for radio amateurs, made by **ZS6SHZ**. Get a quick answer, explore an illustrated design, or expand an explanation to understand the method.
 

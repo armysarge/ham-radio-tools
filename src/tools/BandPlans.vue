@@ -33,6 +33,10 @@ const rows = computed<Row[]>(() => source.value === 'itu'
 const sorted = computed(() => [...rows.value].sort((a, b) => a.fromHz - b.fromHz))
 const hits = computed(() => (f.value == null ? [] : sorted.value.filter((r) => f.value! >= r.fromHz && f.value! <= r.toHz)))
 const hasClasses = computed(() => sorted.value.some((r) => r.classes))
+const bandFilter = ref('all'), query = ref('')
+const availableBands = computed(() => [...new Set(sorted.value.map(r => r.band))])
+const filtered = computed(() => sorted.value.filter(r => (bandFilter.value === 'all' || r.band === bandFilter.value) && query.value.toLowerCase().split(/\s+/).filter(Boolean).every(term => [r.band, r.use, r.modes, r.classes, r.power, r.status, r.note].join(' ').toLowerCase().includes(term))))
+watch([source, region], () => { bandFilter.value = 'all'; query.value = '' })
 const mhz = (hz: number) => fmt(hz / 1e6, 7)
 
 // log-scale bar chart of the allocations (HF/VHF only, so the chart stays readable)
@@ -48,7 +52,7 @@ const colour = (s?: string) => (s?.startsWith('primary') || s?.startsWith('co-pr
 <template>
   <ToolLayout id="band-plans" :references="[`${ITU_META.source} (bundled, revision ${ITU_META.revision}).`, 'National plans: each one lists its own official source, licence and revision date below the selector. Installed packs: see Settings & content.']">
     <div class="notice" style="margin-bottom:1rem">{{ source === 'itu' ? ITU_META.note : 'National band tables are summaries of the regulator’s own document, compiled on the revision date shown. Regulations change: confirm anything that matters against the source linked below, and against your own licence.' }}</div>
-    <div class="cols">
+    <div class="band-plan-layout">
       <div class="card stack">
         <label class="field"><span class="lbl">Band plan</span>
           <select v-model="source">
@@ -76,7 +80,8 @@ const colour = (s?: string) => (s?.startsWith('primary') || s?.startsWith('co-pr
         </div>
       </div>
       <div class="stack">
-        <div class="card" v-if="chartRows.length">
+        <details class="card allocation-chart" v-if="chartRows.length">
+          <summary>View allocation chart</summary>
           <svg class="diagram" :viewBox="`0 0 ${W} ${bands.length * 22 + 30}`" role="img" aria-label="Amateur allocations on a logarithmic frequency scale">
             <g v-for="(b, i) in bands" :key="b">
               <text class="dg-tick" x="4" :y="22 + i * 22 + 4">{{ b }}</text>
@@ -85,14 +90,21 @@ const colour = (s?: string) => (s?.startsWith('primary') || s?.startsWith('co-pr
             <line v-if="f && f > 0" stroke="var(--wire)" stroke-width="2" :x1="X(f)" :x2="X(f)" y1="4" :y2="bands.length * 22 + 20" />
           </svg>
           <p class="hint">Bars span each allocation up to 1.3 GHz (log scale). Green = primary, amber = secondary, accent = other; the orange line is your frequency.</p>
-        </div>
+        </details>
         <div class="card" v-if="sorted.length">
-          <div class="table-wrap"><table class="table">
+          <div class="band-filters">
+            <label class="field"><span class="lbl">Show a band</span><select v-model="bandFilter" aria-label="Filter by band"><option value="all">All bands</option><option v-for="b in availableBands" :key="b" :value="b">{{ b }}</option></select></label>
+            <label class="field"><span class="lbl">Filter uses, classes or notes</span><input v-model="query" type="search" placeholder="e.g. CW, Technician, secondary" /></label>
+          </div>
+          <p class="hint">{{ filtered.length }} of {{ sorted.length }} segments. The frequency lookup above always searches the full plan.</p>
+          <div v-if="filtered.length" class="table-wrap"><table class="table band-table">
+            <caption class="sr-only">Frequency allocations for {{ meta?.title ?? `ITU Region ${region}` }}</caption>
             <thead><tr><th>Band</th><th>From–to (MHz)</th><th>Use</th><th v-if="hasClasses">Who</th><th>Status</th></tr></thead>
-            <tbody><tr v-for="r in sorted" :key="r.band + r.fromHz"><td>{{ r.band }}</td><td class="mono">{{ mhz(r.fromHz) }}–{{ mhz(r.toHz) }}</td>
+            <tbody><tr v-for="(r, i) in filtered" :key="r.band + r.fromHz + i" :class="{ 'frequency-hit': hits.includes(r) }"><th scope="row">{{ r.band }}</th><td class="mono">{{ mhz(r.fromHz) }}–{{ mhz(r.toHz) }}</td>
               <td>{{ r.use }}{{ r.modes ? ' · ' + r.modes : '' }}<div v-if="r.note || r.power" class="hint">{{ [r.power, r.note].filter(Boolean).join(' · ') }}</div></td>
               <td v-if="hasClasses">{{ r.classes }}</td><td>{{ r.status ?? '' }}</td></tr></tbody>
           </table></div>
+          <p v-else class="empty" role="status">No segments match these filters. Choose another band or clear your search.</p>
         </div>
         <div v-else class="empty">This plan has no segments loaded.</div>
       </div>
@@ -107,3 +119,18 @@ const colour = (s?: string) => (s?.startsWith('primary') || s?.startsWith('co-pr
     </template>
   </ToolLayout>
 </template>
+<style scoped>
+.band-plan-layout{display:grid;gap:1rem;grid-template-columns:minmax(260px,320px) minmax(0,1fr)}
+.band-plan-layout>*{min-width:0}
+.band-filters{display:grid;grid-template-columns:minmax(130px,1fr) minmax(160px,2fr);gap:1rem}
+.band-table{min-width:580px}
+.band-table th,.band-table td{vertical-align:top;padding:.85rem .7rem;line-height:1.6}
+.band-table thead th{background:var(--panel2);white-space:nowrap}
+.band-table tbody th{color:var(--accent);white-space:nowrap}
+.band-table .mono{white-space:nowrap}
+.band-table .hint{margin-top:.4rem;max-width:65ch}
+.frequency-hit{background:color-mix(in srgb,var(--accent) 9%,var(--panel))}
+.allocation-chart summary{cursor:pointer;font-weight:600;min-height:28px}
+@media(max-width:1100px){.band-plan-layout{grid-template-columns:1fr}.band-filters{grid-template-columns:1fr 2fr}}
+@media(max-width:480px){.band-filters{grid-template-columns:1fr}}
+</style>

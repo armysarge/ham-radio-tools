@@ -123,6 +123,7 @@ const mufPoints = computed<[number, number][]>(() => (report.value ? report.valu
     <p v-else-if="!report" class="notice" role="status" style="margin-top:1rem">Enter both locations and valid settings to see the report.</p>
 
     <template v-if="report">
+      <p class="hint" style="margin-top:1rem">DVOACAP monthly HF prediction (2–30 MHz), calculated locally. This is a planning forecast, not a live propagation observation. It does not predict 6 m sporadic-E openings.</p>
       <div class="card stack" style="margin-top:1rem">
         <h2>Band reliability by UTC hour</h2>
         <p class="muted" style="margin:0">Each cell is the predicted share of days this month on which a {{ modeName }} signal reaches the required signal-to-noise ratio. Click or use the arrow keys to see the details of a cell.</p>

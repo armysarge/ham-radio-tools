@@ -5,20 +5,19 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 ## [Unreleased]
 
 ### Added
-- Added new feature for proper propagation reporting using DVOACAP engine.
-- Added a clear download page with links to the demo for the github releases.
-- Added more amateur bands (6m, etc) to various band plans
+- Local DVOACAP-based HF propagation reporting; monthly predictions are clearly distinguished from live observations and VHF sporadic E.
+- Downloads page with versioned Windows, Linux and web release links, installation guidance and the browser demo; release notes link to both pages.
+- Region-specific 6 m, 2200 m and 630 m entries in the simplified ITU overview. National tables already include 6 m and can now be filtered by band.
 
 ### Fixed
 - Fixed an issue with maps having selectable text.
 
 ### Changed
-- Improved the UI on some pages.
-- Improved the band plans UI for better readability and usability.
+- Band tables have band/text filters, highlighted frequency matches, roomier rows and a collapsible allocation chart.
 - Removed various 'Analytical', 'Design estimate', 'Reference', etc label elements from the UI.
 - Removed top menu 'Works offline' element.
 - Updated the favourite button to just have a star icon.
-- Improved side menu for better navigation and usability.
+- Compact sidebar categories with expand/collapse controls, active-category opening and a downloads link.
 
 ## [0.3.1] - 2026-10-20
 
