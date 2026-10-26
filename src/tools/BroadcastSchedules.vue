@@ -3,12 +3,14 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import ToolLayout from '../components/ToolLayout.vue'
 import { getPack, installedPacks, refreshPacks } from '../core/packs'
 import { TIME_STATIONS, TIME_STATIONS_META } from '../data/timeStations'
-import { ageDays, onAirAt, runsOnDay, type BroadcastEntry } from '../lib/packs'
+import { BBC_META, BBC_SCHEDULE, bbcDateStatus } from '../data/bbcSchedule'
+import { ageDays, transmissionOnAirAt, type BroadcastEntry } from '../lib/packs'
 
 const STALE_DAYS = 45
 const source = ref('time')
 const entries = ref<BroadcastEntry[]>(TIME_STATIONS)
 const err = ref('')
+const loading = ref(false), showAllNow = ref(false)
 const mode = ref<'now' | 'all'>('now')
 const q = ref(''), fromKhz = ref(''), toKhz = ref('')
 const useNow = ref(true)
@@ -20,11 +22,24 @@ onUnmounted(() => clearInterval(timer))
 
 const schedulePacks = computed(() => installedPacks.value.filter((p) => p.kind === 'broadcast-schedule'))
 const pack = computed(() => schedulePacks.value.find((p) => p.id === source.value))
-watch(source, async (id) => {
+watch(source, async (id, _previous, onCleanup) => {
+  let cancelled = false
+  onCleanup(() => { cancelled = true })
   err.value = ''
+  showAllNow.value = false
+  loading.value = false
   if (id === 'time') { entries.value = TIME_STATIONS; return }
+  if (id === 'bbc:b26') { entries.value = BBC_SCHEDULE; return }
+  loading.value = true
   entries.value = []
-  try { entries.value = (await getPack<{ entries: BroadcastEntry[] }>(id))?.data.entries ?? [] } catch (e) { err.value = (e as Error).message }
+  try {
+    const loaded = await getPack<{ entries: BroadcastEntry[] }>(id)
+    if (!cancelled) {
+      entries.value = loaded?.data.entries ?? []
+      if (!loaded) err.value = 'This schedule is no longer installed. Choose another schedule.'
+    }
+  } catch (e) { if (!cancelled) err.value = (e as Error).message }
+  finally { if (!cancelled) loading.value = false }
 })
 
 const pad = (n: number) => String(n).padStart(2, '0')
@@ -35,17 +50,33 @@ const day = computed(() => (useNow.value ? isoDay(clock.value) : manualDay.value
 const DAYS = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 const timeErr = computed(() => (!useNow.value && hhmm.value === null ? 'Enter the time as four digits, 24-hour UTC, e.g. 0930.' : ''))
 
-const rows = computed(() => {
+const filteredEntries = computed(() => {
   const t = q.value.trim().toLowerCase(), lo = fromKhz.value ? Number(fromKhz.value) : null, hi = toKhz.value ? Number(toKhz.value) : null
   return entries.value.filter((e) =>
-    (mode.value === 'all' || (hhmm.value !== null && onAirAt(e.startUtc, e.endUtc, hhmm.value) && runsOnDay(e.days, day.value))) &&
     (!t || [e.station, e.language, e.country, e.target, e.note].join(' ').toLowerCase().includes(t)) &&
     (lo === null || Number.isNaN(lo) || e.freqKhz >= lo) && (hi === null || Number.isNaN(hi) || e.freqKhz <= hi),
   ).sort((a, b) => a.freqKhz - b.freqKhz || a.startUtc.localeCompare(b.startUtc))
 })
+const bbcStatus = computed(() => source.value === 'bbc:b26' ? bbcDateStatus(clock.value) : 'current')
+const dateRangeActive = computed(() => bbcStatus.value === 'current')
+const scheduleName = computed(() => source.value === 'time' ? 'Bundled time & frequency stations' : source.value === 'bbc:b26' ? BBC_META.title : pack.value?.title ?? 'Selected schedule')
+const rows = computed(() => filteredEntries.value.filter(e => mode.value === 'all' || (dateRangeActive.value && hhmm.value !== null && transmissionOnAirAt(e, hhmm.value, day.value))))
+const nowGroups = computed(() => {
+  if (!dateRangeActive.value) return []
+  const groups = new Map<string, { station: string; details: string; frequencies: Set<number> }>()
+  for (const e of filteredEntries.value) {
+    if (!transmissionOnAirAt(e, nowHhmm.value, isoDay(clock.value))) continue
+    const details = [e.country, e.language, e.target, e.note].filter(Boolean).join(' · ')
+    const key = JSON.stringify([e.station, e.country, e.language, e.target, e.note])
+    const group = groups.get(key) ?? { station: e.station, details, frequencies: new Set<number>() }
+    group.frequencies.add(e.freqKhz)
+    groups.set(key, group)
+  }
+  return [...groups.entries()].map(([key, g]) => ({ key, station: g.station, details: g.details, frequencies: [...g.frequencies].join(', ') }))
+})
 const LIMIT = 300
-const meta = computed(() => (source.value === 'time' ? { revision: TIME_STATIONS_META.revision, source: TIME_STATIONS_META.source } : pack.value ? { revision: pack.value.revision, source: pack.value.source } : null))
-const age = computed(() => (meta.value ? ageDays(meta.value.revision) : 0))
+const meta = computed(() => (source.value === 'time' ? { revision: TIME_STATIONS_META.revision, source: TIME_STATIONS_META.source } : source.value === 'bbc:b26' ? BBC_META : pack.value ? { revision: pack.value.revision, source: pack.value.source } : null))
+const age = computed(() => (meta.value ? ageDays(meta.value.revision, clock.value) : 0))
 const t4 = (s: string) => `${s.slice(0, 2)}:${s.slice(2)}`
 const dayText = (d: string) => (d === 'daily' ? 'daily' : [...d].map((x) => DAYS[+x].slice(0, 2)).join(' '))
 </script>
@@ -55,15 +86,37 @@ const dayText = (d: string) => (d === 'daily' ? 'daily' : [...d].map((x) => DAYS
     <div class="card stack">
       <label class="field"><span class="lbl">Schedule</span>
         <select v-model="source"><option value="time">Time &amp; frequency stations (bundled)</option>
+          <option value="bbc:b26">{{ BBC_META.title }} (bundled)</option>
           <option v-for="p in schedulePacks" :key="p.id" :value="p.id">{{ p.title }} (installed)</option></select></label>
       <div v-if="meta" class="notice" :style="age > STALE_DAYS && source !== 'time' ? 'border-left-color:var(--bad)' : ''" role="status">
         Data: {{ meta.source }} · revision <strong>{{ meta.revision }}</strong> ({{ age }} days old).
         <template v-if="source === 'time'"> {{ TIME_STATIONS_META.note }}</template>
         <template v-else-if="age > STALE_DAYS"> <strong>This schedule is more than {{ STALE_DAYS }} days old.</strong> Broadcasters change frequencies and times each season and often each month; look for a newer pack.</template>
       </div>
-      <p v-if="source === 'time' && !schedulePacks.length" class="hint" style="margin:0">Programme schedules (shortwave broadcasters, utility stations) change monthly, so none are bundled. Install a dated schedule pack in <router-link to="/settings">Settings &amp; content</router-link> — you can convert a text schedule file there.</p>
+      <p v-if="source === 'bbc:b26'" class="hint">BBC frequency schedule: {{ BBC_META.validFrom }} through {{ BBC_META.validUntil }} inclusive, UTC. Revision is our transcription/review date. Includes shortwave, medium wave and a DRM digital transmission; these are frequency listings, not programme titles. <a :href="BBC_META.sourceUrl" target="_blank" rel="noopener noreferrer">BBC source page</a> (opens the web only when clicked).</p>
+      <p v-if="!dateRangeActive" class="notice" role="status">{{ bbcStatus === 'expired' ? `This BBC schedule expired on ${BBC_META.validUntil}.` : `This BBC schedule starts on ${BBC_META.validFrom}.` }} Current-time matches are disabled. Choose Everything to inspect its dated reference rows.</p>
+      <p v-if="source === 'time' && !schedulePacks.length" class="hint" style="margin:0">BBC's dated frequency schedule is also bundled. For other broadcasters, install a schedule pack in <router-link to="/settings">Settings &amp; content</router-link> — you can convert a text schedule file there.</p>
       <p v-if="err" class="err" role="alert">{{ err }}</p>
     </div>
+
+    <section class="card now-section" aria-label="On the air now">
+      <div class="now-heading"><h2>On the air now:</h2><time :datetime="clock.toISOString()" class="mono">{{ pad(clock.getUTCHours()) }}:{{ pad(clock.getUTCMinutes()) }} UTC · {{ DAYS[isoDay(clock)] }} · {{ clock.toISOString().slice(0, 10) }}</time></div>
+      <p class="hint">{{ scheduleName }} · scheduled activity, not confirmed reception. Uses the device’s current UTC clock, even when browsing another time below. Station/frequency filters below apply here too.</p>
+      <p v-if="source !== 'time' && age > STALE_DAYS" class="notice">This schedule is more than {{ STALE_DAYS }} days old. Check for a newer pack before relying on these entries.</p>
+      <p v-if="loading" role="status">Loading the selected schedule…</p>
+      <p v-else-if="err" class="empty">Schedule unavailable. See the error above or select another schedule.</p>
+      <p v-else-if="!dateRangeActive" class="empty">{{ bbcStatus === 'expired' ? 'This BBC frequency schedule has expired.' : 'This BBC frequency schedule is not yet in effect.' }} No current transmissions are listed from this season. Choose another schedule or obtain a newer version.</p>
+      <p v-else-if="!nowGroups.length" class="empty">Nothing is scheduled at the current UTC time with these filters. Clear the filters, choose another schedule, or install a dated broadcast pack in Settings &amp; content.</p>
+      <template v-else>
+        <ul class="now-grid">
+          <li v-for="g in nowGroups.slice(0, showAllNow ? LIMIT : 6)" :key="g.key">
+            <strong>{{ g.station }}</strong><div class="mono now-frequencies">{{ g.frequencies }} kHz</div><p v-if="g.details" class="hint">{{ g.details }}</p>
+          </li>
+        </ul>
+        <p v-if="nowGroups.length > LIMIT && showAllNow" class="hint">Showing the first {{ LIMIT }} station groups. Narrow the station or frequency filters to see others.</p>
+        <button v-if="nowGroups.length > 6" :aria-expanded="showAllNow" @click="showAllNow = !showAllNow">{{ showAllNow ? 'Show fewer stations' : `Show more stations (${nowGroups.length} groups)` }}</button>
+      </template>
+    </section>
 
     <div class="cols" style="margin-top:1rem">
       <div class="card stack">
@@ -87,7 +140,8 @@ const dayText = (d: string) => (d === 'daily' ? 'daily' : [...d].map((x) => DAYS
           <label class="field"><span class="lbl">To (kHz)</span><input v-model="toKhz" type="text" inputmode="decimal" placeholder="e.g. 6000" /></label>
         </div>
       </div>
-      <div class="card" aria-live="polite">
+      <div class="card schedule-results" aria-live="polite">
+        <p v-if="!dateRangeActive && mode === 'all'" class="notice">{{ bbcStatus === 'expired' ? 'Archive' : 'Upcoming reference' }} — these BBC rows are outside their current validity window and do not indicate present activity.</p>
         <p v-if="!rows.length" class="empty" style="margin:0">{{ entries.length ? 'Nothing matches. Try a wider frequency range, clear the search, or switch to “Everything”.' : 'This schedule has no rows loaded.' }}</p>
         <template v-else>
           <p class="muted" style="margin-top:0">{{ rows.length }} {{ rows.length === 1 ? 'transmission' : 'transmissions' }}{{ rows.length > LIMIT ? ` (showing the first ${LIMIT}; narrow the search)` : '' }}</p>
@@ -102,8 +156,21 @@ const dayText = (d: string) => (d === 'daily' ? 'daily' : [...d].map((x) => DAYS
     </div>
 
     <template #explain>
+      <p>The bundled BBC frequency table applies only to {{ BBC_META.validFrom }}–{{ BBC_META.validUntil }} inclusive, UTC. Outside that season both live matches and the time-filtered table are disabled; Everything retains labelled reference rows. Imported packs currently have revision/age information but no enforced seasonal validity fields.</p>
       <p>Broadcast programme schedules change with the seasons (late March and late October) and many stations change monthly, so a schedule is only good for a while. That is why they are installed as <strong>dated packs</strong>: the app shows the pack’s revision date, warns when it is more than {{ STALE_DAYS }} days old, and never goes online to refresh itself. Download an updated schedule file whenever you are online, then convert and install it under Settings &amp; content.</p>
-      <p>“On air” compares the UTC time and weekday you choose with each row’s start and end (end exclusive, wrapping past midnight). Rows with unusual day patterns (“irr”, ranges) are treated as daily and say so in the details. Propagation and signal strength are not predicted.</p>
+      <p>“On the air now” always uses the device’s current UTC time; “On air at…” below can use your chosen time and weekday. Both use start-inclusive/end-exclusive windows. Weekdays identify the UTC start day: a Sunday 23:00–01:00 transmission is still scheduled at 00:30 Monday. Equal start/end times represent an all-day row on its selected weekdays.</p>
+      <p>Rows with unusual day patterns (“irr”, ranges) are treated as daily and say so in the details. A schedule match does not confirm reception, transmitter availability, seasonal validity, propagation or signal strength. No network requests or live receiver observations are used.</p>
     </template>
   </ToolLayout>
 </template>
+
+<style scoped>
+.now-section { margin-top: 1rem; }
+.now-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: .5rem 1rem; justify-content: space-between; }
+.now-heading h2 { margin: 0; }
+.now-heading time { font-size: .9rem; }
+.now-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: .75rem; list-style: none; margin: 1rem 0; padding: 0; }
+.now-grid li { min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: .75rem; overflow-wrap: anywhere; }
+.now-grid p { margin: .3rem 0 0; }
+.now-frequencies { margin-top: .4rem; color: var(--accent); }
+</style>

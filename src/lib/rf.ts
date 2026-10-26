@@ -49,6 +49,21 @@ export function fromGamma(g: number): Match {
 }
 export const fromSwr = (s: number) => { need(s >= 1, 'SWR must be 1 or greater'); return fromGamma((s - 1) / (s + 1)) }
 export const fromReturnLoss = (rl: number) => { need(rl >= 0, 'Return loss must be 0 dB or greater'); return fromGamma(10 ** (-rl / 20)) }
+/** Voltage extrema along the same lossless line, using a consistent amplitude convention. */
+export function fromVoltageExtrema(vmax: number, vmin: number): Match {
+  need(Number.isFinite(vmax) && Number.isFinite(vmin) && vmax > 0 && vmin >= 0, 'Maximum voltage must be greater than 0 and minimum voltage must be 0 or more; both must be finite')
+  need(vmin <= vmax, 'Minimum voltage cannot exceed maximum voltage')
+  if (vmin === 0) return fromGamma(1)
+  const swr = vmax / vmin, r = vmin / vmax
+  need(Number.isFinite(swr) && r > 0, 'Voltage ratio exceeds the supported numeric range')
+  return { ...fromGamma((1 - r) / (1 + r)), swr, mismatchLossDb: -10 * Math.log10(4 * r / (1 + r) ** 2) }
+}
+/** Normalised magnitude, V/Vmax, versus distance in line wavelengths; origin chosen at a maximum. */
+export function standingWaveEnvelope(g: number, wavelengths: number) {
+  need(Number.isFinite(g) && g >= 0 && g <= 1 && Number.isFinite(wavelengths), 'Use a finite position and |Γ| between 0 and 1')
+  const phase = 2 * Math.PI * (wavelengths % 1)
+  return Math.hypot(Math.cos(phase), (1 - g) / (1 + g) * Math.sin(phase))
+}
 /** Purely resistive load on a line of characteristic impedance z0. */
 export function fromLoad(rLoad: number, z0: number) {
   need(z0 > 0, 'Line impedance must be greater than 0')

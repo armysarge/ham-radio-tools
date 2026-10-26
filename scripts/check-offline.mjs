@@ -21,11 +21,13 @@ const esc = (h) => h.replace(/\./g, '\\.')
 const repo = /REPO_URL = '([^']+)'/.exec(await readFile('src/core/meta.ts', 'utf8'))[1].replace(/^https?:\/\//, '')
 const allowed = new RegExp('^https?://(www\\.w3\\.org/|www\\.sitemaps\\.org/|schema\\.org|opensource\\.org|hamradiotools\\.armysarge\\.co\\.za|github\\.com/armysarge|www\\.yaesu\\.com|www\\.edn\\.com|noaasis\\.noaa\\.gov|www\\.arrl\\.org|fair-rite\\.com|rsgb\\.org|amphenolprocom\\.com|farside\\.ph\\.utexas\\.edu|www\\.cv\\.nrao\\.edu|localhost|vuejs\\.org|github\\.com/vuejs|vue-router|router\\.vuejs\\.org|' + [...new Set(hostsFromSources)].map(esc).join('|') + '|' + esc(repo) + ')')
 const balunSource = /^https:\/\/vk6ysf\.com\/(?:balun_choke_balun_hf|balun_guanella_current_1-[14]|balun_4-1|unun_9-1)\.htm$/
+const conversionSource = /^https:\/\/www\.nist\.gov\/pml\/(?:us-surveyfoot\/revised-unit-conversion-factors|special-publication-811\/nist-guide-si-appendix-b-conversion-factors\/nist-guide-si-appendix-b8)$/
+const bbcSource = /^https:\/\/www\.bbc\.co\.uk\/programmes\/articles\/2x9tqt6mc05vB2S37j8MWMJ\/global-short-wave-frequencies$/
 let found = 0
 for await (const f of walk(dist)) {
   if (/[\\/](frame-guard\.js|_headers)$/.test(f)) continue // lists the sites allowed to embed the app: configuration, never requested
   const t = await readFile(f, 'utf8').catch(() => '')
-  for (const u of t.match(/https?:\/\/[^\s"'`)<>\\]+/g) ?? []) if (!allowed.test(u) && !balunSource.test(u)) { found++; console.log('  external URL in', f.replace(dist, ''), u) }
+  for (const u of t.match(/https?:\/\/[^\s"'`)<>\\]+/g) ?? []) if (!allowed.test(u) && !balunSource.test(u) && !conversionSource.test(u) && !bbcSource.test(u)) { found++; console.log('  external URL in', f.replace(dist, ''), u) }
 }
 found ? fail(`${found} external URL(s) referenced in dist (review above)`) : ok('no external URLs in dist')
 
@@ -50,10 +52,101 @@ const errors = []
 page.on('pageerror', (e) => errors.push(e.message))
 page.on('console', (m) => m.type() === 'error' && errors.push(m.text()))
 
-const step = async (name, fn) => { try { await fn(); ok(name) } catch (e) { fail(`${name}: ${e.message.split('\n')[0]}`) } }
+const step = async (name, fn) => { try { await fn(); ok(name) } catch (e) { fail(`${name}: ${e.message}`) } }
 const expectText = async (sel, re) => { const t = await page.locator(sel).first().innerText(); if (!re.test(t)) throw new Error(`"${t.slice(0, 80)}" !~ ${re}`) }
 
 await step('app starts', async () => { await page.goto(base); await page.getByRole('heading', { name: 'Ham Radio Tools' }).waitFor() })
+await step('quad 3D construction view rotates offline', async () => {
+  await page.goto(base + '#/tool/quad')
+  await page.getByRole('img', { name: /Rotatable 3D cubical quad/ }).waitFor()
+  const initial = await page.locator('.quad-loop').first().getAttribute('d')
+  await page.getByLabel('Quad view azimuth', { exact: true }).press('End')
+  if (await page.locator('.quad-loop').first().getAttribute('d') === initial) throw new Error('view did not rotate')
+  await page.getByRole('button', { name: 'Reset view', exact: true }).click()
+  if (await page.locator('.quad-loop').first().getAttribute('d') !== initial) throw new Error('view did not reset')
+  await page.getByRole('combobox', { name: 'Elements', exact: true }).selectOption('5')
+  if (await page.locator('.quad-loop').count() !== 5) throw new Error('loop count did not change')
+  await page.goto(base)
+  await page.getByRole('heading', { name: 'Ham Radio Tools', exact: true }).waitFor()
+})
+await step('BBC bundled frequencies and UTC season expiry work offline', async () => {
+  const bbcPage = await ctx.newPage()
+  bbcPage.on('pageerror', e => errors.push(e.message))
+  try {
+    await bbcPage.clock.install({ time: new Date('2026-10-26T05:30:00Z') })
+    await bbcPage.goto(base + '#/tool/broadcast-schedules')
+    await bbcPage.locator('main select').first().selectOption('bbc:b26')
+    const live = bbcPage.getByRole('region', { name: 'On the air now', exact: true })
+    await live.getByText('9410, 9915 kHz', { exact: true }).waitFor()
+    await bbcPage.clock.setSystemTime(new Date('2027-03-28T05:30:00Z'))
+    await bbcPage.clock.runFor(15000)
+    await live.getByText(/frequency schedule has expired/).waitFor()
+    if (await live.getByText('9410, 9915 kHz', { exact: true }).count()) throw new Error('expired BBC rows remained live')
+    await bbcPage.getByRole('button', { name: 'Everything', exact: true }).click()
+    await bbcPage.locator('.schedule-results').getByText(/Archive/).waitFor()
+    await bbcPage.locator('.schedule-results').getByText(/DRM digital/).waitFor()
+    await bbcPage.locator('.schedule-results').getByText('639', { exact: true }).first().waitFor()
+  } finally { await bbcPage.close() }
+})
+await step('number codes filter modern and historical usage offline', async () => {
+  await page.goto(base + '#/tool/number-codes')
+  await page.getByRole('heading', { name: 'Number Codes & 92 Code', exact: true }).waitFor()
+  await page.getByLabel('Search number codes', { exact: true }).fill('73')
+  await page.locator('article').filter({ hasText: 'Best regards' }).waitFor()
+  await page.getByText('--... ...--', { exact: true }).waitFor()
+  await page.getByLabel('Search number codes', { exact: true }).fill('no-such-code')
+  await page.getByText(/No number code matches/).waitFor()
+  await page.getByLabel('Search number codes', { exact: true }).fill('')
+  await page.getByRole('button', { name: 'Historical examples', exact: true }).click()
+  await page.locator('article').filter({ hasText: 'Wait a minute' }).waitFor()
+  if (await page.locator('article').count() !== 3) throw new Error('historical category is not isolated')
+  await page.goto(base)
+  await page.getByRole('heading', { name: 'Ham Radio Tools', exact: true }).waitFor()
+})
+await step('ERP/EIRP and illustrated LC filters work offline', async () => {
+  await page.goto(base + '#/tool/radiated-power')
+  await expectText('.results', /199\.5/)
+  await page.getByRole('combobox', { name: 'Gain reference', exact: true }).selectOption('dBd')
+  await expectText('.results', /327\.3/)
+  await page.getByLabel('Transmitter output power', { exact: true }).fill('0')
+  await page.getByRole('alert').filter({ hasText: 'greater than' }).waitFor()
+  if (await page.locator('.power-chain').count()) throw new Error('invalid power retained old results')
+  for (const [slug, topology] of [['low-pass-filter', 'T (L-C-L…)'], ['high-pass-filter', 'T (C-L-C…)']]) {
+    await page.goto(base + '#/tool/' + slug)
+    await page.getByRole('img', { name: 'LC ladder with labelled series and shunt components' }).waitFor()
+    await page.getByRole('button', { name: topology, exact: true }).click()
+    await page.getByRole('combobox', { name: 'Order (number of parts)', exact: true }).selectOption('9')
+    await page.getByLabel('Pass-band ripple', { exact: true }).fill('')
+    if (await page.locator('.filter-circuit').count()) throw new Error('empty ripple retained a circuit')
+    await page.getByLabel('Pass-band ripple', { exact: true }).fill('0.1')
+    await page.locator('.filter-circuit').waitFor()
+  }
+  await page.goto(base)
+  await page.getByRole('heading', { name: 'Ham Radio Tools', exact: true }).waitFor()
+})
+await step('coordinate formats, locator centre, map and unit conversions work offline', async () => {
+  await page.goto(base + '#/tool/coordinate-converter')
+  await page.getByLabel('Latitude to convert').fill('25°45′00″S')
+  await page.getByLabel('Longitude to convert').fill('28 15 E')
+  await page.getByText('-25.750000, 28.250000', { exact: true }).waitFor()
+  await page.locator('.map path.land').waitFor()
+  await page.getByLabel('Latitude to convert').fill('-25 N')
+  await page.getByRole('alert').filter({ hasText: 'sign and hemisphere disagree' }).waitFor()
+  await page.getByLabel('Locator to convert').fill('FN31pr')
+  await page.getByRole('button', { name: 'Use locator centre', exact: true }).click()
+  await page.getByText(/Using the centre of FN31pr/).waitFor()
+  await page.goto(base + '#/tool/unit-converter')
+  await page.getByLabel('From unit', { exact: true }).selectOption('ft')
+  await page.getByLabel('To unit', { exact: true }).selectOption('m')
+  await expectText('.conversion-result .val', /^0\.3048$/)
+  await page.getByLabel('Quantity', { exact: true }).selectOption('temperature')
+  await page.getByLabel('Value to convert', { exact: true }).fill('0')
+  await expectText('.conversion-result .val', /^32$/)
+  await page.getByLabel('Value to convert', { exact: true }).fill('-274')
+  await page.getByRole('alert').filter({ hasText: 'absolute zero' }).waitFor()
+  await page.goto(base)
+  await page.getByRole('heading', { name: 'Ham Radio Tools', exact: true }).waitFor()
+})
 await step('tool categories start collapsed and remember changes across restart', async () => {
   const groups = page.locator('aside.sidebar nav details')
   if (await groups.count() === 0 || !(await groups.evaluateAll(els => els.every(el => !el.open)))) throw new Error('a category was expanded on first launch')
@@ -132,6 +225,18 @@ await step('sidebar and header remain responsive after repeated navigation', asy
 await step('search filters tools', async () => { await page.getByLabel('Search tools').fill('swr'); await page.getByRole('heading', { name: 'SWR & Return Loss' }).waitFor(); await page.getByLabel('Search tools').fill('') })
 await step('frequency converter: 14.2 MHz = 21.11 m', async () => { await page.goto(base + '#/tool/frequency-wavelength'); await page.getByText('21.11').first().waitFor() })
 await step('SWR 2 -> 9.542 dB', async () => { await page.goto(base + '#/tool/swr'); await page.getByLabel('SWR', { exact: true }).fill('2'); await page.getByText('9.542').first().waitFor() })
+await step('VSWR voltage extrema and envelope validate offline', async () => {
+  await page.getByRole('button', { name: 'Voltage maxima/minima', exact: true }).click()
+  await page.getByText('VSWR = 3 V ÷ 1 V = 3 : 1', { exact: true }).waitFor()
+  await page.getByRole('img', { name: 'Normalised standing-wave voltage envelope', exact: true }).waitFor()
+  await page.getByLabel('Minimum voltage Vmin', { exact: true }).fill('4')
+  await page.getByRole('alert').filter({ hasText: 'Minimum voltage cannot exceed maximum voltage' }).waitFor()
+  if (await page.getByRole('img', { name: 'Normalised standing-wave voltage envelope', exact: true }).count()) throw new Error('invalid extrema retained an envelope')
+  await page.getByLabel('Minimum voltage Vmin', { exact: true }).fill('0')
+  await page.getByText('VSWR = 3 V ÷ 0 V = ∞ : 1', { exact: true }).waitFor()
+  await page.getByLabel('Minimum voltage Vmin', { exact: true }).fill('3')
+  await page.getByText('VSWR = 3 V ÷ 3 V = 1 : 1', { exact: true }).waitFor()
+})
 await step('dBm: 100 W = 50 dBm', async () => { await page.goto(base + '#/tool/dbm-watts'); await page.getByText('50', { exact: true }).first().waitFor() })
 await step('dipole 7.1 MHz = 20.06 m; save design', async () => {
   await page.goto(base + '#/tool/dipole'); await page.getByText('20.06 m').first().waitFor()
@@ -212,7 +317,15 @@ await step('schedule: convert a text file to a pack, install it, find it in Broa
   await page.getByLabel('Schedule date (YYYY-MM-DD)').fill('2026-01-01'); await page.getByLabel('Licence / terms of use').fill('offline check')
   await page.getByRole('button', { name: 'Install on this device' }).click(); await page.getByText(/Installed “EiBi shortwave schedule”/).waitFor()
   await page.goto(base + '#/tool/broadcast-schedules'); await page.locator('main select').first().selectOption('eibi-shortwave-schedule')
-  await page.getByRole('button', { name: 'Everything' }).click(); await page.getByText('Radio Offline Check').waitFor()
+  await page.getByRole('button', { name: 'Everything' }).click(); await page.locator('.schedule-results').getByText('Radio Offline Check').waitFor()
+  const live = page.getByRole('region', { name: 'On the air now', exact: true })
+  await live.getByRole('heading', { name: 'On the air now:', exact: true }).waitFor()
+  await live.getByText('Radio Offline Check', { exact: true }).waitFor()
+  await live.getByText('5950 kHz', { exact: true }).waitFor()
+  await page.getByRole('button', { name: 'On air at…', exact: true }).click()
+  await page.getByLabel('Use the current time', { exact: true }).uncheck()
+  await page.getByLabel('Time (UTC, HHMM)', { exact: true }).fill('1200')
+  await live.getByText('Radio Offline Check', { exact: true }).waitFor()
   await page.getByRole('status').getByText(/more than 45 days old/).waitFor() // revision 2026-01-01 is well over 45 days old
   await page.goto(base + '#/settings'); await page.getByRole('button', { name: /Remove EiBi shortwave schedule/ }).click()
 })
@@ -237,7 +350,7 @@ await step('downloads, clean tool headers, band filtering and non-selectable map
 await step('no uncaught errors', async () => { if (errors.length) throw new Error(errors.join(' | ')) })
 await step('phone width (375px): no horizontal overflow on any page, menu drawer opens', async () => {
   const m = await ctx.newPage(); await m.setViewportSize({ width: 375, height: 812 })
-  const routes = ['', 'downloads', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/components', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/efhw', 'tool/jpole', 'tool/vertical', 'tool/loop', 'tool/qfh', 'tool/maidenhead', 'tool/q-codes', 'tool/band-plans', 'tool/itu-regulations', 'tool/ctcss', 'tool/dcs', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'tool/feedline-loss', 'tool/link-budget', 'tool/l-network', 'tool/low-pass-filter', 'tool/coils', 'tool/power-planner', 'tool/yagi', 'tool/quad', 'tool/radial-planner', 'tool/logbook', 'tool/clock', 'tool/morse-trainer', 'tool/propagation', 'tool/propagation-report', 'tool/satellite-passes', 'tool/diy-components', 'tool/diy-baluns', 'tool/diy-transformers', 'settings', 'saved']
+  const routes = ['', 'downloads', 'tool/coordinate-converter', 'tool/unit-converter', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/components', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/efhw', 'tool/jpole', 'tool/vertical', 'tool/loop', 'tool/qfh', 'tool/maidenhead', 'tool/number-codes', 'tool/q-codes', 'tool/band-plans', 'tool/itu-regulations', 'tool/ctcss', 'tool/dcs', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'tool/feedline-loss', 'tool/link-budget', 'tool/l-network', 'tool/low-pass-filter', 'tool/high-pass-filter', 'tool/radiated-power', 'tool/coils', 'tool/power-planner', 'tool/yagi', 'tool/quad', 'tool/radial-planner', 'tool/logbook', 'tool/clock', 'tool/morse-trainer', 'tool/propagation', 'tool/propagation-report', 'tool/satellite-passes', 'tool/diy-components', 'tool/diy-baluns', 'tool/diy-transformers', 'settings', 'saved']
   const bad = []
   for (const r of routes) { await m.goto(base + '#/' + r); await m.waitForTimeout(400); const w = await m.evaluate(() => [document.documentElement.scrollWidth, innerWidth]); if (w[0] > w[1]) bad.push(r + ' ' + w.join('>')) }
   if (bad.length) throw new Error('overflow: ' + bad.join(', '))

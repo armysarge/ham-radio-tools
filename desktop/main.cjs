@@ -1,7 +1,8 @@
 const { app, BrowserWindow, clipboard, dialog, ipcMain, protocol, screen, session, shell } = require('electron')
-const { readFile, writeFile } = require('node:fs/promises')
+const { writeFile } = require('node:fs/promises')
 const path = require('node:path')
-const { assetPath, isInternal, externalUrl } = require('./policy.cjs')
+const { isInternal, externalUrl } = require('./policy.cjs')
+const { createAssetHandler } = require('./asset-handler.cjs')
 const { restoreWindowState, readState, writeState } = require('./window-state.cjs')
 const { checkRelease, downloadRelease, verifyFile } = require('./updates.cjs')
 
@@ -12,7 +13,6 @@ app.setPath('userData', process.env.HRT_TEST_PROFILE || path.join(app.getPath('a
 app.commandLine.appendSwitch('disable-background-networking')
 app.commandLine.appendSwitch('disable-component-update')
 
-const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml', '.xml': 'application/xml', '.txt': 'text/plain' }
 let mainWindow
 
 async function openLink(url) {
@@ -48,7 +48,7 @@ function createWindow() {
   void mainWindow.loadURL('hrt://app/')
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   app.setAppUserModelId('za.co.armysarge.hamradiotools')
   const trusted = event => mainWindow && !mainWindow.isDestroyed() && event.sender === mainWindow.webContents && event.senderFrame === mainWindow.webContents.mainFrame && isInternal(event.senderFrame.url)
   ipcMain.handle('window:state', event => { if (!trusted(event)) throw new Error('Untrusted window'); return { maximized: mainWindow.isMaximized() } })
@@ -112,14 +112,7 @@ app.whenReady().then(() => {
   const root = path.join(app.getAppPath(), 'dist')
   // Electron otherwise downloads Hunspell dictionaries for a fresh profile.
   session.defaultSession.setSpellCheckerEnabled(false)
-  protocol.handle('hrt', async (request) => {
-    const file = assetPath(request.url, root)
-    if (!file || request.method !== 'GET') return new Response('Forbidden', { status: 403 })
-    try {
-      const content = await readFile(file)
-      return new Response(content, { headers: { 'Content-Type': mime[path.extname(file)] || 'application/octet-stream', 'Content-Security-Policy': "frame-ancestors 'none'", 'X-Content-Type-Options': 'nosniff' } })
-    } catch { return new Response('Not found', { status: 404 }) }
-  })
+  protocol.handle('hrt', await createAssetHandler(root))
   session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
     callback({ cancel: !isInternal(details.url) && !details.url.startsWith('blob:hrt://app/') && !details.url.startsWith('data:') && !details.url.startsWith('devtools:') })
   })

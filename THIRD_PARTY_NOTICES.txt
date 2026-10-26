@@ -712,3 +712,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+BBC WORLD SERVICE FREQUENCY REFERENCE
+------------------------------------
+Source: BBC, Global Short Wave Frequencies, user-supplied saved page inspected
+2026-10-26, coverage 2026-10-25 through 2027-03-27 inclusive UTC.
+https://www.bbc.co.uk/programmes/articles/2x9tqt6mc05vB2S37j8MWMJ/global-short-wave-frequencies
+Source material copyright BBC 2026. The app includes factual frequency,
+time, weekday and target-region records in its own format. Original HTML,
+prose, artwork and logos are not included. The app's MIT licence does not
+grant rights in BBC source material. No BBC endorsement or affiliation is implied.

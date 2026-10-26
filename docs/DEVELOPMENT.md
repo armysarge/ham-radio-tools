@@ -2,6 +2,8 @@
 
 For desktop testing see [DESKTOP.md](DESKTOP.md); for releases see [RELEASING.md](RELEASING.md).
 
+For broadcast schedules, satellite inputs and reference-data review dates, use [CONTENT_MAINTENANCE.md](CONTENT_MAINTENANCE.md).
+
 ## Requirements
 
 | Requirement | Notes |

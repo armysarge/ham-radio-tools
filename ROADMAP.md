@@ -2,6 +2,8 @@
 
 Working features and future plans are tracked separately. A packaged build alone does not count as clean-machine verification.
 
+Status reviewed **2026-10-26**. Recent additions passed the production build, automated unit/UI checks, Edge offline acceptance and Windows development Electron smoke checks. Linux and clean-machine installer validation remain separate outstanding tasks.
+
 ## Available
 
 - [x] Search, categories, favourites, themes, measurement units and responsive layouts.
@@ -12,22 +14,43 @@ Working features and future plans are tracked separately. A packaged build alone
 - [x] Morse tools and Koch trainer, clocks/timers and ADIF logbook.
 - [x] Propagation basics, satellite passes from imported elements and a band-by-hour propagation report (DVOACAP engine, offline).
 - [x] National band tables, reference tools, QRM guide and dated content packs.
+- [x] “On the air now” schedule section with live UTC matching, grouped station frequencies, filtering, stale-data notices and overnight weekday handling. Uses the selected local schedule; no live reception/status service.
 - [x] Searchable DCS code reference with octal and polarity guidance.
 - [x] Project import/export and a repeatable web offline acceptance check.
-- [ ] Coordinate conversion and calculator.
-- [ ] Unit conversion and calculator.
-- [ ] Qubical quad antenna design tool
-- [ ] ERP and EIRP calculations.
-- [ ] Low pass filter and High pass filter calculators with diagrams.
-- [ ] 92 codes like 73 (goodbye), etc
-- [ ] SWR page addition for VSWR calculations.
-- [ ] Voltage Divider calculator.
-- [ ] How its calucalted section to show a proper mathematics illustration of any formulas.
-- [ ] Improve phonetic alphabet page with pronunciation guidance.
+- [x] Coordinate conversion: decimal degrees, degrees/decimal minutes, DMS, locator centres, offline map and saved locations. Notation only; no datum or UTM conversion.
+- [x] Unit conversion: length, area, frequency, time, power, voltage, current, resistance, capacitance, inductance, energy and temperature.
+- [x] Cubical quad starting designs: existing 2–5 element square-loop beam tool, now named Cubical Quad Beam for discovery. Empirical dimensions, not a validated antenna simulation.
+- [x] Rotatable 3D cubical quad construction view with azimuth/elevation controls, spreaders, boom and a driven-loop feed gap; original SVG with relative geometry from the design dimensions.
+- [x] ERP and EIRP calculations with dBi/dBd references, feed-system loss and a power calculation chain.
+- [x] Low-pass and high-pass LC filter designers with pi/T connection diagrams, part values, Butterworth/Chebyshev responses and ideal attenuation curves.
+- [x] Number Codes & 92 Code: searchable 73/88/QRP 72, usage examples, International Morse and selected historical 1/6/30 meanings. A curated guide, not a complete historical codebook.
+- [x] SWR/VSWR page: voltage maxima/minima input, validated extrema, ideal matched/total-reflection cases and an interactive normalised standing-wave envelope.
+- [x] Unloaded voltage-divider calculator in Component Codes → Series, parallel, divider, LED: output voltage, divider current and equivalent source resistance. Circuit illustration/discovery improvements remain below.
+- [x] Maintainer content-update calendar with monthly schedule checks, seasonal handoffs, source review dates and a review log; see [CONTENT_MAINTENANCE.md](docs/CONTENT_MAINTENANCE.md).
+
+## Next: calculator and operating-guide improvements
+
+Work through these in order, keeping each increment runnable and verified.
+
+- [ ] Improve the existing voltage-divider calculator's discoverability and add a circuit diagram linked to its inputs/results.
+- [ ] Improve formula presentation in explanation panels using readable mathematical notation and labelled variables. SWR/VSWR and filters already have expanded explanations; this remains an app-wide task.
+- [ ] Add pronunciation guidance to the phonetic alphabet page.
 - [ ] Doppler shift calculator.
 - [ ] Moxon antenna design tool.
 - [ ] AWG wire gauge calculator & conversion tool.
-- [ ] Serial Impedance & Parallel Impedance calculators with illustrated diagrams.
+- [ ] Series and parallel complex-impedance calculators with circuit diagrams. Basic series/parallel resistance helpers already exist in Component Codes.
+- [ ] Extend the existing TLE-based satellite pass predictor with operating-frequency data and Doppler frequency tracking; keep satellite status and source age visible.
+
+## BBC frequency reference delivered; programme guide pending
+
+- [x] Inspect the supplied BBC frequency-page snapshot and record its provenance, checksum, conversion cautions and validity window: **2026-10-25–2027-03-27**.
+- [x] Bundle a factual BBC frequency reference with 30 entries from the 21 supplied rows, including weekday restrictions, midnight boundaries, DRM and 639/702/720 kHz medium-wave entries; original HTML/artwork are excluded.
+- [x] Enforce BBC's inclusive UTC season for live/time-filtered matches, with upcoming/expired notices and a labelled reference view outside the season.
+- [ ] Extend seasonal validity support to imported schedule packs. Their 45-day age warning still does not enforce a publisher's expiry date.
+- [ ] Establish terms for separately distributed BBC content packs; no general BBC redistribution licence is claimed.
+- [ ] Obtain a separate dated, maintainable programme-listing source and confirm its redistribution terms. The supplied frequency page has no programme titles.
+
+Follow the [maintenance notes](docs/CONTENT_MAINTENANCE.md#bbc-source-handoff). The frequency reference is bundled in the app; a standalone BBC pack and programme guide remain pending.
 
 ## Completed milestone: desktop delivery
 
@@ -46,7 +69,7 @@ The desktop wrapper is **Electron**, following the request to test Electron. It 
 - [ ] Verify microphone, file import/export, printing and clipboard on each supported OS.
 - [ ] Complete a real published-release upgrade test on clean Windows and Linux machines; automated update transport is mocked.
 
-## Current milestone: reference and mapping improvements
+## Planned: reference and mapping improvements
 
 - [ ] Licensed and maintained DXCC entities, CQ zones and ITU zones.
 - [ ] Verified UK and India tables; broader licence-class coverage where currently limited.
@@ -54,10 +77,11 @@ The desktop wrapper is **Electron**, following the request to test Electron. It 
 
 ## Responsiveness follow-up
 
-- [x] Add a browser stress check for repeated category toggles, navigation, search, theme and units controls, including after opening the propagation report. It passes in Edge on Windows, but has not reproduced the reported hang; root cause remains unknown.
-- [x] Exercise repeated EFHW sidebar navigation in Electron and add a memory-only, bounded local navigation report, exported explicitly with Ctrl+Shift+F12. Check click delivery, route outcomes and visible link coverage without recording saved work or input values.
-- [x] Inspect a real-world report: Inverted-V and Vertical clicks reached the app but repeatedly failed during routing while EFHW remained open. Add visible failure/recovery controls and retain safe error classes and bundled asset names in reports.
-- [ ] Identify and resolve the exception behind the original route failures; the supplied report predates exception details and does not establish their underlying cause.
+- [x] Add a browser stress check for repeated category toggles, navigation, search, theme and units controls, including after opening the propagation report.
+- [x] Exercise repeated EFHW sidebar navigation in Electron.
+- [x] Identify the later report's missing JavaScript files as an older build removed by rebuilding `dist/` while Electron was running. Retain the launch-time bundle and add a regression that removes an unopened tool file and replaces the entry page in an isolated app copy.
+- [x] Remove temporary navigation click/route diagnostics, report export and the diagnostic shortcut. Retain the normal visible error/reload fallback.
+- [ ] Confirm the fix during extended everyday use; investigate any reports showing a different cause.
 
 ## Later
 

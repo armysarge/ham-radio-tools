@@ -75,7 +75,8 @@ function saveConverted() {
           <td>{{ p.source }} · revision {{ p.revision }} ({{ age(p.revision) }} days old)
             <div v-if="age(p.revision) > STALE[p.kind]" class="err">Older than {{ STALE[p.kind] }} days — look for a newer pack.</div></td>
         </tr>
-        <tr v-if="!installedPacks.length"><td>Regional band plans, broadcast schedules</td><td>Unavailable</td><td>Import a pack file below</td></tr>
+        <tr><td>BBC World Service frequency reference</td><td>Bundled</td><td>2026-10-25–2027-03-27 UTC; live matches disabled outside this season</td></tr>
+        <tr v-if="!installedPacks.length"><td>Additional regional band plans and broadcast schedules</td><td>Unavailable</td><td>Import a pack file below</td></tr>
         <tr><td>Detailed regional map packs</td><td>Unavailable</td><td>Planned</td></tr>
         <tr><td>Radio manual library, offline AI assistant</td><td>Unavailable</td><td>Planned</td></tr>
       </tbody>

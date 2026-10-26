@@ -7,6 +7,7 @@ import { FREQ_UNITS, feetInches } from '../lib/units'
 import { quad, yagi } from '../lib/beams'
 import { state } from '../core/store'
 import BeamDiagram from '../components/BeamDiagram.vue'
+import QuadDiagram from '../components/QuadDiagram.vue'
 import RadiationPattern from '../components/RadiationPattern.vue'
 import AntennaBands from '../components/AntennaBands.vue'
 
@@ -43,8 +44,9 @@ const diagram = computed(() => {
       </div>
       <div class="card">
         <div v-if="diagram.length" class="antenna-drawing beam-drawing">
-          <BeamDiagram :kind="which" :rows="diagram" />
-          <p class="hint">← Back · front (beam direction) →</p>
+          <BeamDiagram v-if="isYagi" :rows="diagram" />
+          <QuadDiagram v-else :rows="diagram" />
+          <p v-if="isYagi" class="hint">← Back · front (beam direction) →</p>
           <p class="hint">R = reflector · DE = driven · D = director. Dimensions are listed below.</p>
         </div>
         <div class="table-wrap"><table class="table">
@@ -58,7 +60,7 @@ const diagram = computed(() => {
           <p class="hint">Lengths are tip to tip, for elements <strong>insulated from the boom</strong>. Elements passing through a metal boom act longer: shorten each by roughly 1–3 % of an element, or follow a design tuned for it. The driven element of a Yagi is low (about 20–25 Ω): feed it with a folded dipole, a gamma/hairpin match, or a 4:1 balun and 75 Ω section.</p>
         </template>
         <template v-else>
-          <p class="hint">Loops are square, wire corners on spreaders. The driven loop is about 100–120 Ω; a quarter-wave 75 Ω section brings it near 50 Ω. Directors add gain at the cost of a narrower bandwidth.</p>
+          <p class="hint">Square wire loops sit in separate planes across the boom, with their corners on insulating spreaders. The shown feed gap is at the bottom centre of the driven loop. Measure the assembled feed impedance before selecting a matching network; these starting dimensions do not predict a fixed impedance or bandwidth.</p>
         </template>
       </div>
     </div>
@@ -66,7 +68,7 @@ const diagram = computed(() => {
     <RadiationPattern kind="beam" />
     <template #explain>
       <p v-if="isYagi">A Yagi’s parasitic elements are not fed. The one behind the driven element is slightly long, so it re-radiates forward; the ones in front are slightly short, so they pull the pattern forward. Real optimised designs trade lengths and spacings against each other; these proportions are a sound place to begin. The result will cover a narrow band. Every figure is an empirical starting point, not a computed optimum.</p>
-      <p v-else>A quad element is a full-wave loop. Making the reflector loop a little bigger and the directors a little smaller produces the same “pull forward” as a Yagi, with a lower impedance and often a quieter receive. The perimeters come from empirical formulas; trim for the frequency you want.</p>
+      <p v-else>A quad element is a full-wave loop. This starting design uses a larger reflector and smaller directors. The perimeters come from empirical formulas; trim and measure the assembled antenna. The rotatable drawing projects square loop planes and their positions in three dimensions, preserving their relative lengths and spacings. It is a construction view, not a model of gain, impedance or radiation pattern.</p>
     </template>
   </ToolLayout>
 </template>

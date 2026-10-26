@@ -8,7 +8,6 @@ import GithubLink from './components/GithubLink.vue'
 import ConsentBanner from './components/ConsentBanner.vue'
 import DesktopTitleBar from './components/DesktopTitleBar.vue'
 import NavigationError from './components/NavigationError.vue'
-import { saveNavigationReport } from './core/navigationDiagnostics'
 
 const route = useRoute(), router = useRouter()
 const q = ref(typeof route.query.q === 'string' ? route.query.q : '')
@@ -27,11 +26,6 @@ watch(() => route.fullPath, () => { menu.value = false })
 watch(() => route.query.q, (v) => { if (route.path === '/' && (v ?? '') !== q.value) q.value = (v as string) ?? '' })
 
 function onKey(e: KeyboardEvent) {
-  if (window.hrtDesktop && e.ctrlKey && e.shiftKey && e.key === 'F12' && !e.repeat) {
-    e.preventDefault()
-    void saveNavigationReport().catch(() => { /* Diagnostic export must not disrupt navigation. */ })
-    return
-  }
   const tag = (e.target as HTMLElement).tagName
   if (e.key === '/' && tag !== 'INPUT' && tag !== 'SELECT') { e.preventDefault(); searchEl.value?.focus() }
   if (e.key === 'Escape') menu.value = false

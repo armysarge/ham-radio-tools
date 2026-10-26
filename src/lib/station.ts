@@ -25,6 +25,18 @@ export function lossWithSwr(matchedDb: number, swr: number) {
 export const dbToFraction = (db: number) => 10 ** (-db / 10)
 
 // ============ link budget and path ============
+/** Equivalent powers in the direction of the specified gain, using the nominal 2.15 dB dipole reference. */
+export function radiatedPower(txW: number, lossDb: number, gain: number, reference: 'dBi' | 'dBd') {
+  need([txW, lossDb, gain].every(Number.isFinite), 'Enter finite power, loss and gain values')
+  need(txW > 0 && lossDb >= 0, 'Power must be greater than 0 and loss must be 0 or more')
+  need(reference === 'dBi' || reference === 'dBd', 'Choose dBi or dBd for the gain reference')
+  const gainDbi = gain + (reference === 'dBd' ? 2.15 : 0)
+  const txDbm = 10 * Math.log10(txW) + 30
+  const antennaDbm = txDbm - lossDb, eirpDbm = antennaDbm + gainDbi, erpDbm = eirpDbm - 2.15
+  const antennaW = 10 ** ((antennaDbm - 30) / 10), eirpW = 10 ** ((eirpDbm - 30) / 10), erpW = 10 ** ((erpDbm - 30) / 10)
+  need([antennaW, eirpW, erpW].every(x => Number.isFinite(x) && x > 0), 'Values exceed the supported numeric range')
+  return { antennaW, eirpW, erpW, eirpDbm, erpDbm, gainDbi }
+}
 /** Free-space path loss in dB for distance in km and frequency in MHz. */
 export function fspl(dKm: number, fMHz: number) { need(dKm > 0 && fMHz > 0, 'Distance and frequency must be greater than 0'); return 20 * Math.log10(dKm) + 20 * Math.log10(fMHz) + 32.44 }
 export const wattsToDbmL = (w: number) => { need(w > 0, 'Power must be greater than 0'); return 10 * Math.log10(w * 1000) }
@@ -70,11 +82,21 @@ export function filterG(kind: FilterKind, n: number, rippleDb = 0.1): number[] {
 export interface FilterPart { kind: 'C' | 'L'; position: 'shunt' | 'series'; value: number }
 /** Ladder values for cutoff fcHz and impedance z0. 'pi' starts and ends with shunt capacitors, 't' with series inductors. */
 export function lowPassParts(g: number[], fcHz: number, z0: number, topology: 'pi' | 't'): FilterPart[] {
-  need(fcHz > 0 && z0 > 0, 'Cutoff and impedance must be greater than 0')
+  need(Number.isFinite(fcHz) && Number.isFinite(z0) && fcHz > 0 && z0 > 0, 'Cutoff and impedance must be finite and greater than 0')
+  need(g.length >= 3 && g.length <= 9 && g.length % 2 === 1 && g.every(v => Number.isFinite(v) && v > 0), 'Use a valid odd-order prototype')
   const w = TWO_PI * fcHz
   return g.map((gk, i) => {
     const capacitor = topology === 'pi' ? i % 2 === 0 : i % 2 === 1
     return capacitor ? { kind: 'C', position: 'shunt', value: gk / (w * z0) } : { kind: 'L', position: 'series', value: (gk * z0) / w }
+  })
+}
+/** Low-pass to high-pass transformation: reciprocal prototype values, retaining series/shunt placement. */
+export function highPassParts(g: number[], fcHz: number, z0: number, topology: 'pi' | 't'): FilterPart[] {
+  lowPassParts(g, fcHz, z0, topology) // shared prototype and scale validation
+  const w = TWO_PI * fcHz
+  return g.map((gk, i) => {
+    const shunt = topology === 'pi' ? i % 2 === 0 : i % 2 === 1
+    return shunt ? { kind: 'L', position: 'shunt', value: z0 / (w * gk) } : { kind: 'C', position: 'series', value: 1 / (w * z0 * gk) }
   })
 }
 /** Attenuation (dB) at f/fc for an ideal lossless filter. */

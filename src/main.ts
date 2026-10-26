@@ -7,7 +7,6 @@ import { tools } from './core/registry'
 import { applyAppearance, state } from './core/store'
 import { watch } from 'vue'
 import { startAnalytics } from './core/analytics'
-import { startNavigationDiagnostics } from './core/navigationDiagnostics'
 import './style.css'
 
 // Hash routing: works from file://, a USB stick, or any static folder with no server rewrites.
@@ -40,6 +39,4 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', applyApp
 applyAppearance()
 
 startAnalytics(router)
-const app = createApp(App).use(router)
-if (window.hrtDesktop) app.onUnmount(startNavigationDiagnostics(router))
-app.mount('#app')
+createApp(App).use(router).mount('#app')

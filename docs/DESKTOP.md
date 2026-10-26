@@ -13,6 +13,8 @@ npm run desktop
 
 On first use, the Electron package may download its runtime binary. Development and packaging need internet for those downloads; the resulting installed app runs offline. Each `desktop` command builds current source before opening the window. Close it, edit source and rerun to test changes.
 
+Electron retains a snapshot of its bundled web files for each running process. Building the website while Electron is open no longer removes files that its unopened tools need. Reloading uses the same snapshot; close and relaunch Electron to use a newer build. The current snapshot holds about 2 MB of application files in memory. Optional packs and saved work are separate and are not copied into this snapshot.
+
 For the automated smoke check:
 
 ```sh
@@ -68,27 +70,28 @@ Dependency audit at implementation time: npm reports eight moderate advisories t
 
 ## Verification
 
-### Intermittent sidebar clicks
+### Tool loading after a rebuild
 
-If a sidebar item stops opening, press **Ctrl+Shift+F12 before restarting** to export `ham-radio-tools-navigation.json`. Share it with the affected item, app version and the last action. If possible, compare the same tool's card on **All tools** and note whether keyboard activation still works.
+Temporary navigation diagnostics have been removed after identifying the bundle-replacement cause. There is no pointer/route journal, link-coverage inspection, error classifier, diagnostic export or associated keyboard shortcut.
 
-The desktop renderer keeps only the last 80 navigation and sidebar/header pointer events in memory. The explicitly exported report includes tool IDs, click coordinates, route outcomes, viewport details, browser/runtime identification and visible-link hit testing. Failed routes also include an error class/category and bundled JavaScript/CSS filenames when available; raw messages, filesystem paths, URL query values, form values, callsigns and saved work are excluded. It sends nothing and resets on restart. Native Windows hit testing and a fully hung renderer can prevent events or the export shortcut reaching JavaScript, so absence of an event alone does not establish the cause.
+Normal failed tool loads still display a notice with **Try again** and **Reload app** actions. The app never reloads automatically: unfinished inputs could be lost. Save work before reloading. Relaunch Electron to use a newly built bundle.
 
-Failed tool loads display a notice above the current page with **Try again**, **Save error report** and **Reload app** actions. The app never reloads automatically: unfinished inputs could be lost. Save work and export the report before reloading. A failed JavaScript module can remain rejected for the life of the page, so restoring its file may still require a reload.
-
-The supplied 2026-10-26 report confirms clicks reached Inverted-V and Vertical, followed by repeated route errors while EFHW stayed open. It does not include the exceptions, so the underlying cause is still unconfirmed. When testing a development Electron shell, close it before rebuilding `dist/`: a running page holds references to hashed files from its launch build, and a rebuild can remove files for tools that have not loaded yet. Installed releases contain their own bundled files.
+The first 2026-10-26 report showed route errors without exception details. The later report identified failed JavaScript loads for Ohm's Law, SWR, Reactance and dBm/Watts after about eight minutes. All four filenames exactly matched a temporary reconstruction of the build before the favourite-star change; the running app still referenced those files after a verification build replaced `dist/`. This development-session failure is now prevented by retaining the entire launch-time bundle before opening the window. Installed releases contain their own bundled files. Different future failures still require investigation; this does not establish that every possible navigation issue has the same cause.
 
 ### Recorded checks
 
 Record actual outcomes here after testing. A build or automated smoke check does not prove clean-machine installation, hardware microphone operation or Linux compatibility.
 
 - Windows 10 build 19045, Node 24, Electron 44.9.1: development shell and packaged `win-unpacked` executable passed startup, calculation, map, saved-design persistence across restart, renderer isolation and blocked external-fetch checks on 2026-10-20.
-- Windows development Electron 44.9.1 on 2026-10-26: paced sidebar navigation (192 transitions in a focused run), plus the extended smoke check with EFHW/favourite links and Ctrl+Shift+F12 report export passed. These use browser-generated input; native Windows mouse hit testing could not be verified because screen capture timed out. The intermittent reported failure remains unresolved. The latest changes have not been retested in a packaged installer or on Linux.
-- Windows development Electron 44.9.1 on 2026-10-26: deliberately blocking Inverted-V's bundled JavaScript reproduced a failed route while retaining EFHW. The visible notice, report export with module-load category/asset name, and manual reload recovery passed after restoring access. Full suite: 297 tests; production build and Edge offline acceptance passed. This verifies recovery from an injected resource failure, not the underlying cause of the supplied report. Linux and packaged-installation checks were not repeated for this change.
+- Windows development Electron 44.9.1 on 2026-10-26: paced sidebar navigation (192 transitions in a focused run), plus the extended smoke check with EFHW/favourite links passed. These use browser-generated input; native Windows mouse hit testing could not be verified because screen capture timed out. This early check did not reproduce the later-identified bundle-replacement failure.
+- Windows development Electron 44.9.1 on 2026-10-26: deliberately blocking Inverted-V's bundled JavaScript reproduced a failed route while retaining EFHW. The visible notice and manual reload recovery passed after restoring access. At that stage, the full suite had 297 tests; production build and Edge offline acceptance passed. Linux and packaged-installation checks were not repeated for this change.
+- Subsequent 2026-10-26 report: four failed tool filenames matched the pre-rebuild bundle exactly. The new startup snapshot passed a Windows Electron regression that deleted the still-unopened Ohm's Law module and replaced the entry HTML in a disposable app copy; opening the tool and reloading still worked. The broader Electron smoke check and 300 unit/UI tests passed. The current fix has not been retested on Linux or in a packaged installer. Extended everyday use is still needed to check for any separate navigation issue.
 - Windows x64 NSIS installer was generated as `ham-radio-tools-0.3.0-win-x64.exe`. It has not been installed on a clean machine.
 - Linux packaging and runtime: configured for CI, not exercised locally.
 - Expanded Windows development and packaged-executable checks on 2026-10-20 passed project file export/import, copy bridge and native clipboard round trip, PDF print-engine rendering, plus explicit update check/download and tampered-file rejection using mocked GitHub responses. The clipboard probe previously returned empty in this environment; the harness reports this limitation explicitly if it recurs. These are not hardware or real release upgrade tests.
 - Clean-machine installation, offline first launch, microphone hardware and printer checks: pending. Follow [the desktop acceptance checklist](DESKTOP_ACCEPTANCE.md) and record actual OS versions and results.
+
+The 2026-10-26 Windows development-shell check also exercised ERP/EIRP gain-reference changes and both LC filter circuit pages, including a nine-part high-pass ladder. Edge offline acceptance covered these workflows with external networking blocked and checked all routes at 375 px. Linux and clean-machine installer checks were not repeated for these additions.
 
 ### Windows development sandbox access
 

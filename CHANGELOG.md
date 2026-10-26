@@ -5,6 +5,15 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 ## [Unreleased]
 
 ### Added
+- Bundled BBC World Service frequency reference transcribed from the supplied official-page snapshot: 30 frequency entries across five regional tables, preserving weekday restrictions, midnight boundaries, medium-wave and DRM details. Published UTC season is enforced for live/time-filtered matches; dated rows remain viewable outside the season.
+- “On the air now” section in Broadcast Schedules & Time Stations: current UTC activity from the selected local schedule, grouped frequencies, station/frequency filtering, stale-data guidance and a compact expandable station list. Manual-time browsing remains independent.
+- SWR/VSWR voltage maxima/minima input with cross-field validation and a live normalised standing-wave voltage envelope; existing SWR, return-loss, reflection and resistive-load inputs remain available.
+- Number Codes & 92 Code reference: searchable 73/88/QRP 72, selected historical 1/6/30 examples, usage notes, copy actions, International Morse notation and links to the CW tools.
+- Maintainer content-update calendar covering monthly broadcast checks, seasonal handoffs, national-table review dates, satellite/propagation inputs and the supplied BBC schedule's provenance and expiry limitations.
+- ERP & EIRP calculator with feed-system loss, dBi/dBd gain references, copyable watts/dBm results and an explicit power chain.
+- High-pass LC filter designer using the shared Butterworth/Chebyshev prototype calculations; both filter pages now include labelled, responsive pi/T schematics and frequency-response explanations.
+- Coordinate Converter with DD/DDM/DMS input and output, hemisphere/boundary validation, rounded field carry, Maidenhead locator-centre conversion, offline map overlays and local named-location saving.
+- Unit Converter for twelve station/electronics quantities, with international metric/imperial definitions, temperature offsets, absolute-zero validation, unit swapping, copyable results and canonical-unit explanations.
 - DIY Baluns & Ununs construction templates: 1:1 coax choke, 1:1 paired-wire current, 4:1 two-section Guanella current, 4:1 Ruthroff voltage and 9:1 trifilar voltage unun. Includes terminal connections, sourced construction guidance, material allowances for each conductor/core section and line-impedance targets where applicable. The unun is explicitly unbalanced on both sides and includes return-path/tuner guidance.
 - Frequency-dependent installation height references on dipole, inverted-V and EFHW drawings, with metric/imperial values and sourced HF/DX versus regional/NVIS guidance. The inverted-V labels the entered apex height separately; references are not a site-specific optimum or simulation.
 - Recommended bands and uses on all nine antenna design pages, with practical construction choices, source links and explicit single-band, harmonic and receive-only limits.
@@ -17,6 +26,10 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 - Radiation pattern concept illustrations across all antenna design pages, with idealized assumptions and clear limits; no simulated gain or site-specific pattern claims.
 
 ### Fixed
+- Overnight broadcast entries now use the UTC start weekday after midnight, including Sunday-to-Monday rollover. Switching schedules also ignores late responses from the previous selection.
+- Filter results now clear when Chebyshev ripple is empty or invalid, instead of silently falling back to 0.1 dB. Filter inputs reject non-finite frequency/impedance and invalid prototypes.
+- Electron tool links no longer fail when a development build replaces `dist/` while the app is running. The app retains its launch-time bundle in memory; restart Electron to load a newer build. Added regression coverage for removed lazy tool files and a replaced entry page.
+- Dashboard favourite stars stay compact and centred when selected, without a large filled background; their 44 px touch targets are preserved.
 - Failed tool navigation leaving the previous page open.
 - Redrew the balun coax continuity/cutaway illustration to distinguish the intact cable, shield, dielectric, centre conductor and surrounding ferrite.
 - Sidebar selection and hover keep the same font weight and padding, preventing labels from wrapping and moving neighbouring rows when clicked.
@@ -27,6 +40,10 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 - Repositioned antenna labels and captions to address clipped text, wire/label overlaps and crowded J-pole annotations. Standardised diagram typography for mobile and laptop layouts; dense beam dimensions remain in the dimension table.
 
 ### Changed
+- Replaced the cubical quad's flat drawing with a rotatable 3D orthographic SVG construction view: separate wire-loop planes, diagonal insulating spreaders, boom, driven feed gap and adjustable viewing angles. Dimension calculations remain empirical; no simulated RF performance is implied.
+- Clarified SWR/VSWR terminology, matched/total-reflection limits and mismatch loss versus actual power dissipation.
+- Renamed the existing Quad Beam tool to Cubical Quad Beam and reconciled its roadmap entry; dimensions remain empirical starting estimates.
+- Removed temporary navigation click/route tracking, link hit testing, error classification, diagnostic report export and its keyboard shortcut after identifying the Electron bundle-replacement cause.
 - Moved DIY RF Transformers into the RF transformer tab in DIY Components, preserving the winding illustration, calculator and cable/build guidance. The old tool link redirects to the merged tab.
 - Antenna menu titles no longer use parenthetical qualifiers.
 - Band tables have band/text filters, highlighted frequency matches, roomier rows and an interactive, collapsible allocation chart.

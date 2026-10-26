@@ -79,3 +79,9 @@ export function onAirAt(startUtc: string, endUtc: string, hhmm: number): boolean
 }
 /** days: 'daily' or digits 1..7 where 1 = Monday. */
 export const runsOnDay = (days: string, isoWeekday: number) => days === 'daily' || days.includes(String(isoWeekday))
+/** Weekdays identify the UTC start day; the tail of an overnight transmission belongs to the previous day. */
+export function transmissionOnAirAt(entry: BroadcastEntry, hhmm: number, isoWeekday: number): boolean {
+  if (!onAirAt(entry.startUtc, entry.endUtc, hhmm)) return false
+  const overnightTail = +entry.startUtc > +entry.endUtc && hhmm < +entry.endUtc
+  return runsOnDay(entry.days, overnightTail ? (isoWeekday === 1 ? 7 : isoWeekday - 1) : isoWeekday)
+}

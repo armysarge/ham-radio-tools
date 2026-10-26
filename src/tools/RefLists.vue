@@ -46,6 +46,7 @@ const ids = { ctcss: 'ctcss', dcs: 'dcs', abbreviations: 'abbreviations', consta
     </div>
 
     <div v-else-if="which === 'abbreviations'" style="margin-top:1rem">
+      <p class="hint">For number meanings and usage examples, see <RouterLink to="/tool/number-codes">Number Codes &amp; 92 Code</RouterLink>.</p>
       <p v-if="!abbr.length" class="empty">No abbreviation matches “{{ q }}”.</p>
       <div v-else class="table-wrap"><table class="table"><thead><tr><th>Abbreviation</th><th>Meaning</th><th>Used in</th></tr></thead>
         <tbody><tr v-for="r in abbr" :key="r[0]"><td class="mono" style="font-weight:700;color:var(--accent)">{{ r[0] }}</td><td>{{ r[1] }}</td><td>{{ r[2] }}</td></tr></tbody></table></div>

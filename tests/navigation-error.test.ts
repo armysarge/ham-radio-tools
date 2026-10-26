@@ -3,7 +3,7 @@ import { createMemoryHistory, createRouter } from 'vue-router'
 import { afterEach, expect, it, vi } from 'vitest'
 import NavigationError from '../src/components/NavigationError.vue'
 
-afterEach(() => vi.restoreAllMocks())
+afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals() })
 
 async function setup() {
   let fails = true
@@ -42,5 +42,14 @@ it('keeps navigation to other tools working and removes its hooks on unmount', a
   await router.push('/')
   await flushPromises()
   expect(w.find('[role="alert"]').exists()).toBe(false)
+  w.unmount()
+})
+
+it('has only normal recovery controls on desktop, without diagnostic export', async () => {
+  vi.stubGlobal('hrtDesktop', {})
+  const { router, w } = await setup()
+  await expect(router.push('/tool/inverted-v')).rejects.toThrow()
+  await flushPromises()
+  expect(w.findAll('button').map(button => button.text())).toEqual(['Try again', 'Reload app'])
   w.unmount()
 })

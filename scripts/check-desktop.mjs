@@ -1,6 +1,6 @@
 // Exercises the actual Electron shell with a disposable profile; no edits to the user's saved data.
 import { _electron } from 'playwright-core'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, readdir, writeFile, unlink, cp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import assert from 'node:assert/strict'
@@ -8,9 +8,13 @@ import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 const profile = await mkdtemp(path.join(tmpdir(), 'hrt-desktop-test-'))
 const executablePath = process.env.HRT_DESKTOP_EXEC || require('electron')
-const args = process.env.HRT_DESKTOP_EXEC ? [] : ['.']
+const fixtureApp = path.join(profile, 'app')
+const args = process.env.HRT_DESKTOP_EXEC ? [] : [fixtureApp]
 let desktop
 try {
+  if (!process.env.HRT_DESKTOP_EXEC) {
+    for (const name of ['desktop', 'dist', 'package.json']) await cp(path.resolve(name), path.join(fixtureApp, name), { recursive: true })
+  }
   const env = { ...process.env, HRT_TEST_PROFILE: profile }
   delete env.ELECTRON_RUN_AS_NODE
   desktop = await _electron.launch({ args, executablePath, env })
@@ -63,6 +67,28 @@ try {
     const toggle = page.getByRole('button', { name: 'Toggle navigation menu' })
     if (await toggle.isVisible() && await toggle.getAttribute('aria-expanded') === 'false') await toggle.click()
   }
+  if (!process.env.HRT_DESKTOP_EXEC) {
+    // Change only the disposable app copy: simulate a build deleting an unopened tool.
+    const assets = path.join(fixtureApp, 'dist/assets')
+    const name = (await readdir(assets)).find(name => /^OhmsLaw-[\w-]+\.js$/.test(name))
+    assert(name, 'Ohms Law bundle exists in the fixture')
+    const toolPath = path.join(assets, name), indexPath = path.join(fixtureApp, 'dist/index.html')
+    const tool = await readFile(toolPath), index = await readFile(indexPath)
+    try {
+      await unlink(toolPath)
+      await writeFile(indexPath, '<html><body>Replacement build fixture</body></html>')
+      await openNavigation()
+      await page.locator('aside summary').filter({ hasText: 'RF & Electronics' }).click()
+      await page.locator('aside details a[href="#/tool/ohms-law"]').click()
+      await page.getByRole('heading', { level: 1, name: "Ohm's Law & Power" }).waitFor()
+      assert.equal(await page.locator('.navigation-error').count(), 0, 'unopened tool survives removal of its on-disk file')
+      await page.reload()
+      await page.getByRole('heading', { level: 1, name: "Ohm's Law & Power" }).waitFor()
+    } finally { await writeFile(toolPath, tool); await writeFile(indexPath, index) }
+    await page.goto(base)
+    await page.getByRole('heading', { level: 1, name: 'Ham Radio Tools' }).waitFor()
+    console.log('PASS: launch-time bundle survives deletion of an unopened tool and replacement of index.html')
+  }
   await openNavigation()
   await page.locator('aside summary').filter({ hasText: 'Antenna Design' }).click()
   for (const id of ['efhw', 'dipole', 'efhw', 'qfh', 'efhw', 'vertical', 'efhw']) {
@@ -77,26 +103,6 @@ try {
   await openNavigation()
   await page.locator('aside nav > a[href="#/tool/efhw"]').click()
   await page.waitForURL(base + '#/tool/efhw')
-  const navigationPath = path.join(profile, 'navigation.json')
-  await desktop.evaluate(({ dialog }, filePath) => {
-    globalThis.hrtNavigationDialog = dialog.showSaveDialog
-    dialog.showSaveDialog = async () => ({ canceled: false, filePath })
-  }, navigationPath)
-  try {
-    await page.keyboard.press('Control+Shift+F12')
-    let report
-    for (let i = 0; i < 50; i++) {
-      try { report = JSON.parse(await readFile(navigationPath, 'utf8')); break } catch {}
-      await page.waitForTimeout(50)
-    }
-    assert.equal(report?.format, 'ham-radio-tools-navigation', 'shortcut exports local navigation diagnostics')
-    assert.equal(report.route, '/tool/efhw')
-    assert(report.events.some(e => e.type === 'click' && e.target === '/tool/efhw'))
-    assert.equal(report.renderedTool, 'efhw')
-    if (initial.bounds.width > 900) assert(report.links.some(link => link.target === '/tool/efhw' && !link.covered))
-  } finally {
-    await desktop.evaluate(({ dialog }) => { dialog.showSaveDialog = globalThis.hrtNavigationDialog; delete globalThis.hrtNavigationDialog })
-  }
   await page.goto(base + '#/tool/frequency-wavelength')
   await page.getByText('21.11', { exact: true }).waitFor()
   const clipboardAvailable = await desktop.evaluate(async ({ clipboard, ClipboardItem }) => {
@@ -124,6 +130,54 @@ try {
   await page.goto(base + '#/tool/maidenhead')
   await page.locator('.map path.land').waitFor()
   assert((await page.locator('.map path.land').getAttribute('d')).length > 20000)
+  await page.goto(base + '#/tool/quad')
+  await page.getByRole('img', { name: /Rotatable 3D cubical quad/ }).waitFor()
+  await page.getByLabel('Quad view azimuth', { exact: true }).press('End')
+  await page.getByRole('button', { name: 'Reset view', exact: true }).click()
+  await page.goto(base + '#/tool/broadcast-schedules')
+  const onAirNow = page.getByRole('region', { name: 'On the air now', exact: true })
+  await onAirNow.getByRole('heading', { name: 'On the air now:', exact: true }).waitFor()
+  await onAirNow.getByText('WWV (Fort Collins, Colorado)', { exact: true }).waitFor()
+  await page.getByLabel('Search station, language, country', { exact: true }).fill('CHU')
+  await onAirNow.getByText('3330, 7850, 14670 kHz', { exact: true }).waitFor()
+  await page.getByLabel('Search station, language, country', { exact: true }).fill('')
+  await page.locator('main select').first().selectOption('bbc:b26')
+  await page.getByRole('button', { name: 'Everything', exact: true }).click()
+  await page.locator('.schedule-results').getByText(/DRM digital/).waitFor()
+  await page.locator('.schedule-results').getByText('702', { exact: true }).first().waitFor()
+  await page.goto(base + '#/tool/swr')
+  await page.getByRole('button', { name: 'Voltage maxima/minima', exact: true }).click()
+  await page.getByText('VSWR = 3 V ÷ 1 V = 3 : 1', { exact: true }).waitFor()
+  await page.getByRole('img', { name: 'Normalised standing-wave voltage envelope', exact: true }).waitFor()
+  await page.getByLabel('Minimum voltage Vmin', { exact: true }).fill('4')
+  await page.getByRole('alert').filter({ hasText: 'Minimum voltage cannot exceed maximum voltage' }).waitFor()
+  await page.getByLabel('Minimum voltage Vmin', { exact: true }).fill('0')
+  await page.getByText('VSWR = 3 V ÷ 0 V = ∞ : 1', { exact: true }).waitFor()
+  await page.goto(base + '#/tool/number-codes')
+  await page.getByLabel('Search number codes', { exact: true }).fill('73')
+  await page.getByText('--... ...--', { exact: true }).waitFor()
+  await page.getByLabel('Search number codes', { exact: true }).fill('')
+  await page.getByRole('button', { name: 'Historical examples', exact: true }).click()
+  await page.locator('article').filter({ hasText: 'Wait a minute' }).waitFor()
+  await page.goto(base + '#/tool/radiated-power')
+  await page.locator('.results').getByText('199.5', { exact: true }).waitFor()
+  await page.getByRole('combobox', { name: 'Gain reference', exact: true }).selectOption('dBd')
+  await page.locator('.results').getByText('327.3', { exact: true }).waitFor()
+  await page.goto(base + '#/tool/high-pass-filter')
+  await page.getByRole('img', { name: 'LC ladder with labelled series and shunt components' }).waitFor()
+  await page.getByRole('button', { name: 'T (C-L-C…)', exact: true }).click()
+  await page.getByRole('combobox', { name: 'Order (number of parts)', exact: true }).selectOption('9')
+  await page.goto(base + '#/tool/low-pass-filter')
+  await page.getByRole('img', { name: 'LC ladder with labelled series and shunt components' }).waitFor()
+  await page.goto(base + '#/tool/coordinate-converter')
+  await page.getByLabel('Latitude to convert').fill('25 45 S')
+  await page.getByLabel('Longitude to convert').fill('28 15 E')
+  await page.getByText('-25.750000, 28.250000', { exact: true }).waitFor()
+  await page.locator('.map path.land').waitFor()
+  await page.goto(base + '#/tool/unit-converter')
+  await page.getByLabel('From unit', { exact: true }).selectOption('ft')
+  await page.getByLabel('To unit', { exact: true }).selectOption('m')
+  assert.equal(await page.locator('.conversion-result .val').textContent(), '0.3048')
   await page.goto(base + '#/tool/diy-transformers')
   await page.waitForURL(base + '#/tool/diy-components?part=transformer')
   await page.getByRole('heading', { level: 1, name: 'DIY Components' }).waitFor()
@@ -133,7 +187,7 @@ try {
   await page.locator('svg[aria-label^="9:1 unun"]').waitFor()
   assert.equal(await page.locator('.winding-route').count(), 3, 'unun has three equal conductor windings')
   await page.getByText('50 Ω → 450 Ω', { exact: true }).waitFor()
-  // Reproduce the silent-navigation report: a previously unopened tool's lazy asset fails.
+  // Exercise normal load-error recovery when a previously unopened tool's lazy asset fails.
   // Electron's custom protocol needs main-process interception; Playwright page.route does not intercept it.
   await desktop.evaluate(({ app, session }) => {
     const path = process.getBuiltinModule('path')
@@ -154,25 +208,7 @@ try {
     await page.getByRole('alert').filter({ hasText: 'Couldn’t open' }).waitFor()
     assert(await desktop.evaluate(() => globalThis.hrtAssetFailure.blocked) > 0, 'fault fixture blocked the actual bundled tool module')
     assert.match(await page.locator('main h1').innerText(), /End-Fed Half-Wave/, 'failed navigation keeps the previous tool')
-    const failureReport = path.join(profile, 'navigation-failure.json')
-    await desktop.evaluate(({ dialog }, filePath) => {
-      globalThis.hrtNavigationDialog = dialog.showSaveDialog
-      dialog.showSaveDialog = async () => ({ canceled: false, filePath })
-    }, failureReport)
-    try {
-      await page.getByRole('button', { name: 'Save error report', exact: true }).click()
-      let report
-      for (let i = 0; i < 50; i++) {
-        try { report = JSON.parse(await readFile(failureReport, 'utf8')); break } catch {}
-        await page.waitForTimeout(50)
-      }
-      const failure = report?.events.findLast(event => event.type === 'route-error')
-      assert.equal(failure?.target, '/tool/inverted-v')
-      assert.equal(failure?.error.category, 'module-load')
-      assert.match(failure?.error.asset, /^InvertedV-[\w-]+\.js$/)
-    } finally {
-      await desktop.evaluate(({ dialog }) => { dialog.showSaveDialog = globalThis.hrtNavigationDialog; delete globalThis.hrtNavigationDialog })
-    }
+    assert.equal(await page.getByRole('button', { name: 'Save error report', exact: true }).count(), 0)
     await page.getByRole('button', { name: 'Try again', exact: true }).click()
     await page.getByRole('alert').waitFor()
   } finally { await desktop.evaluate(() => { globalThis.hrtAssetFailure.active = false }) }
@@ -303,7 +339,7 @@ try {
   const closed = desktop.waitForEvent('close')
   await maximized.getByRole('button', { name: 'Close window', exact: true }).click()
   await closed; desktop = undefined
-  console.log(`PASS: Electron on ${process.platform}: sidebar/favourite navigation, injected tool-load failure/report/reload recovery, offline tools, clipboard bridge${clipboardAvailable ? ' and OS round trip' : ' (OS round trip unverified)'}, project export/import, explicit update check/download (mock transport), window controls/restoration, isolated renderer and blocked external fetch`)
+  console.log(`PASS: Electron on ${process.platform}: sidebar/favourite navigation, injected tool-load failure and reload recovery, offline tools, clipboard bridge${clipboardAvailable ? ' and OS round trip' : ' (OS round trip unverified)'}, project export/import, explicit update check/download (mock transport), window controls/restoration, isolated renderer and blocked external fetch`)
 } finally {
   await desktop?.close()
   await rm(profile, { recursive: true, force: true })

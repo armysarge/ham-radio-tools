@@ -1,7 +1,7 @@
 import type { BroadcastEntry } from '../lib/packs'
 
 // Time-signal and standard-frequency stations: long-lived, continuous services, so they can be bundled.
-// Programme schedules (shortwave broadcasters, utility stations) change every season and are supplied as dated packs instead.
+// The dated BBC frequency reference is separate; other broadcaster schedules can be imported as local packs.
 export const TIME_STATIONS_META = { source: 'Station operators’ public information (NIST, NRC, VNIIFTRI, NTSC, PTB, NPL, NICT), as generally published', revision: '2026-10-19',
   note: 'Services can change frequency, power or hours, or close. Verify before relying on them (for example for calibration).' }
 const T = (freqKhz: number, station: string, country: string, note: string): BroadcastEntry => ({ freqKhz, startUtc: '0000', endUtc: '0000', days: 'daily', station, country, language: 'time signal', target: 'Worldwide', note })

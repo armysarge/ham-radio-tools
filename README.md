@@ -29,6 +29,16 @@ Ham Radio Tools is a free, open-source collection of practical tools for radio a
 
 Search for a tool, add favourites, choose Metric or Imperial, and switch between light and dark themes. Sidebar categories start collapsed and remember which ones you open. Open **Show** below a tool for its explanation and references.
 
+**Converting a location or measurement?** Coordinate Converter accepts decimal degrees, degrees/minutes and DMS, shows the point and its Maidenhead cell on the offline map, and saves named locations. Unit Converter handles twelve quantities, including metric/imperial lengths, component values, watt-hours/joules and Celsius/Fahrenheit. Both work entirely offline.
+
+**Planning your RF chain?** ERP & EIRP combines transmitter power, feed-system loss and antenna gain, with clear dBi/dBd references. Low-pass and high-pass filter designers show live pi/T connection diagrams, component values and ideal attenuation curves. Real filters need suitable RF components and measurement after construction.
+
+**Heard “73” or “72” on air?** Number Codes & 92 Code explains common number shorthand with examples and Morse notation, keeping historical telegraph examples separate from current amateur usage.
+
+**Understanding antenna matching?** SWR / VSWR & Return Loss also accepts voltage maxima/minima and shows a live standing-wave envelope. It explains the ratio and reflected power without treating reflection as heat loss.
+
+The **Cubical Quad Beam** designer includes a rotatable 3D construction drawing. Adjust its viewing angles to see the separate loops, spreaders and boom; use the table for cutting lengths and spacing.
+
 **Building a balun or transformer?** DIY Baluns & Ununs has selectable **1:1 coax choke**, **1:1 paired-wire current**, **4:1 Guanella current**, **4:1 Ruthroff voltage** and **9:1 voltage unun** templates, with their own connection drawings, material choices and turns estimates. The two-section current balun accounts for both independent core stacks and all four conductors; the unun shows its three equal windings and shared return. Open **DIY Components → RF transformer** for a conventional two-winding transformer's turns and wire allowance. Calculated turns do not guarantee RF bandwidth or power handling. Build and measure for your intended bands.
 
 Antenna tools include dimensioned drawings, material guidance and a short **Recommended bands and uses** section to help you choose a suitable build. Each guide explains common band choices and any single-band, harmonic or receive-only limits. The QFH drawing shows the helical paths around the mast plus top and bottom views, which move below the main drawing on smaller screens. Where **Download SVG** is available, exported diagrams retain the displayed colours, label sizes and line styles. Radiation-pattern illustrations explain concepts; they are not simulations of your installation.
@@ -59,6 +69,10 @@ Filter by band or search for a frequency. Expand the allocation chart to inspect
 
 To add a schedule or regional plan, import its JSON pack under **Settings & content**. That screen can also convert a supported EiBi-layout or CSV shortwave schedule. Packs can be carried on a USB drive. Schedules are dated and show a warning when old; downloads are your choice. [Data sources and pack details](docs/DATA_SOURCES.md).
 
+**On the air now** shows scheduled stations and frequencies from your selected schedule using the device's current UTC clock. It updates locally while you browse other times and respects station/frequency filters. Entries indicate scheduled activity, not confirmed reception or transmitter status.
+
+Choose **BBC World Service · 2026–27 season** in Broadcast Schedules & Time Stations for the bundled frequency reference from **25 October 2026 to 27 March 2027**. Medium-wave and DRM entries are labelled. Outside that season, live matches are disabled and “Everything” shows dated reference rows. This is a frequency schedule, not a programme guide.
+
 ## Privacy and offline use
 
 The desktop and standard web builds have no analytics or background update checks. The hosted demo offers optional Google Analytics after you accept its consent banner; you can change that choice in Settings. Your saved projects, logbook and search text are not deliberately included in page-view events.
@@ -77,7 +91,7 @@ The CW microphone decoder processes audio locally and asks for microphone permis
 
 Report problems or suggest tools through [GitHub Issues](https://github.com/armysarge/ham-radio-tools/issues). Include the tool name, inputs and expected result when reporting a calculation problem.
 
-We are investigating intermittent sidebar clicks failing in Electron, including End-Fed Half-Wave. Repeated-navigation checks in Edge and Electron on Windows have not confirmed the cause. If it happens, press **Ctrl+Shift+F12 before restarting** to save a navigation report. Attach that file to your issue with your app version and last action. The report stays local until you share it and excludes callsigns, saved work and search text. If possible, also check whether the tool's card on **All tools** still opens it.
+If a tool fails to open, include your app version, operating system, affected tool and last action in your issue. When testing from source, restart Electron after rebuilding to use the latest app.
 
 MIT licensed — see [LICENSE](LICENSE). Map data: Natural Earth, public domain. The app uses Vue, satellite.js and other credited open-source libraries. The it-tools project inspired its tool organisation; no it-tools code or assets were copied.
 

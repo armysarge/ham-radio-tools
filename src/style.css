@@ -53,7 +53,8 @@ main { padding: 1.25rem 1.5rem 4rem; max-width: 1200px; width: 100%; min-width: 
 .tool-card:hover { border-color: var(--accent); }
 .tool-card h3 { margin-right: 2.5rem; }
 .tool-card p { margin: 0; color: var(--muted); font-size: .92rem; }
-.star { position: absolute; top: .4rem; right: .4rem; width: 44px; padding: 0; font-size: 1.4rem; line-height: 1; }
+.star { position: absolute; top: .4rem; right: .4rem; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; font-size: 1.2rem; line-height: 1; }
+.star[aria-pressed='true'] { color: var(--accent); background: transparent; border-color: transparent; }
 .favorite-star { display: inline-block; transform: translateY(-1px); }
 .empty { text-align: center; padding: 2rem 1rem; color: var(--muted); border: 1.5px dashed var(--line); border-radius: var(--radius); }
 
