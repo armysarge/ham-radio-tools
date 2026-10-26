@@ -6,6 +6,7 @@ import ToolLayout from '../components/ToolLayout.vue'
 import ModsPanel from '../components/ModsPanel.vue'
 import MaterialsPanel from '../components/MaterialsPanel.vue'
 import RadiationPattern from '../components/RadiationPattern.vue'
+import AntennaBands from '../components/AntennaBands.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
@@ -96,6 +97,7 @@ const ry = computed(() => RP * Math.sin(((mode.value === 'elevated' ? droop.valu
       </div>
     </div>
     <MaterialsPanel antenna="vertical" />
+    <AntennaBands antenna="vertical" />
     <RadiationPattern kind="vertical" />
     <ModsPanel antenna="vertical" />
 

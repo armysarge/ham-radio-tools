@@ -9,8 +9,10 @@ import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import LineChart from '../components/LineChart.vue'
 import RadiationPattern from '../components/RadiationPattern.vue'
+import AntennaBands from '../components/AntennaBands.vue'
+import AntennaHeightGuide from '../components/AntennaHeightGuide.vue'
 import { FREQ_UNITS, feetInches, fmt } from '../lib/units'
-import { dipoleLength, trimPerLeg } from '../lib/antenna'
+import { dipoleLength, trimPerLeg, wireHeightReferences } from '../lib/antenna'
 import { saveDesign, state } from '../core/store'
 import { exportSvg } from '../platform'
 import { BANDS } from '../data/bands'
@@ -28,6 +30,7 @@ if (loaded) { f.value = Number(loaded.params.f); k.value = Number(loaded.params.
 
 const total = computed(() => { try { return f.value ? dipoleLength(f.value, k.value) : null } catch { return null } })
 const leg = computed(() => (total.value ? total.value / 2 : null))
+const heights = computed(() => { try { return total.value && f.value ? wireHeightReferences(f.value) : null } catch { return null } })
 const imperial = computed(() => state.units === 'imperial')
 const dim = (m: number | null) => (m == null ? '—' : imperial.value ? feetInches(m) : m >= 1 ? `${m.toFixed(2)} m` : `${(m * 100).toFixed(1)} cm`)
 const trim = computed(() => {
@@ -62,7 +65,7 @@ const printPage = () => window.print()
           <NumField v-model="f" label="Design frequency" :units="FREQ_UNITS" unit="MHz" :min="100e3" :max="1e9" hint="Preset buttons use a typical frequency in each band." />
           <label class="field"><span class="lbl">Shortening factor k = {{ k.toFixed(3) }}</span>
             <input v-model.number="k" type="range" min="0.92" max="0.99" step="0.001" aria-label="Shortening factor" />
-            <span class="hint">Thin wire ≈ 0.95. Thicker conductors and lower heights push it down; 0.96–0.97 is typical for insulated wire in trees.</span></label>
+            <span class="hint">Thin bare wire often starts near 0.95. Insulation, conductor size, height and surroundings alter resonance; cut long and trim at the final height.</span></label>
         </div>
         <div class="card results" aria-live="polite">
           <ResultRow label="Total length" :value="total ? dim(total) : null" big />
@@ -73,21 +76,25 @@ const printPage = () => window.print()
       </div>
       <div class="stack">
         <div class="card">
-          <svg ref="svgEl" class="diagram dg-big antenna-drawing" viewBox="0 0 640 270" role="img" :aria-label="`Dipole drawing: each leg ${dim(leg)}, total ${dim(total)}`">
-            <line class="dg-ground" x1="10" y1="245" x2="630" y2="245" />
-            <line class="dg-ground" x1="40" y1="70" x2="40" y2="245" /><line class="dg-ground" x1="600" y1="70" x2="600" y2="245" />
-            <path class="dg-wire" d="M40 85 H300 M340 85 H600" />
+          <svg ref="svgEl" class="diagram dg-big antenna-drawing" viewBox="0 0 640 355" role="img" :aria-label="`Dipole drawing: each leg ${dim(leg)}, total ${dim(total)}, half-wavelength height reference ${dim(heights?.half ?? null)}`">
+            <line class="dg-ground" x1="10" y1="300" x2="630" y2="300" />
+            <line class="dg-ground" x1="80" y1="70" x2="80" y2="300" /><line class="dg-ground" x1="560" y1="70" x2="560" y2="300" />
+            <path class="dg-wire" d="M80 85 H300 M340 85 H560" />
             <rect class="dg-solid" x="300" y="77" width="40" height="16" rx="3" />
             <path class="dg-ground" d="M320 93 V200" /><text class="dg-text" x="350" y="174">coax to radio</text>
             <text class="dg-text" x="320" y="66" text-anchor="middle">feed point</text>
-            <g><line class="dg-dim" x1="40" y1="118" x2="320" y2="118" /><line class="dg-dim" x1="40" y1="108" x2="40" y2="128" /><line class="dg-dim" x1="320" y1="108" x2="320" y2="128" />
-              <text class="dg-dimtext" x="180" y="112" text-anchor="middle">{{ dim(leg) }}</text></g>
-            <g><line class="dg-dim" x1="320" y1="118" x2="600" y2="118" /><line class="dg-dim" x1="600" y1="108" x2="600" y2="128" />
-              <text class="dg-dimtext" x="460" y="112" text-anchor="middle">{{ dim(leg) }}</text></g>
-            <g><line class="dg-dim" x1="40" y1="225" x2="600" y2="225" /><line class="dg-dim" x1="40" y1="215" x2="40" y2="235" /><line class="dg-dim" x1="600" y1="215" x2="600" y2="235" />
-              <text class="dg-dimtext" x="320" y="219" text-anchor="middle" style="paint-order:stroke">total {{ dim(total) }} @ {{ f ? fmt(f / 1e6) : '—' }} MHz</text></g>
+            <g><line class="dg-dim" x1="80" y1="118" x2="320" y2="118" /><line class="dg-dim" x1="80" y1="108" x2="80" y2="128" /><line class="dg-dim" x1="320" y1="108" x2="320" y2="128" />
+              <text class="dg-dimtext" x="200" y="112" text-anchor="middle">{{ dim(leg) }}</text></g>
+            <g><line class="dg-dim" x1="320" y1="118" x2="560" y2="118" /><line class="dg-dim" x1="560" y1="108" x2="560" y2="128" />
+              <text class="dg-dimtext" x="440" y="112" text-anchor="middle">{{ dim(leg) }}</text></g>
+            <g><line class="dg-dim" x1="80" y1="260" x2="560" y2="260" /><line class="dg-dim" x1="80" y1="250" x2="80" y2="270" /><line class="dg-dim" x1="560" y1="250" x2="560" y2="270" />
+              <text class="dg-dimtext" x="320" y="247" text-anchor="middle">total {{ dim(total) }}</text></g>
+            <path class="dg-dim" d="M45 85 V300 M37 85 H53 M37 300 H53" />
+            <text class="dg-dimtext" x="28" y="193" text-anchor="middle" transform="rotate(-90 28 193)">{{ dim(heights?.half ?? null) }}</text>
+            <text class="dg-text" x="320" y="338" text-anchor="middle">½λ height target · schematic side view</text>
           </svg>
           <p class="hint">Not to scale in height. Lengths are wire only; add a little for tying off the insulators.</p>
+          <AntennaHeightGuide :frequency="total ? f : null" kind="dipole" />
           <div class="seg no-print">
             <button @click="svgEl && exportSvg(svgEl, `dipole-${f ? fmt(f / 1e6) : 'x'}MHz.svg`)">Download SVG</button>
             <button @click="printPage">Print</button>
@@ -122,6 +129,7 @@ const printPage = () => window.print()
     </div>
 
     <MaterialsPanel antenna="dipole" />
+    <AntennaBands antenna="dipole" />
     <RadiationPattern kind="dipole" />
     <ModsPanel antenna="dipole" />
 

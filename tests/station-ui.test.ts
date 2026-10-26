@@ -38,8 +38,10 @@ describe('station tools render with their defaults', () => {
     expect(w.text()).toContain('too thick to pass through this core opening')
     w.unmount()
   })
-  it('DIY transformer tool shows ideal impedance ratio and primary-turn estimate', async () => {
-    const w = await open('diy-transformers')
+  it('DIY transformer tab shows ideal impedance ratio and primary-turn estimate', async () => {
+    const w = await open('diy-components')
+    await w.findAll('.seg button').find((b) => b.text() === 'RF transformer')!.trigger('click')
+    await flushPromises()
     expect(w.text()).toContain('Ideal impedance ratio')
     expect(w.text()).toContain('50 Ω → 450 Ω')
     expect(w.text()).toContain('Primary turns')
@@ -87,6 +89,31 @@ describe('antenna radiation pattern illustrations', () => {
   })
 })
 
+describe('antenna band guidance', () => {
+  it('gives practical band choices on every antenna design page', async () => {
+    for (const [id, band] of [['dipole', '40 m'], ['inverted-v', '80 m'], ['vertical', '70 cm'], ['loop', '80 m'], ['efhw', '40 m fundamental'], ['jpole', '2 m'], ['qfh', '137 MHz'], ['yagi', '6 m'], ['quad', '20 m']] as const) {
+      const w = await open(id)
+      const guide = w.find('[aria-label="Recommended bands and uses"]')
+      expect(guide.exists(), id).toBe(true)
+      expect(guide.text(), id).toContain(band)
+      expect(guide.text(), id).toContain('Size and tune')
+      expect(guide.find('a').attributes('rel')).toBe('noopener noreferrer')
+      w.unmount()
+    }
+  })
+  it('distinguishes receive-only and single-band designs from multiband coverage', async () => {
+    const qfh = await open('qfh')
+    expect(qfh.find('.antenna-bands').text()).toContain('outside the amateur transmit bands')
+    qfh.unmount()
+    const jpole = await open('jpole')
+    expect(jpole.find('.antenna-bands').text()).toContain('single-band J-pole')
+    jpole.unmount()
+    const efhw = await open('efhw')
+    expect(efhw.find('.antenna-bands').text()).toContain('not guaranteed low-SWR coverage')
+    efhw.unmount()
+  })
+})
+
 describe('logbook, clock and trainer', () => {
   it('clock shows UTC and rejects a bad zone', async () => {
     const w = await open('clock'); expect(w.text()).toContain('UTC'); await w.find('input[placeholder^="e.g."]').setValue('Nowhere/Land'); await w.findAll('button').find((b) => b.text() === 'Add')!.trigger('click')
@@ -129,7 +156,7 @@ describe('satellite staleness', () => {
 describe('DIY components', () => {
   it('shows each project with its calculator, diagram and safety notes', async () => {
     const w = await open('diy-components'); expect(w.text()).toContain('Turns to wind'); expect(w.text()).toContain('What to gather'); expect(w.text()).toContain('Safety'); expect(w.find('svg.diagram').exists()).toBe(true)
-    for (const [label, expected] of [['Toroid inductor or transformer', 'Most turns that fit'], ['Foil-and-film capacitor', 'Area of each foil sheet'], ['Air-variable capacitor', 'Plates (rotor + stator)'], ['Dummy load (resistor array)', 'in series'], ['Common-mode choke (coax on a ferrite core)', 'Inductance from the AL value']] as const) {
+    for (const [label, expected] of [['Toroid inductor', 'Most turns that fit'], ['Foil-and-film capacitor', 'Area of each foil sheet'], ['Air-variable capacitor', 'Plates (rotor + stator)'], ['Dummy load (resistor array)', 'in series'], ['Common-mode choke (coax on a ferrite core)', 'Inductance from the AL value']] as const) {
       await w.findAll('.seg button').find((b) => b.text() === label)!.trigger('click'); await flushPromises(); expect(w.text(), label).toContain(expected); expect(w.text()).not.toContain('NaN')
     }
   })

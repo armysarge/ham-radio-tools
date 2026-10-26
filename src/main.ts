@@ -7,6 +7,7 @@ import { tools } from './core/registry'
 import { applyAppearance, state } from './core/store'
 import { watch } from 'vue'
 import { startAnalytics } from './core/analytics'
+import { startNavigationDiagnostics } from './core/navigationDiagnostics'
 import './style.css'
 
 // Hash routing: works from file://, a USB stick, or any static folder with no server rewrites.
@@ -17,6 +18,7 @@ const router = createRouter({
     { path: '/settings', component: () => import('./views/Settings.vue') },
     { path: '/saved', component: () => import('./views/SavedDesigns.vue') },
     { path: '/downloads', component: () => import('./views/Downloads.vue'), meta: { title: 'Downloads', summary: 'Windows, Linux and web downloads for Ham Radio Tools, plus the online demo.' } },
+    { path: '/tool/diy-transformers', redirect: to => ({ path: '/tool/diy-components', query: { ...to.query, part: 'transformer' } }) },
     ...tools.map((t) => ({ path: `/tool/${t.id}`, component: t.component, meta: { title: t.title, summary: t.summary } })),
     { path: '/:pathMatch(.*)*', component: () => import('./views/NotFound.vue') },
   ],
@@ -38,4 +40,6 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', applyApp
 applyAppearance()
 
 startAnalytics(router)
-createApp(App).use(router).mount('#app')
+const app = createApp(App).use(router)
+if (window.hrtDesktop) app.onUnmount(startNavigationDiagnostics(router))
+app.mount('#app')

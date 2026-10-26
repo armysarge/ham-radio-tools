@@ -20,11 +20,12 @@ const hostsFromSources = JSON.parse(await readFile('scripts/pack-data/sources.js
 const esc = (h) => h.replace(/\./g, '\\.')
 const repo = /REPO_URL = '([^']+)'/.exec(await readFile('src/core/meta.ts', 'utf8'))[1].replace(/^https?:\/\//, '')
 const allowed = new RegExp('^https?://(www\\.w3\\.org/|www\\.sitemaps\\.org/|schema\\.org|opensource\\.org|hamradiotools\\.armysarge\\.co\\.za|github\\.com/armysarge|www\\.yaesu\\.com|www\\.edn\\.com|noaasis\\.noaa\\.gov|www\\.arrl\\.org|fair-rite\\.com|rsgb\\.org|amphenolprocom\\.com|farside\\.ph\\.utexas\\.edu|www\\.cv\\.nrao\\.edu|localhost|vuejs\\.org|github\\.com/vuejs|vue-router|router\\.vuejs\\.org|' + [...new Set(hostsFromSources)].map(esc).join('|') + '|' + esc(repo) + ')')
+const balunSource = /^https:\/\/vk6ysf\.com\/(?:balun_choke_balun_hf|balun_guanella_current_1-[14]|balun_4-1|unun_9-1)\.htm$/
 let found = 0
 for await (const f of walk(dist)) {
   if (/[\\/](frame-guard\.js|_headers)$/.test(f)) continue // lists the sites allowed to embed the app: configuration, never requested
   const t = await readFile(f, 'utf8').catch(() => '')
-  for (const u of t.match(/https?:\/\/[^\s"'`)<>\\]+/g) ?? []) if (!allowed.test(u)) { found++; console.log('  external URL in', f.replace(dist, ''), u) }
+  for (const u of t.match(/https?:\/\/[^\s"'`)<>\\]+/g) ?? []) if (!allowed.test(u) && !balunSource.test(u)) { found++; console.log('  external URL in', f.replace(dist, ''), u) }
 }
 found ? fail(`${found} external URL(s) referenced in dist (review above)`) : ok('no external URLs in dist')
 
@@ -61,6 +62,51 @@ await step('tool categories start collapsed and remember changes across restart'
   await page.locator('aside.sidebar nav details').first().locator('summary').click(); await page.waitForFunction(() => JSON.parse(localStorage.getItem('hrt:v1') || '{}').navExpanded?.length === 0); await page.reload(); await page.getByRole('heading', { name: 'Ham Radio Tools' }).waitFor()
   if (await page.locator('aside.sidebar nav details').first().evaluate(el => el.open)) throw new Error('collapsed category did not persist')
 })
+await step('sidebar labels keep the same wrapping on hover and selection', async () => {
+  const navPage = await ctx.newPage()
+  try {
+    for (const width of [1280, 375]) {
+      await navPage.setViewportSize({ width, height: 900 })
+      await navPage.goto(base)
+      await navPage.getByRole('heading', { name: 'Ham Radio Tools', exact: true }).waitFor()
+      async function openDrawer() {
+        const toggle = navPage.getByRole('button', { name: 'Toggle navigation menu' })
+        if (await toggle.isVisible() && await toggle.getAttribute('aria-expanded') === 'false') await toggle.click()
+      }
+      await openDrawer()
+      const expand = navPage.getByRole('button', { name: 'Expand all tool categories', exact: true })
+      if (await expand.isVisible()) await expand.click()
+      const measure = link => link.evaluate(a => {
+        const walker = document.createTreeWalker(a, NodeFilter.SHOW_TEXT)
+        let node, lines = 0
+        while ((node = walker.nextNode())) {
+          if (!node.textContent.trim()) continue
+          const range = document.createRange(); range.selectNodeContents(node)
+          lines += range.getClientRects().length
+        }
+        return { height: a.getBoundingClientRect().height, lines }
+      })
+      for (const id of ['efhw', 'maidenhead', 'frequency-wavelength', 'inverted-v']) {
+        await openDrawer()
+        const link = navPage.locator(`aside details a[href="#/tool/${id}"]`)
+        await navPage.mouse.move(width - 10, 850)
+        const before = await measure(link)
+        await link.hover()
+        await navPage.waitForTimeout(200) // Include the end of any hover transition.
+        const hovered = await measure(link)
+        await link.click()
+        await navPage.waitForURL(new RegExp(`#/tool/${id}$`))
+        await openDrawer()
+        await link.waitFor({ state: 'visible' })
+        const active = await measure(link)
+        if (JSON.stringify(before) !== JSON.stringify(hovered) || JSON.stringify(before) !== JSON.stringify(active)) {
+          throw new Error(`${width}px ${id} changed layout: ${JSON.stringify({ before, hovered, active })}`)
+        }
+      }
+      await navPage.getByRole('button', { name: 'Collapse all tool categories', exact: true }).click()
+    }
+  } finally { await navPage.close() }
+})
 await step('sidebar and header remain responsive after repeated navigation', async () => {
   const groups = page.locator('aside.sidebar nav details'), count = await groups.count()
   for (let i = 0; i < 5; i++) {
@@ -89,7 +135,37 @@ await step('SWR 2 -> 9.542 dB', async () => { await page.goto(base + '#/tool/swr
 await step('dBm: 100 W = 50 dBm', async () => { await page.goto(base + '#/tool/dbm-watts'); await page.getByText('50', { exact: true }).first().waitFor() })
 await step('dipole 7.1 MHz = 20.06 m; save design', async () => {
   await page.goto(base + '#/tool/dipole'); await page.getByText('20.06 m').first().waitFor()
+  if (!(await page.locator('svg.antenna-drawing').textContent())?.includes('21.11 m')) throw new Error('dipole half-wave height reference is missing')
   await page.getByRole('button', { name: 'Save design' }).click(); await page.getByText('Saved —').waitFor()
+})
+await step('old RF transformer link opens the merged DIY Components tab offline', async () => {
+  await page.goto(base + '#/tool/diy-transformers')
+  await page.waitForURL(/#\/tool\/diy-components\?part=transformer$/)
+  await page.getByRole('heading', { level: 1, name: 'DIY Components' }).waitFor()
+  await page.locator('svg[aria-label^="Two electrically separate"]').waitFor()
+  await page.getByText('50 Ω → 450 Ω', { exact: false }).waitFor()
+  await page.getByRole('button', { name: 'Toroid inductor', exact: true }).click()
+  await page.getByText('Most turns that fit in one layer', { exact: true }).waitFor()
+})
+await step('balun and unun templates update their winding diagrams offline on laptop and phone', async () => {
+  await page.goto(base + '#/tool/diy-baluns')
+  for (const width of [1280, 375]) {
+    await page.setViewportSize({ width, height: 900 })
+    for (const [name, label, count] of [
+      ['1:1 coax current choke', 'Longitudinal and end sections', 1],
+      ['1:1 paired-wire current', '1:1 paired-wire current balun', 2],
+      ['4:1 Guanella current', '4:1 Guanella', 4],
+      ['4:1 Ruthroff voltage', '4:1 Ruthroff voltage balun', 2],
+      ['9:1 voltage unun', '9:1 unun', 3],
+    ]) {
+      await page.getByRole('button', { name, exact: true }).click()
+      await page.locator(`svg[aria-label^="${label}"]`).waitFor()
+      if (await page.locator('.winding-route').count() !== count) throw new Error(`${name}: incorrect pictured conductor count`)
+      if (await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)) throw new Error(`${name}: horizontal overflow at ${width}px`)
+    }
+    await page.getByText('50 Ω → 450 Ω', { exact: true }).waitFor()
+  }
+  await page.setViewportSize({ width: 1280, height: 900 })
 })
 await step('map renders land + grid and locator converts', async () => {
   await page.goto(base + '#/tool/maidenhead'); await page.getByText('JN58td').first().waitFor()

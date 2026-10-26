@@ -8,6 +8,7 @@ import { quad, yagi } from '../lib/beams'
 import { state } from '../core/store'
 import BeamDiagram from '../components/BeamDiagram.vue'
 import RadiationPattern from '../components/RadiationPattern.vue'
+import AntennaBands from '../components/AntennaBands.vue'
 
 const props = defineProps<{ which: 'yagi' | 'quad' }>()
 const isYagi = props.which === 'yagi'
@@ -61,6 +62,7 @@ const diagram = computed(() => {
         </template>
       </div>
     </div>
+    <AntennaBands :antenna="which" />
     <RadiationPattern kind="beam" />
     <template #explain>
       <p v-if="isYagi">A Yagi’s parasitic elements are not fed. The one behind the driven element is slightly long, so it re-radiates forward; the ones in front are slightly short, so they pull the pattern forward. Real optimised designs trade lengths and spacings against each other; these proportions are a sound place to begin. The result will cover a narrow band. Every figure is an empirical starting point, not a computed optimum.</p>

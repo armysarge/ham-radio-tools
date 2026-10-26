@@ -6,11 +6,13 @@ import ToolLayout from '../components/ToolLayout.vue'
 import ModsPanel from '../components/ModsPanel.vue'
 import MaterialsPanel from '../components/MaterialsPanel.vue'
 import RadiationPattern from '../components/RadiationPattern.vue'
+import AntennaBands from '../components/AntennaBands.vue'
+import AntennaHeightGuide from '../components/AntennaHeightGuide.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
 import { FREQ_UNITS, feetInches, fmt } from '../lib/units'
-import { efhw, efhwMatch } from '../lib/antenna'
+import { efhw, efhwMatch, wireHeightReferences } from '../lib/antenna'
 import { HF_BANDS } from '../lib/qrm'
 import { BANDS } from '../data/bands'
 import { loadedParams, state } from '../core/store'
@@ -26,6 +28,7 @@ const r = computed(() => { try { return f.value ? efhw(f.value, k.value, HF_BAND
 const imperial = computed(() => state.units === 'imperial')
 const dim = (m: number | null | undefined) => (m == null ? '—' : imperial.value ? feetInches(m) : m >= 1 ? `${m.toFixed(2)} m` : `${(m * 100).toFixed(0)} cm`)
 const turnsRatio = computed(() => Math.sqrt(ratio.value))
+const heights = computed(() => { try { return r.value && f.value ? wireHeightReferences(f.value) : null } catch { return null } })
 const ENDS = [1800, 2500, 3200, 4000]
 const matches = computed(() => ENDS.map((z) => ({ z, ...efhwMatch(z, ratio.value) })))
 const usable = computed(() => r.value?.harmonics.filter((h) => h.band) ?? [])
@@ -57,18 +60,21 @@ const usable = computed(() => r.value?.harmonics.filter((h) => h.band) ?? [])
       </div>
       <div class="stack">
         <div class="card">
-          <svg ref="svgEl" class="diagram dg-big antenna-drawing" viewBox="0 0 640 220" role="img" :aria-label="`End-fed half-wave: wire ${dim(r?.length)}, ${ratio} to 1 transformer at one end`">
+          <svg ref="svgEl" class="diagram dg-big antenna-drawing" viewBox="0 0 640 295" role="img" :aria-label="`End-fed half-wave: wire ${dim(r?.length)}, ${ratio} to 1 transformer at one end, horizontal half-wave height reference ${dim(heights?.half)}`">
             <line class="dg-ground" x1="10" y1="200" x2="630" y2="200" />
             <line class="dg-ground" x1="610" y1="60" x2="610" y2="200" />
             <path class="dg-wire" d="M95 70 H610" />
             <rect class="dg-solid" x="55" y="52" width="40" height="36" rx="4" />
             <text class="dg-text" x="75" y="44" text-anchor="middle">{{ ratio }}:1</text>
             <path class="dg-wire" d="M55 78 H25 V150" style="stroke-width:3;opacity:.6" /><text class="dg-text" x="24" y="182">counterpoise</text>
-            <path class="dg-ground" d="M75 88 V150 H215" /><text class="dg-text" x="230" y="177">coax</text>
+            <path class="dg-ground" d="M75 88 V150 H215" fill="none" /><text class="dg-text" x="230" y="177">coax</text>
             <line class="dg-dim" x1="95" y1="105" x2="610" y2="105" /><line class="dg-dim" x1="95" y1="97" x2="95" y2="113" /><line class="dg-dim" x1="610" y1="97" x2="610" y2="113" />
             <text class="dg-dimtext" x="352" y="126" text-anchor="middle">{{ dim(r?.length) }}</text>
+            <text class="dg-text" x="320" y="240" text-anchor="middle">Horizontal ½λ height reference</text>
+            <text class="dg-dimtext" x="320" y="280" text-anchor="middle">{{ dim(heights?.half) }}</text>
           </svg>
           <p class="hint">The feed is at the wire’s end, not its centre. Not to scale in height.</p>
+          <AntennaHeightGuide :frequency="r ? f : null" kind="efhw" />
         </div>
         <div class="card">
           <h3>Which bands it covers</h3>
@@ -99,6 +105,7 @@ const usable = computed(() => r.value?.harmonics.filter((h) => h.band) ?? [])
     </div>
 
     <MaterialsPanel antenna="efhw" />
+    <AntennaBands antenna="efhw" />
     <RadiationPattern kind="efhw" />
     <ModsPanel antenna="efhw" />
 

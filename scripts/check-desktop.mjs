@@ -58,6 +58,45 @@ try {
   await checkContentScroll(page)
   await page.setViewportSize({ width: initial.bounds.width, height: initial.bounds.height })
   const base = 'hrt://app/'
+  // Use actual sidebar links (not page.goto), including after category and favourite changes.
+  async function openNavigation() {
+    const toggle = page.getByRole('button', { name: 'Toggle navigation menu' })
+    if (await toggle.isVisible() && await toggle.getAttribute('aria-expanded') === 'false') await toggle.click()
+  }
+  await openNavigation()
+  await page.locator('aside summary').filter({ hasText: 'Antenna Design' }).click()
+  for (const id of ['efhw', 'dipole', 'efhw', 'qfh', 'efhw', 'vertical', 'efhw']) {
+    await openNavigation()
+    await page.locator(`aside details a[href="#/tool/${id}"]`).click()
+    await page.waitForURL(base + `#/tool/${id}`)
+    await page.locator('main h1').waitFor()
+    // Avoid Chromium's deliberate rapid-history throttling in synthetic click loops.
+    await page.waitForTimeout(220)
+  }
+  await page.getByRole('button', { name: /Add to favorites/ }).click()
+  await openNavigation()
+  await page.locator('aside nav > a[href="#/tool/efhw"]').click()
+  await page.waitForURL(base + '#/tool/efhw')
+  const navigationPath = path.join(profile, 'navigation.json')
+  await desktop.evaluate(({ dialog }, filePath) => {
+    globalThis.hrtNavigationDialog = dialog.showSaveDialog
+    dialog.showSaveDialog = async () => ({ canceled: false, filePath })
+  }, navigationPath)
+  try {
+    await page.keyboard.press('Control+Shift+F12')
+    let report
+    for (let i = 0; i < 50; i++) {
+      try { report = JSON.parse(await readFile(navigationPath, 'utf8')); break } catch {}
+      await page.waitForTimeout(50)
+    }
+    assert.equal(report?.format, 'ham-radio-tools-navigation', 'shortcut exports local navigation diagnostics')
+    assert.equal(report.route, '/tool/efhw')
+    assert(report.events.some(e => e.type === 'click' && e.target === '/tool/efhw'))
+    assert.equal(report.renderedTool, 'efhw')
+    if (initial.bounds.width > 900) assert(report.links.some(link => link.target === '/tool/efhw' && !link.covered))
+  } finally {
+    await desktop.evaluate(({ dialog }) => { dialog.showSaveDialog = globalThis.hrtNavigationDialog; delete globalThis.hrtNavigationDialog })
+  }
   await page.goto(base + '#/tool/frequency-wavelength')
   await page.getByText('21.11', { exact: true }).waitFor()
   const clipboardAvailable = await desktop.evaluate(async ({ clipboard, ClipboardItem }) => {
@@ -85,6 +124,65 @@ try {
   await page.goto(base + '#/tool/maidenhead')
   await page.locator('.map path.land').waitFor()
   assert((await page.locator('.map path.land').getAttribute('d')).length > 20000)
+  await page.goto(base + '#/tool/diy-transformers')
+  await page.waitForURL(base + '#/tool/diy-components?part=transformer')
+  await page.getByRole('heading', { level: 1, name: 'DIY Components' }).waitFor()
+  await page.locator('svg[aria-label^="Two electrically separate"]').waitFor()
+  await page.goto(base + '#/tool/diy-baluns')
+  await page.getByRole('button', { name: '9:1 voltage unun', exact: true }).click()
+  await page.locator('svg[aria-label^="9:1 unun"]').waitFor()
+  assert.equal(await page.locator('.winding-route').count(), 3, 'unun has three equal conductor windings')
+  await page.getByText('50 Ω → 450 Ω', { exact: true }).waitFor()
+  // Reproduce the silent-navigation report: a previously unopened tool's lazy asset fails.
+  // Electron's custom protocol needs main-process interception; Playwright page.route does not intercept it.
+  await desktop.evaluate(({ app, session }) => {
+    const path = process.getBuiltinModule('path')
+    const require = process.getBuiltinModule('module').createRequire(path.join(app.getAppPath(), 'desktop/main.cjs'))
+    const { isInternal } = require('./policy.cjs')
+    const fixture = { active: true, blocked: 0 }
+    globalThis.hrtAssetFailure = fixture
+    session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
+      if (fixture.active && /\/assets\/InvertedV-[\w-]+\.js$/.test(details.url)) { fixture.blocked++; return callback({ cancel: true }) }
+      callback({ cancel: !isInternal(details.url) && !details.url.startsWith('blob:hrt://app/') && !details.url.startsWith('data:') && !details.url.startsWith('devtools:') })
+    })
+  })
+  try {
+    await page.goto(base + '#/tool/efhw')
+    await page.getByRole('heading', { level: 1, name: 'End-Fed Half-Wave' }).waitFor()
+    await openNavigation()
+    await page.locator('aside details a[href="#/tool/inverted-v"]').click()
+    await page.getByRole('alert').filter({ hasText: 'Couldn’t open' }).waitFor()
+    assert(await desktop.evaluate(() => globalThis.hrtAssetFailure.blocked) > 0, 'fault fixture blocked the actual bundled tool module')
+    assert.match(await page.locator('main h1').innerText(), /End-Fed Half-Wave/, 'failed navigation keeps the previous tool')
+    const failureReport = path.join(profile, 'navigation-failure.json')
+    await desktop.evaluate(({ dialog }, filePath) => {
+      globalThis.hrtNavigationDialog = dialog.showSaveDialog
+      dialog.showSaveDialog = async () => ({ canceled: false, filePath })
+    }, failureReport)
+    try {
+      await page.getByRole('button', { name: 'Save error report', exact: true }).click()
+      let report
+      for (let i = 0; i < 50; i++) {
+        try { report = JSON.parse(await readFile(failureReport, 'utf8')); break } catch {}
+        await page.waitForTimeout(50)
+      }
+      const failure = report?.events.findLast(event => event.type === 'route-error')
+      assert.equal(failure?.target, '/tool/inverted-v')
+      assert.equal(failure?.error.category, 'module-load')
+      assert.match(failure?.error.asset, /^InvertedV-[\w-]+\.js$/)
+    } finally {
+      await desktop.evaluate(({ dialog }) => { dialog.showSaveDialog = globalThis.hrtNavigationDialog; delete globalThis.hrtNavigationDialog })
+    }
+    await page.getByRole('button', { name: 'Try again', exact: true }).click()
+    await page.getByRole('alert').waitFor()
+  } finally { await desktop.evaluate(() => { globalThis.hrtAssetFailure.active = false }) }
+  // A failed ES module can stay rejected in Chromium until a reload; never reload automatically.
+  await page.getByRole('button', { name: 'Reload app', exact: true }).click()
+  await page.getByRole('heading', { level: 1, name: 'End-Fed Half-Wave' }).waitFor()
+  await openNavigation()
+  await page.locator('aside details a[href="#/tool/inverted-v"]').click()
+  await page.getByRole('heading', { level: 1, name: /Inverted-V/ }).waitFor()
+  assert.equal(await page.locator('.navigation-error').count(), 0, 'tool loads after the asset is restored and app reloaded')
   // The propagation engine and its coefficient data load lazily from the bundle, with no network.
   await page.goto(base + '#/tool/propagation-report')
   await page.locator('td[role="gridcell"]').first().waitFor({ timeout: 30000 })
@@ -205,7 +303,7 @@ try {
   const closed = desktop.waitForEvent('close')
   await maximized.getByRole('button', { name: 'Close window', exact: true }).click()
   await closed; desktop = undefined
-  console.log(`PASS: Electron on ${process.platform}: offline tools, clipboard bridge${clipboardAvailable ? ' and OS round trip' : ' (OS round trip unverified)'}, project export/import, explicit update check/download (mock transport), window controls/restoration, isolated renderer and blocked external fetch`)
+  console.log(`PASS: Electron on ${process.platform}: sidebar/favourite navigation, injected tool-load failure/report/reload recovery, offline tools, clipboard bridge${clipboardAvailable ? ' and OS round trip' : ' (OS round trip unverified)'}, project export/import, explicit update check/download (mock transport), window controls/restoration, isolated renderer and blocked external fetch`)
 } finally {
   await desktop?.close()
   await rm(profile, { recursive: true, force: true })

@@ -1,17 +1,29 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DiyDiagram from '../components/DiyDiagram.vue'
+import DiyMagnetic from './DiyMagnetic.vue'
 import { FREQ_UNITS, fmt } from '../lib/units'
 import { DIELECTRICS, airCoilBuild, airSafeVolts, airVariable, dummyLoadOptions, maxSingleLayerTurns, plateAreaFor, plateCapacitance, toroidTurnLengthM } from '../lib/diy'
 import { inductiveReactanceOf, toroidInductance, toroidTurns } from '../lib/station'
 import { CORES, CORES_META } from '../data/cores'
 import { DIY, DIY_REVISION, type DiyId } from '../data/diy'
 
-const tab = ref<DiyId>('coil')
+const route = useRoute(), router = useRouter()
+const parts = [...DIY.slice(0, 2), { id: 'transformer', title: 'RF transformer' } as const, ...DIY.slice(2)]
+const tab = ref<DiyId | 'transformer'>('coil')
+watch(() => route?.query.part, part => {
+  tab.value = parts.find(p => p.id === part)?.id ?? 'coil'
+}, { immediate: true })
+function selectPart(part: DiyId | 'transformer') {
+  tab.value = part
+  if (router) void router.push({ query: { ...route.query, part: part === 'coil' ? undefined : part } })
+}
 const project = computed(() => DIY.find((p) => p.id === tab.value)!)
+const references = [`Parallel-plate capacitance C = ε₀·εr·A/d; Wheeler (1928) for air coils; N = √(L/AL) for toroids (core table: ${CORES_META.source}, revision ${CORES_META.revision}).`, 'Build notes are general amateur-radio practice (ARRL Handbook “Component data and construction”, ARRL Antenna Book on chokes and baluns); reviewed ' + DIY_REVISION + '. They are cautious rules of thumb, not tested designs.']
 const safe = <T,>(f: () => T): T | null => { try { return f() } catch { return null } }
 const mm = (m: number) => `${fmt(m * 1000, 4)} mm`
 
@@ -51,10 +63,11 @@ const ferrite = computed(() => CORES.filter((c) => c.material.startsWith('Ferrit
 </script>
 
 <template>
-  <ToolLayout id="diy-components" :references="[`Parallel-plate capacitance C = ε₀·εr·A/d; Wheeler (1928) for air coils; N = √(L/AL) for toroids (core table: ${CORES_META.source}, revision ${CORES_META.revision}).`, 'Build notes are general amateur-radio practice (ARRL Handbook “Component data and construction”, ARRL Antenna Book on chokes and baluns); reviewed ' + DIY_REVISION + '. They are cautious rules of thumb, not tested designs.']">
+  <component :is="tab === 'transformer' ? DiyMagnetic : ToolLayout" v-bind="tab === 'transformer' ? { kind: 'transformer', toolId: 'diy-components' } : { id: 'diy-components', references }">
     <div class="seg" role="group" aria-label="Part to build" style="margin-bottom:1rem">
-      <button v-for="p in DIY" :key="p.id" :aria-pressed="tab === p.id" @click="tab = p.id">{{ p.title }}</button>
+      <button v-for="p in parts" :key="p.id" :aria-pressed="tab === p.id" @click="selectPart(p.id)">{{ p.title }}</button>
     </div>
+    <template v-if="tab !== 'transformer'">
     <p class="muted" style="margin-top:0">{{ project.blurb }}</p>
 
     <div class="cols">
@@ -158,9 +171,10 @@ const ferrite = computed(() => CORES.filter((c) => c.material.startsWith('Ferrit
         </div>
       </div>
     </div>
-    <template #explain>
+    </template>
+    <template v-if="tab !== 'transformer'" #explain>
       <p>Each part is a textbook formula turned into a build size: capacitors from plate area, gap and the film’s permittivity (C = ε₀·εr·A/d), coils from Wheeler’s formula, toroids from the core’s AL value. Real home-made parts differ from the numbers because films stretch, plates warp and winding is never perfect. The answer is a good first cut: build it, measure it, and trim.</p>
       <p>Parts from this page are for receive circuits, test gear and learning, plus low-power, well-ventilated transmit use where noted. Mains-voltage and high-voltage parts are left out on purpose.</p>
     </template>
-  </ToolLayout>
+  </component>
 </template>

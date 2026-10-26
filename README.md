@@ -27,7 +27,13 @@ Ham Radio Tools is a free, open-source collection of practical tools for radio a
 | Listening & propagation | QRM hunting and a sniffer-loop build guide, broadcast schedules, grey line, MUF estimates, a band-by-hour **propagation report** between two places (built-in DVOACAP model, offline) and satellite passes from your own TLE |
 | DIY components | Build coils, capacitors, dummy loads and ferrite chokes; calculate balun/transformer turns and material lengths, with winding diagrams and cable guidance |
 
-Search for a tool, add favourites, choose Metric or Imperial, and switch between light and dark themes. Open **Show** below a tool for its explanation and references.
+Search for a tool, add favourites, choose Metric or Imperial, and switch between light and dark themes. Sidebar categories start collapsed and remember which ones you open. Open **Show** below a tool for its explanation and references.
+
+**Building a balun or transformer?** DIY Baluns & Ununs has selectable **1:1 coax choke**, **1:1 paired-wire current**, **4:1 Guanella current**, **4:1 Ruthroff voltage** and **9:1 voltage unun** templates, with their own connection drawings, material choices and turns estimates. The two-section current balun accounts for both independent core stacks and all four conductors; the unun shows its three equal windings and shared return. Open **DIY Components → RF transformer** for a conventional two-winding transformer's turns and wire allowance. Calculated turns do not guarantee RF bandwidth or power handling. Build and measure for your intended bands.
+
+Antenna tools include dimensioned drawings, material guidance and a short **Recommended bands and uses** section to help you choose a suitable build. Each guide explains common band choices and any single-band, harmonic or receive-only limits. The QFH drawing shows the helical paths around the mast plus top and bottom views, which move below the main drawing on smaller screens. Where **Download SVG** is available, exported diagrams retain the displayed colours, label sizes and line styles. Radiation-pattern illustrations explain concepts; they are not simulations of your installation.
+
+Dipole, inverted-V and horizontal EFHW drawings also show frequency-dependent height references. The guides explain general HF/DX and regional/NVIS choices; there is no single optimal height for every site. The inverted-V shows your entered apex height separately from the reference.
 
 ## Use it on your computer
 
@@ -49,6 +55,8 @@ Data stays on your device in the browser profile or the desktop app's own profil
 
 Band tables for the **USA, South Africa, Canada, Germany, Australia, Japan and Brazil** are included. Their scope varies; Australia currently covers Advanced licence holders. Each table displays its source and date. UK and India are awaiting verified source documents.
 
+Filter by band or search for a frequency. Expand the allocation chart to inspect entries interactively alongside the table.
+
 To add a schedule or regional plan, import its JSON pack under **Settings & content**. That screen can also convert a supported EiBi-layout or CSV shortwave schedule. Packs can be carried on a USB drive. Schedules are dated and show a warning when old; downloads are your choice. [Data sources and pack details](docs/DATA_SOURCES.md).
 
 ## Privacy and offline use
@@ -69,7 +77,7 @@ The CW microphone decoder processes audio locally and asks for microphone permis
 
 Report problems or suggest tools through [GitHub Issues](https://github.com/armysarge/ham-radio-tools/issues). Include the tool name, inputs and expected result when reporting a calculation problem.
 
-We are investigating a report that the sidebar and header can occasionally stop responding after extended use. Our repeated-navigation check in Edge on Windows has not reproduced it, so the cause is not yet confirmed. If you encounter it, please include your operating system, browser or desktop app, and the last tool or action before it happened.
+We are investigating intermittent sidebar clicks failing in Electron, including End-Fed Half-Wave. Repeated-navigation checks in Edge and Electron on Windows have not confirmed the cause. If it happens, press **Ctrl+Shift+F12 before restarting** to save a navigation report. Attach that file to your issue with your app version and last action. The report stays local until you share it and excludes callsigns, saved work and search text. If possible, also check whether the tool's card on **All tools** still opens it.
 
 MIT licensed — see [LICENSE](LICENSE). Map data: Natural Earth, public domain. The app uses Vue, satellite.js and other credited open-source libraries. The it-tools project inspired its tool organisation; no it-tools code or assets were copied.
 

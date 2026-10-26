@@ -40,3 +40,13 @@ export function windingMaterial(core: CoreSize, turns: number, diameterM: number
   const perTurn = toroidTurnLengthM({ ...core, hIn: core.hIn * stack }) + Math.PI * diameterM
   return { lengthM: turns * perTurn * 1.15 + 2 * leadEachM, singleLayerTurns: maxSingleLayerTurns(core.idIn, diameterM) }
 }
+
+/** Equal conductors per section; separate sections are not one thicker shared core stack. */
+export function balunWindingMaterial(core: CoreSize, turns: number, diameterM: number, leadEachM: number, stack = 1, sections = 1, conductors = 2) {
+  if (![1, 2].includes(sections)) throw new RangeError('Use one or two independent sections.')
+  if (![2, 3].includes(conductors)) throw new RangeError('Use two or three conductors per section.')
+  const single = windingMaterial(core, turns, diameterM, leadEachM, stack)
+  if (conductors * diameterM >= core.idIn * .0254) throw new RangeError('The insulated wire bundle is too wide for this core opening.')
+  return { lengthM: conductors * sections * single.lengthM, perConductorM: single.lengthM,
+    singleLayerTurns: maxSingleLayerTurns(core.idIn, conductors * diameterM), coreCount: stack * sections }
+}

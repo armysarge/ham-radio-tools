@@ -68,9 +68,23 @@ Dependency audit at implementation time: npm reports eight moderate advisories t
 
 ## Verification
 
+### Intermittent sidebar clicks
+
+If a sidebar item stops opening, press **Ctrl+Shift+F12 before restarting** to export `ham-radio-tools-navigation.json`. Share it with the affected item, app version and the last action. If possible, compare the same tool's card on **All tools** and note whether keyboard activation still works.
+
+The desktop renderer keeps only the last 80 navigation and sidebar/header pointer events in memory. The explicitly exported report includes tool IDs, click coordinates, route outcomes, viewport details, browser/runtime identification and visible-link hit testing. Failed routes also include an error class/category and bundled JavaScript/CSS filenames when available; raw messages, filesystem paths, URL query values, form values, callsigns and saved work are excluded. It sends nothing and resets on restart. Native Windows hit testing and a fully hung renderer can prevent events or the export shortcut reaching JavaScript, so absence of an event alone does not establish the cause.
+
+Failed tool loads display a notice above the current page with **Try again**, **Save error report** and **Reload app** actions. The app never reloads automatically: unfinished inputs could be lost. Save work and export the report before reloading. A failed JavaScript module can remain rejected for the life of the page, so restoring its file may still require a reload.
+
+The supplied 2026-10-26 report confirms clicks reached Inverted-V and Vertical, followed by repeated route errors while EFHW stayed open. It does not include the exceptions, so the underlying cause is still unconfirmed. When testing a development Electron shell, close it before rebuilding `dist/`: a running page holds references to hashed files from its launch build, and a rebuild can remove files for tools that have not loaded yet. Installed releases contain their own bundled files.
+
+### Recorded checks
+
 Record actual outcomes here after testing. A build or automated smoke check does not prove clean-machine installation, hardware microphone operation or Linux compatibility.
 
 - Windows 10 build 19045, Node 24, Electron 44.9.1: development shell and packaged `win-unpacked` executable passed startup, calculation, map, saved-design persistence across restart, renderer isolation and blocked external-fetch checks on 2026-10-20.
+- Windows development Electron 44.9.1 on 2026-10-26: paced sidebar navigation (192 transitions in a focused run), plus the extended smoke check with EFHW/favourite links and Ctrl+Shift+F12 report export passed. These use browser-generated input; native Windows mouse hit testing could not be verified because screen capture timed out. The intermittent reported failure remains unresolved. The latest changes have not been retested in a packaged installer or on Linux.
+- Windows development Electron 44.9.1 on 2026-10-26: deliberately blocking Inverted-V's bundled JavaScript reproduced a failed route while retaining EFHW. The visible notice, report export with module-load category/asset name, and manual reload recovery passed after restoring access. Full suite: 297 tests; production build and Edge offline acceptance passed. This verifies recovery from an injected resource failure, not the underlying cause of the supplied report. Linux and packaged-installation checks were not repeated for this change.
 - Windows x64 NSIS installer was generated as `ham-radio-tools-0.3.0-win-x64.exe`. It has not been installed on a clean machine.
 - Linux packaging and runtime: configured for CI, not exercised locally.
 - Expanded Windows development and packaged-executable checks on 2026-10-20 passed project file export/import, copy bridge and native clipboard round trip, PDF print-engine rendering, plus explicit update check/download and tampered-file rejection using mocked GitHub responses. The clipboard probe previously returned empty in this environment; the harness reports this limitation explicitly if it recurs. These are not hardware or real release upgrade tests.

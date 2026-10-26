@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import fs from 'node:fs'
-import { tools, CATEGORIES, CATEGORY_ICON, KIND_LABEL, iconFor } from '../src/core/registry'
+import { tools, CATEGORIES, CATEGORY_ICON, KIND_LABEL, iconFor, searchTools } from '../src/core/registry'
 
 // Guards the wiring that is easy to forget when adding a tool: icon, category, offline route, page file and layout id.
 describe('registry integrity', () => {
@@ -29,6 +29,13 @@ describe('registry integrity', () => {
   it('places DIY Components under RF & Electronics', () => {
     expect(tools.find((t) => t.id === 'diy-components')).toMatchObject({ title: 'DIY Components', category: 'rf' })
     expect(CATEGORIES.map((c) => c.id)).not.toContain('diy')
+  })
+  it('finds transformer guidance in DIY Components without a separate menu entry', () => {
+    expect(tools.some((t) => t.id === 'diy-transformers')).toBe(false)
+    for (const query of ['transformer', 'transformers', 'rf transformer', 'impedance ratio', 'turns ratio', 'ferrite', 'toroid', 'unun', '49:1', '9:1']) {
+      expect(searchTools(query).map((t) => t.id), query).toContain('diy-components')
+      expect(searchTools(query).map((t) => t.id), query).not.toContain('diy-transformers')
+    }
   })
   it('keeps antenna menu titles free of parenthetical labels', () => {
     expect(tools.filter((t) => t.category === 'antenna').every((t) => !/[()]/.test(t.title))).toBe(true)

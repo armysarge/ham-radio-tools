@@ -6,11 +6,13 @@ import ToolLayout from '../components/ToolLayout.vue'
 import ModsPanel from '../components/ModsPanel.vue'
 import MaterialsPanel from '../components/MaterialsPanel.vue'
 import RadiationPattern from '../components/RadiationPattern.vue'
+import AntennaBands from '../components/AntennaBands.vue'
+import AntennaHeightGuide from '../components/AntennaHeightGuide.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
 import { FREQ_UNITS, LENGTH_UNITS, feetInches, fmt } from '../lib/units'
-import { invertedV } from '../lib/antenna'
+import { invertedV, wireHeightReferences } from '../lib/antenna'
 import { BANDS } from '../data/bands'
 import { loadedParams, state } from '../core/store'
 
@@ -25,6 +27,7 @@ const svgEl = ref<SVGSVGElement>()
 
 const r = computed(() => { try { return f.value && height.value ? invertedV(f.value, k.value, slope.value, angle.value, height.value) : null } catch { return null } })
 const imperial = computed(() => state.units === 'imperial')
+const heights = computed(() => { try { return f.value ? wireHeightReferences(f.value) : null } catch { return null } })
 const dim = (m: number | null | undefined) => (m == null ? '—' : imperial.value ? feetInches(m) : `${m.toFixed(2)} m`)
 const endWarn = computed(() => {
   if (!r.value) return ''
@@ -72,25 +75,31 @@ const endY = computed(() => (r.value ? G - Math.max(r.value.endHeight, 0) * sc.v
       </div>
       <div class="stack">
         <div class="card">
-          <svg ref="svgEl" class="diagram dg-big antenna-drawing" viewBox="0 0 640 365" role="img" :aria-label="`Inverted-V: legs ${dim(r?.leg)}, ${angle} degree apex, span ${dim(r?.span)}`">
+          <svg ref="svgEl" class="diagram dg-big antenna-drawing" viewBox="0 0 640 430" role="img" :aria-label="`Inverted-V: legs ${dim(r?.leg)}, ${angle} degree apex, span ${dim(r?.span)}, apex height ${dim(height)}`">
             <line class="dg-ground" x1="10" y1="250" x2="630" y2="250" />
             <line class="dg-ground" :x1="MID" :y1="250" :x2="MID" :y2="apexY" />
             <path v-if="r" class="dg-wire" :d="`M${MID - endX} ${endY} L${MID} ${apexY} L${MID + endX} ${endY}`" />
             <rect class="dg-solid" :x="MID - 8" :y="apexY - 5" width="16" height="12" rx="3" />
             <path class="dg-ground" :d="`M${MID - endX} ${endY} v${Math.max(250 - endY, 0)} M${MID + endX} ${endY} v${Math.max(250 - endY, 0)}`" stroke-dasharray="4 4" />
             <text class="dg-text" :x="MID" :y="apexY - 12" text-anchor="middle">feed point</text>
+            <path class="dg-dim" :d="`M45 ${apexY} V250 M37 ${apexY} H53 M37 250 H53`" />
+            <text class="dg-dimtext" x="28" :y="(apexY + 250) / 2" text-anchor="middle" :transform="`rotate(-90 28 ${(apexY + 250) / 2})`">{{ dim(height) }}</text>
             <line class="dg-dim" :x1="MID - endX" y1="272" :x2="MID + endX" y2="272" /><line class="dg-dim" :x1="MID - endX" y1="264" :x2="MID - endX" y2="280" /><line class="dg-dim" :x1="MID + endX" y1="264" :x2="MID + endX" y2="280" />
             <text class="dg-dimtext" :x="MID" y="311" text-anchor="middle">span {{ dim(r?.span) }}</text>
             <text class="dg-dimtext" x="24" y="350">leg {{ dim(r?.leg) }}</text>
             <text class="dg-text" x="616" y="350" text-anchor="end">{{ angle }}° at apex</text>
+            <text class="dg-text" x="320" y="391" text-anchor="middle">½λ apex reference: {{ dim(heights?.half) }}</text>
+            <text class="dg-tick" x="320" y="420" text-anchor="middle">Left dimension = entered apex height</text>
           </svg>
           <p class="hint">Side view, drawn to scale from the numbers entered (wire thickness exaggerated).</p>
+          <AntennaHeightGuide :frequency="f" kind="inverted-v" />
         </div>
         <DesignActions v-model:name="name" tool-id="inverted-v" :default-name="`Inverted-V ${f ? fmt(f / 1e6) : ''} MHz`" :svg="svgEl" :file="`inverted-v-${f ? fmt(f / 1e6) : 'x'}MHz.svg`"
           :disabled="!r" :summary="`${f ? fmt(f / 1e6) : ''} MHz, ${angle}°, ${dim(r?.total)}`" :params="{ f: f ?? 0, k, slope, angle, height: height ?? 0 }" />
       </div>
     </div>
     <MaterialsPanel antenna="inverted-v" />
+    <AntennaBands antenna="inverted-v" />
     <RadiationPattern kind="inverted-v" />
     <ModsPanel antenna="inverted-v" />
 

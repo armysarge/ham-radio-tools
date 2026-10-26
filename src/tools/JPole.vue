@@ -9,6 +9,7 @@ import DesignActions from '../components/DesignActions.vue'
 import ModsPanel from '../components/ModsPanel.vue'
 import MaterialsPanel from '../components/MaterialsPanel.vue'
 import RadiationPattern from '../components/RadiationPattern.vue'
+import AntennaBands from '../components/AntennaBands.vue'
 import { FREQ_UNITS, feetInches, fmt } from '../lib/units'
 import { jpole } from '../lib/antenna'
 import { loadedParams, state } from '../core/store'
@@ -98,6 +99,7 @@ const X2 = X1 + SP
     </div>
 
     <MaterialsPanel antenna="jpole" />
+    <AntennaBands antenna="jpole" />
     <RadiationPattern kind="jpole" />
     <ModsPanel antenna="jpole" />
 

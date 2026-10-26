@@ -6,7 +6,7 @@ Working features and future plans are tracked separately. A packaged build alone
 
 - [x] Search, categories, favourites, themes, measurement units and responsive layouts.
 - [x] RF/electronics calculators and component codes.
-- [x] Illustrated antenna estimates, materials guidance, Yagi/quad starting designs, radial planning and a sourced QFH receive-design estimator.
+- [x] Illustrated antenna estimates, materials and band guidance, HF wire installation-height references, Yagi/quad starting designs, radial planning and a sourced QFH receive-design estimator.
 - [x] Offline map, Maidenhead, bearings and saved station locations.
 - [x] Station calculators, battery/solar planning and DIY components.
 - [x] Morse tools and Koch trainer, clocks/timers and ADIF logbook.
@@ -14,6 +14,20 @@ Working features and future plans are tracked separately. A packaged build alone
 - [x] National band tables, reference tools, QRM guide and dated content packs.
 - [x] Searchable DCS code reference with octal and polarity guidance.
 - [x] Project import/export and a repeatable web offline acceptance check.
+- [ ] Coordinate conversion and calculator.
+- [ ] Unit conversion and calculator.
+- [ ] Qubical quad antenna design tool
+- [ ] ERP and EIRP calculations.
+- [ ] Low pass filter and High pass filter calculators with diagrams.
+- [ ] 92 codes like 73 (goodbye), etc
+- [ ] SWR page addition for VSWR calculations.
+- [ ] Voltage Divider calculator.
+- [ ] How its calucalted section to show a proper mathematics illustration of any formulas.
+- [ ] Improve phonetic alphabet page with pronunciation guidance.
+- [ ] Doppler shift calculator.
+- [ ] Moxon antenna design tool.
+- [ ] AWG wire gauge calculator & conversion tool.
+- [ ] Serial Impedance & Parallel Impedance calculators with illustrated diagrams.
 
 ## Completed milestone: desktop delivery
 
@@ -40,9 +54,10 @@ The desktop wrapper is **Electron**, following the request to test Electron. It 
 
 ## Responsiveness follow-up
 
-- [ ] Investigate the intermittent report that the sidebar and header can stop responding after extended interaction.
 - [x] Add a browser stress check for repeated category toggles, navigation, search, theme and units controls, including after opening the propagation report. It passes in Edge on Windows, but has not reproduced the reported hang; root cause remains unknown.
-- [ ] Capture and verify a real-world reproduction before changing navigation or calculation behavior.
+- [x] Exercise repeated EFHW sidebar navigation in Electron and add a memory-only, bounded local navigation report, exported explicitly with Ctrl+Shift+F12. Check click delivery, route outcomes and visible link coverage without recording saved work or input values.
+- [x] Inspect a real-world report: Inverted-V and Vertical clicks reached the app but repeatedly failed during routing while EFHW remained open. Add visible failure/recovery controls and retain safe error classes and bundled asset names in reports.
+- [ ] Identify and resolve the exception behind the original route failures; the supplied report predates exception details and does not establish their underlying cause.
 
 ## Later
 
@@ -50,5 +65,6 @@ The desktop wrapper is **Electron**, following the request to test Electron. It 
 - [ ] Optional local AI with page citations, hardware guidance and no cloud fallback.
 - [ ] Native utilities through narrow platform APIs: checksums, serial discovery and diagnostics.
 - [ ] Further antenna methods and model-file export, separately labelled from simulation results.
+- [ ] Further improvements and refinements based on user feedback and real-world usage scenarios.
 
 See [CHANGELOG.md](CHANGELOG.md) for changes and [desktop verification notes](docs/DESKTOP.md#verification) for the platforms actually exercised.

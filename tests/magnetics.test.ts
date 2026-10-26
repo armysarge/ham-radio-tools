@@ -1,7 +1,20 @@
 import { describe, expect, it } from 'vitest'
-import { chokeTurns, rfTransformer, windingMaterial } from '../src/lib/magnetics'
+import { chokeTurns, rfTransformer, windingMaterial, balunWindingMaterial } from '../src/lib/magnetics'
 
 describe('magnetic winding estimates', () => {
+  it('counts four separate conductors and two independent stacks for a two-section balun', () => {
+    const core = { odIn: 2.4, idIn: 1.4, hIn: .5 }
+    const one = windingMaterial(core, 8, .001, .15, 2)
+    const pair = balunWindingMaterial(core, 8, .001, .15, 2, 2)
+    expect(pair.lengthM).toBeCloseTo(4 * one.lengthM, 10)
+    expect(pair.perConductorM).toBeCloseTo(one.lengthM, 10)
+    expect(pair.coreCount).toBe(4)
+    expect(pair.singleLayerTurns).toBeLessThan(one.singleLayerTurns)
+    expect(balunWindingMaterial(core, 8, .001, .15, 2, 1, 3).lengthM).toBeCloseTo(3 * one.lengthM, 10)
+    expect(() => balunWindingMaterial(core, 8, .02, .15)).toThrow(/bundle is too wide/)
+    expect(() => balunWindingMaterial(core, 8, .001, .15, 1, 3)).toThrow()
+    expect(() => balunWindingMaterial(core, 8, .001, .15, 1, 1, 4)).toThrow()
+  })
   it('rounds a 100 µH target on a 1000 nH core up to ten turns', () => {
     const result = chokeTurns(1e6, 200 * Math.PI, 1000)
     expect(result.turns).toBe(10)

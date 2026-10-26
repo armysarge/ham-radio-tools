@@ -23,7 +23,11 @@ const defaults = (): State => ({ theme: 'system', units: 'metric', textSize: 'no
 function load(): State {
   try {
     const raw = localStorage.getItem(KEY)
-    return { ...defaults(), ...(raw ? JSON.parse(raw) : {}) }
+    const loaded: State = { ...defaults(), ...(raw ? JSON.parse(raw) : {}) }
+    loaded.favorites = Array.isArray(loaded.favorites)
+      ? [...new Set(loaded.favorites.filter(id => typeof id === 'string').map(id => id === 'diy-transformers' ? 'diy-components' : id))]
+      : []
+    return loaded
   } catch { return defaults() }
 }
 

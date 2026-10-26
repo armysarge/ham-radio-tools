@@ -8,6 +8,7 @@ import QfhDiagram from '../components/QfhDiagram.vue'
 import MaterialsPanel from '../components/MaterialsPanel.vue'
 import ModsPanel from '../components/ModsPanel.vue'
 import RadiationPattern from '../components/RadiationPattern.vue'
+import AntennaBands from '../components/AntennaBands.vue'
 import { FREQ_UNITS, feetInches, fmt } from '../lib/units'
 import { qfh } from '../lib/antenna'
 import { saveDesign, state } from '../core/store'
@@ -75,6 +76,7 @@ const printPage = () => window.print()
       <p style="margin:0"><a href="https://www.edn.com/home-weather-satellite-receiver/" target="_blank" rel="noopener noreferrer">Read the EDN construction report</a> · <a href="https://noaasis.noaa.gov/NOAASIS/pubs/Users_Guide-Building_Receive_Stations_March_2009.pdf" target="_blank" rel="noopener noreferrer">NOAA receive-station guide</a></p>
     </div>
 
+    <AntennaBands antenna="qfh" />
     <RadiationPattern kind="qfh" />
     <MaterialsPanel antenna="qfh" />
     <ModsPanel antenna="qfh" />

@@ -1,5 +1,12 @@
 import { C } from './rf'
 
+/** Free-space height references, not a site-specific optimum or a wire cut length. */
+export function wireHeightReferences(fHz: number) {
+  if (!(Number.isFinite(fHz) && fHz > 0)) throw new RangeError('Use a finite positive frequency')
+  const wavelength = C / fHz
+  return { quarter: wavelength / 4, half: wavelength / 2 }
+}
+
 /**
  * Half-wave dipole total length (m) = k · c / (2f).
  * k is the end-effect shortening factor (~0.95 for thin wire; 0.94–0.98 typical). It is an empirical
