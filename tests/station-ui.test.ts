@@ -12,12 +12,79 @@ describe('station tools render with their defaults', () => {
   it('low-pass filter shows five parts', async () => { const w = await open('low-pass-filter'); expect(w.text()).toContain('C1 (shunt)'); expect(w.text()).toContain('C5 (shunt)') })
   it('coils: toroid turns', async () => { const w = await open('coils'); expect(w.text()).toContain('45.18') })
   it('power planner', async () => { const w = await open('power-planner'); expect(w.text()).toContain('Solar panel needed') })
+  it('DIY balun guide distinguishes a common-mode choke from impedance matching', async () => {
+    const w = await open('diy-baluns')
+    expect(w.text()).toContain('common-mode choke')
+    expect(w.text()).toContain('does not transform impedance')
+    expect(w.find('svg[role="img"]').exists()).toBe(true)
+    expect(w.text()).toContain('Measure common-mode impedance')
+  })
+  it('balun turns respond to target reactance, and invalid stacks give no answer', async () => {
+    const w = await open('diy-baluns')
+    const field = (label: string) => w.findAll('.field').find(f => f.find('.lbl').text() === label)!
+    expect(w.text()).toContain('5 turns')
+    await field('Inductive reactance target').find('input').setValue('4000')
+    expect(w.text()).toContain('9 turns')
+    await field('Identical cores stacked').find('input').setValue('1.5')
+    expect(w.text()).toContain('Use a whole number of cores')
+    expect(w.find('.results').text()).not.toContain('9 turns')
+    expect(w.text()).not.toContain('NaN')
+    w.unmount()
+  })
+  it('balun reports cable that cannot pass through the selected core', async () => {
+    const w = await open('diy-baluns')
+    const diameter = w.findAll('.field').find(f => f.find('.lbl').text() === 'Coax outside diameter')!
+    await diameter.find('input').setValue('100')
+    expect(w.text()).toContain('too thick to pass through this core opening')
+    w.unmount()
+  })
+  it('DIY transformer tool shows ideal impedance ratio and primary-turn estimate', async () => {
+    const w = await open('diy-transformers')
+    expect(w.text()).toContain('Ideal impedance ratio')
+    expect(w.text()).toContain('50 Ω → 450 Ω')
+    expect(w.text()).toContain('Primary turns')
+    expect(w.text()).toContain('does not rate power, temperature, bandwidth')
+    expect(w.text()).toContain('Secondary impedance from whole turns')
+    expect(w.text()).toContain('Enamelled copper magnet wire')
+    expect(w.text()).toContain('PTFE-insulated copper wire')
+    expect(w.find('svg[aria-label^="Two electrically separate"]').exists()).toBe(true)
+  })
 })
 
 describe('beam and radial tools', () => {
   it('yagi lists reflector, driven and director', async () => { const w = await open('yagi'); expect(w.text()).toContain('reflector'); expect(w.text()).toContain('director'); expect(w.text()).not.toContain('NaN') })
   it('quad shows loop perimeters', async () => { const w = await open('quad'); expect(w.text()).toContain('Perimeter'); expect(w.text()).toContain('driven') })
   it('radial planner', async () => { const w = await open('radial-planner'); expect(w.text()).toContain('Number of radials'); expect(w.text()).toContain('40 m') })
+  it('QFH shows sourced long/short loop geometry and an illustrative SVG', async () => {
+    const w = await open('qfh')
+    expect(w.text()).toContain('560.0 mm')
+    expect(w.text()).toContain('512.0 mm')
+    expect(w.text()).toContain('355.6 mm')
+    expect(w.text()).toContain('measured resonance was 133 MHz')
+    const diagram = w.find('svg.qfh-diagram[role="img"]')
+    expect(diagram.attributes('aria-label')).toContain('four half-turn helical sides')
+    expect(diagram.attributes('aria-label')).toContain('Long-loop height 560.0 mm')
+    expect(w.text()).toContain('Faded sections pass behind the mast')
+    expect(w.text()).toContain('Top end view')
+    expect(w.text()).toContain('Bottom end view')
+    expect(w.text()).toContain('Two perpendicular arm axes')
+    expect(w.text()).toContain('Long loop')
+    expect(w.text()).toContain('Short loop')
+    expect(w.text()).toContain('Antenna system improvements')
+    expect(w.text()).toContain('Make a packable field version')
+    expect(w.find('svg[role="img"]').exists()).toBe(true)
+    expect(w.text()).not.toContain('NaN')
+  })
+})
+
+describe('antenna radiation pattern illustrations', () => {
+  it('shows an explicitly qualified pattern concept on every antenna design page', async () => {
+    for (const id of ['dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole', 'qfh', 'yagi', 'quad']) {
+      const w = await open(id)
+      expect(w.find('.radiation-pattern').exists(), id).toBe(true)
+      expect(w.text(), id).toContain('Illustrative pattern concept')
+    }
+  })
 })
 
 describe('logbook, clock and trainer', () => {

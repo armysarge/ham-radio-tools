@@ -14,15 +14,11 @@ const version = __APP_VERSION__
 const menu = ref(false)
 const searchEl = ref<HTMLInputElement>()
 const favTools = computed(() => tools.filter((t) => state.favorites.includes(t.id)))
-const expanded = ref<string[]>(['rf'])
+const expanded = computed(() => state.navExpanded.filter(id => CATEGORIES.some(c => c.id === id)))
 function toggleGroup(id: string, e: Event) {
   const open = (e.target as HTMLDetailsElement).open
-  expanded.value = open ? [...new Set([...expanded.value, id])] : expanded.value.filter(x => x !== id)
+  state.navExpanded = open ? [...new Set([...expanded.value, id])] : expanded.value.filter(x => x !== id)
 }
-watch(() => route.path, path => {
-  const tool = tools.find(t => path === `/tool/${t.id}`)
-  if (tool && !expanded.value.includes(tool.category)) expanded.value.push(tool.category)
-}, { immediate: true })
 
 watch(q, (v) => router.replace({ path: '/', query: v ? { q: v } : {} }))
 watch(() => route.fullPath, () => { menu.value = false })
@@ -65,7 +61,7 @@ function cycleTheme() { state.theme = ({ system: 'light', light: 'dark', dark: '
           <div class="group-title">Favorites</div>
           <router-link v-for="t in favTools" :key="'f' + t.id" :to="`/tool/${t.id}`"><NavIcon name="star" />{{ t.title }}</router-link>
         </template>
-        <div class="nav-groups-heading"><span>Browse tools</span><button class="ghost" :aria-label="expanded.length ? 'Collapse all tool categories' : 'Expand all tool categories'" @click="expanded = expanded.length ? [] : CATEGORIES.map(c => c.id)">{{ expanded.length ? 'Collapse all' : 'Expand all' }}</button></div>
+        <div class="nav-groups-heading"><span>Browse tools</span><button class="ghost" :aria-label="expanded.length ? 'Collapse all tool categories' : 'Expand all tool categories'" @click="state.navExpanded = expanded.length ? [] : CATEGORIES.map(c => c.id)">{{ expanded.length ? 'Collapse all' : 'Expand all' }}</button></div>
         <details v-for="c in CATEGORIES" :key="c.id" :open="expanded.includes(c.id)" @toggle="toggleGroup(c.id, $event)">
           <summary><NavIcon :name="CATEGORY_ICON[c.id]" />{{ c.name }}</summary>
           <router-link v-for="t in tools.filter((x) => x.category === c.id)" :key="t.id" :to="`/tool/${t.id}`" :title="t.summary"><NavIcon :name="iconFor(t.id)" />{{ t.title }}</router-link>

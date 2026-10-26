@@ -1,5 +1,5 @@
 // Bundled reference data, kept apart from logic. Each list carries its own source and revision.
-export interface Meta { source: string; revision: string; note?: string }
+export interface Meta { source: string; revision: string; note?: string; sourceUrl?: string }
 
 export const CTCSS_META: Meta = { source: 'EIA/TIA-603 (38 standard tones); the 12 “extended” tones are common manufacturer additions', revision: '2026-10-19' }
 // [Hz, standard EIA-603 tone?]
@@ -10,6 +10,25 @@ export const CTCSS: [number, boolean][] = [
   [171.3, false], [173.8, true], [177.3, false], [179.9, true], [183.5, false], [186.2, true], [189.9, false], [192.8, true], [196.6, false], [199.5, false],
   [203.5, true], [206.5, false], [210.7, true], [218.1, true], [225.7, true], [229.1, false], [233.6, true], [241.8, true], [250.3, true], [254.1, false],
 ]
+
+export const DCS_META: Meta = {
+  source: 'Yaesu FT-3165R/FT-3165E Advance Manual, items 30–31 (DCS code list and inversion options)',
+  revision: '2024-11',
+  note: 'This is the 104-code set shown in the cited manual. Individual radios may support only a subset or use different names for polarity settings.',
+  sourceUrl: 'https://www.yaesu.com/Files/4CB3F875-1018-01AF-FAF21EE346767CA2/FT-3165R_E_AM_2411-A.pdf',
+}
+// Transcribed from the cited Yaesu table. Three-digit strings are octal, not decimal.
+export const DCS_CODES = `023 025 026 031 032 036 043 047 051 053
+054 065 071 072 073 074 114 115 116 122
+125 131 132 134 143 145 152 155 156 162
+165 172 174 205 212 223 225 226 243 244
+245 246 251 252 255 261 263 265 266 271
+274 306 311 315 325 331 332 343 346 351
+356 364 365 371 411 412 413 423 431 432
+445 446 452 454 455 462 464 465 466 503
+506 516 523 526 532 546 565 606 612 624
+627 631 632 654 662 664 703 712 723 731
+732 734 743 754`.split(/\s+/).sort()
 
 export const ABBR_META: Meta = { source: 'Common amateur CW/phone usage (ARRL Operating Manual and general practice), paraphrased', revision: '2026-10-19' }
 export const ABBREVIATIONS: [string, string, string][] = [

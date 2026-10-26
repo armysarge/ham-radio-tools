@@ -26,13 +26,27 @@ export const platform: Platform = {
   },
 }
 
-/** Serialise an on-screen diagram to a standalone SVG (light-theme colours baked in). */
+/** Keep scoped diagram styles and resolved theme colours in the standalone export. */
 export function exportSvg(svg: SVGSVGElement, filename: string) {
-  const css = `.dg-wire{stroke:#b4540a;fill:none;stroke-width:4;stroke-linecap:round}.dg-dim{stroke:#0b6e6e;fill:none;stroke-width:1.5}
-.dg-text{fill:#1b2229;font-family:Arial,sans-serif;font-size:15px}.dg-dimtext{fill:#0b6e6e;font-family:monospace;font-size:15px;font-weight:700}
-.dg-solid{fill:#1b2229}.dg-ground{stroke:#55606a;stroke-width:2}`
   const clone = svg.cloneNode(true) as SVGSVGElement
   clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-  clone.insertAdjacentHTML('afterbegin', `<style>${css}</style><rect width="100%" height="100%" fill="#fff"/>`)
+  const originals = [svg, ...Array.from(svg.querySelectorAll<SVGElement>('*'))]
+  const copies = [clone, ...Array.from(clone.querySelectorAll<SVGElement>('*'))]
+  const properties = ['fill', 'fill-opacity', 'fill-rule', 'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'stroke-linecap', 'stroke-linejoin', 'opacity', 'font-family', 'font-size', 'font-weight', 'text-anchor', 'dominant-baseline', 'visibility', 'display']
+  originals.forEach((node, i) => {
+    const style = getComputedStyle(node)
+    for (const property of properties) {
+      const value = style.getPropertyValue(property)
+      if (value) copies[i]!.style.setProperty(property, value)
+    }
+  })
+  const background = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+  const box = svg.getAttribute('viewBox')?.trim().split(/[ ,]+/).map(Number)
+  if (box?.length === 4 && box.every(Number.isFinite)) {
+    for (const [i, attr] of ['x', 'y', 'width', 'height'].entries()) background.setAttribute(attr, String(box[i]))
+    clone.setAttribute('width', String(box[2])); clone.setAttribute('height', String(box[3]))
+  } else { background.setAttribute('width', '100%'); background.setAttribute('height', '100%') }
+  background.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--panel').trim() || '#fff')
+  clone.prepend(background)
   platform.saveFile(filename, clone.outerHTML, 'image/svg+xml')
 }

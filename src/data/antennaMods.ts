@@ -1,17 +1,18 @@
 // Modifications builders try on the antennas in this app, each labelled by how well the claim is supported.
 // No gain figures are quoted: the real number depends on site, ground and build, and this app does not simulate.
-export type AntennaId = 'dipole' | 'inverted-v' | 'vertical' | 'loop' | 'efhw' | 'jpole'
+export type AntennaId = 'dipole' | 'inverted-v' | 'vertical' | 'loop' | 'efhw' | 'jpole' | 'qfh'
 export type Evidence = 'proven' | 'situational' | 'unproven'
-export interface Mod { id: string; antennas: AntennaId[]; title: string; goal: 'range' | 'bands' | 'bandwidth' | 'size' | 'safety'; what: string; effect: string; caveat: string; evidence: Evidence; basis: string }
+export type ModGoal = 'range' | 'reception' | 'bands' | 'bandwidth' | 'size' | 'portable' | 'safety'
+export interface Mod { id: string; antennas: AntennaId[]; title: string; goal: ModGoal; what: string; effect: string; caveat: string; evidence: Evidence; basis: string }
 
 export const MODS_META = {
-  revision: '2026-10-19',
+  revision: '2026-10-23',
   levels: {
     proven: 'Established physics or repeated measurement, described in standard handbooks. Still needs adjusting to your site.',
     situational: 'Works, but only in some setups or at a clear cost. Read the caveat before building.',
     unproven: 'Widely repeated claim without credible measurement, or contradicted by it. Listed so you can recognise it.',
   } as Record<Evidence, string>,
-  references: ['ARRL Antenna Book (chapters on dipoles, verticals, loops, transmission lines and ground effects)', 'ON4UN, Low-Band DXing (vertical radial systems, receiving antennas)', 'N6LF (R. Severns), ground-system measurements for HF verticals, QEX', 'Cebik (W4RNL), antenna modelling notes on multi-band wire antennas'],
+  references: ['ARRL Antenna Book (chapters on dipoles, verticals, loops, transmission lines and ground effects)', 'ON4UN, Low-Band DXing (vertical radial systems, receiving antennas)', 'N6LF (R. Severns), ground-system measurements for HF verticals, QEX', 'Cebik (W4RNL), antenna modelling notes on multi-band wire antennas', 'ARRL, The ARRL Antenna Compendium (practical antenna and receiving-system articles)'],
 }
 const L = (...a: AntennaId[]) => a
 
@@ -21,12 +22,12 @@ export const MODS: Mod[] = [
     effect: 'Lowers the take-off angle of a horizontal antenna, which usually helps long-distance contacts; low antennas favour steep angles (short-range, “NVIS”).',
     caveat: 'For regional (a few hundred km) contacts on 80/40 m a low antenna is not a mistake. Height also changes the feed impedance.',
     basis: 'Ground-reflection theory; ARRL Antenna Book “Effects of ground”.' },
-  { id: 'choke', antennas: L('dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole'), title: 'Add a 1:1 current choke (balun) at the feed point', goal: 'range', evidence: 'proven',
+  { id: 'choke', antennas: L('dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole', 'qfh'), title: 'Add a 1:1 current choke (balun) at the feed point', goal: 'range', evidence: 'proven',
     what: 'Wind coax on a ferrite core, or use a purpose-made choke balun, where the feedline meets the antenna.',
     effect: 'Stops RF current flowing on the outside of the coax, which keeps the pattern predictable and reduces interference and RF in the shack.',
     caveat: 'It does not add gain. Use a core material suited to the band; a wrong core can overheat or do nothing.',
     basis: 'Common-mode current theory; ARRL Antenna Book “Transmission lines”.' },
-  { id: 'feedline-loss', antennas: L('dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole'), title: 'Use lower-loss feedline, especially at VHF/UHF or with a high SWR', goal: 'range', evidence: 'proven',
+  { id: 'feedline-loss', antennas: L('dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole', 'qfh'), title: 'Use lower-loss feedline, especially at VHF/UHF or with a high SWR', goal: 'range', evidence: 'proven',
     what: 'Swap thin coax for a thicker, lower-loss type, or use open-wire line with a tuner at the rig.',
     effect: 'Every dB lost in the cable is power not radiated, and loss increases with frequency and with mismatch.',
     caveat: 'Matters most for long runs; for 10 m of coax on HF the gain is small.',
@@ -185,5 +186,33 @@ MODS.push(
     effect: 'Narrows the pattern in the vertical plane and so concentrates power toward the horizon.',
     caveat: 'Needs correct spacing and phasing, a harness that keeps the match, and care with interaction; a badly built stack is worse than one antenna. This app does not model the pattern.',
     basis: 'Collinear array theory; ARRL Antenna Book.' },
+)
+const ALL_ANTENNAS: AntennaId[] = ['dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole', 'qfh']
+MODS.push(
+  { id: 'rx-separate-antenna', antennas: ALL_ANTENNAS, title: 'Add a separate receive antenna for noisy locations', goal: 'reception', evidence: 'situational',
+    what: 'Try a small loop or other receive-only antenna, with a suitable switch or phasing/noise-cancelling unit to select or combine it.',
+    effect: 'A different location, orientation, or pattern can reduce local noise or favour a wanted direction even when the transmit antenna cannot be moved.',
+    caveat: 'It does not increase the signal-to-noise ratio in every case. Small receive antennas are often inefficient and need a low-noise, properly matched receiver interface; protect the receiver from transmit RF.',
+    basis: 'ARRL Antenna Book and ON4UN, Low-Band DXing; receiving-antenna practice.' },
+  { id: 'feedpoint-match', antennas: ALL_ANTENNAS, title: 'Correct the antenna-end match and common-mode path', goal: 'range', evidence: 'proven',
+    what: 'Measure at the feed point, then use the appropriate balun, unun, matching section, or remote tuner and a feedline choke where needed.',
+    effect: 'Can reduce feedline mismatch loss, unwanted feedline radiation, and RF returning to the station; this makes the antenna system more predictable.',
+    caveat: 'A better SWR reading alone does not prove improved radiated signal. Matching cannot recover power lost in an inefficient antenna or lossy cable.',
+    basis: 'Transmission-line and common-mode-current theory; ARRL Antenna Book.' },
+  { id: 'portable-kit', antennas: ALL_ANTENNAS, title: 'Make a packable field version', goal: 'portable', evidence: 'situational',
+    what: 'Use a collapsible fibreglass mast, lightweight wire, compact guy lines, quick-release connectors, and a labelled deployment pouch; keep the radiator geometry the same where possible.',
+    effect: 'Reduces setup time and makes the station easier to carry and repeat at parks, campsites, and temporary locations.',
+    caveat: 'Lightweight parts may be less durable, and the shorter or lower deployment can change tuning and performance. Recheck the antenna after each setup and keep it clear of people and power lines.',
+    basis: 'Mechanical and electrical trade-offs in portable antenna construction.' },
+  { id: 'linked-elements', antennas: ALL_ANTENNAS, title: 'Use linked sections or a switched element for more bands', goal: 'bands', evidence: 'situational',
+    what: 'Add removable wire sections, telescoping segments, or a rated switch that changes the active element length for each band.',
+    effect: 'Can provide several resonant bands without carrying a separate complete antenna for every band.',
+    caveat: 'This requires a design appropriate to the antenna type. Switching hardware and joints add loss and failure points; never change a high-power antenna while transmitting.',
+    basis: 'Linked-dipole and trapped/switched-element construction practice; verify each band with an analyser.' },
+  { id: 'portable-feedline', antennas: ALL_ANTENNAS, title: 'Choose feedline for the deployment, not just the catalogue loss', goal: 'portable', evidence: 'situational',
+    what: 'For a short portable run, lighter flexible coax may be easier; for long or VHF/UHF runs, a larger low-loss cable may be worth carrying. Keep connectors weatherproof and strain-relieved.',
+    effect: 'Balances carried weight, flexibility, durability, and power lost in the line.',
+    caveat: 'Check loss at your actual frequency and run length, connector limits, bend radius, and transmitter power. A tuner at the radio does not remove cable loss.',
+    basis: 'Manufacturer feedline datasheets and transmission-line loss principles.' },
 )
 export const modsFor = (a: AntennaId) => MODS.filter((m) => m.antennas.includes(a))

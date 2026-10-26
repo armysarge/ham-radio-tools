@@ -5,19 +5,27 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 ## [Unreleased]
 
 ### Added
+- DIY Baluns calculator for 1:1 choke turns, stacked-core inductance and coax allowance; DIY RF Transformers calculator with whole-turn impedance results, winding/connection diagrams, and wire/coax selection guidance.
 - Local DVOACAP-based HF propagation reporting; monthly predictions are clearly distinguished from live observations and VHF sporadic E.
 - Downloads page with versioned Windows, Linux and web release links, installation guidance and the browser demo; release notes link to both pages.
 - Region-specific 6 m, 2200 m and 630 m entries in the simplified ITU overview. National tables already include 6 m and can now be filtered by band.
+- Searchable reference for the 104 standard DCS codes, octal notation and polarity guidance.
+- Quadrifilar Helix Antenna tool with frequency-scaled dimensions from a cited satellite-receive prototype and a labeled SVG drawing.
+- Radiation pattern concept illustrations across all antenna design pages, with idealized assumptions and clear limits; no simulated gain or site-specific pattern claims.
 
 ### Fixed
 - Fixed an issue with maps having selectable text.
+- Corrected the QFH illustration to project four half-turn conductors around the mast, including front/rear sections and perpendicular end arms; mobile end views reflow below the main drawing.
+- Diagram-specific colours, fonts and line styles are preserved in downloaded SVGs.
+- Antenna label placement and diagram typography reviewed for mobile and laptop layouts; dense beam dimensions remain in the dimension table.
 
 ### Changed
+- Antenna menu titles no longer use parenthetical qualifiers.
 - Band tables have band/text filters, highlighted frequency matches, roomier rows and a collapsible allocation chart.
 - Removed various 'Analytical', 'Design estimate', 'Reference', etc label elements from the UI.
 - Removed top menu 'Works offline' element.
 - Updated the favourite button to just have a star icon.
-- Compact sidebar categories with expand/collapse controls, active-category opening and a downloads link.
+- Compact sidebar categories with expand/collapse controls, saved expansion state and a downloads link.
 
 ## [0.3.1] - 2026-10-20
 
@@ -38,7 +46,7 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 - Electron exports use a native Save dialog; copying uses a narrow native bridge.
 - Desktop content scrolling starts below the application header, keeping both the header and title bar fixed; first-launch centering is checked by the native smoke test.
 - README rewritten for users. Developer details moved to docs/DEVELOPMENT.md; desktop testing and release instructions have dedicated guides.
-- Roadmap moved to ROADMAP.md with desktop verification, signing and opt-in updating tracked separately.
+- Roadmap moved to ROADMAP.md with desktop verification and opt-in updating tracked separately.
 - Third-party licence notices included in packages.
 
 ## [0.2.0] - 2026-10-19

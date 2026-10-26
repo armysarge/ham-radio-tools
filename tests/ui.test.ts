@@ -20,7 +20,7 @@ import { FREQ_UNITS } from '../src/lib/units'
 
 const global = { stubs: { RouterLink: true }, mocks: { $route: { query: {} } } }
 
-beforeEach(() => { localStorage.clear(); state.favorites = []; state.locations = []; state.designs = []; state.stationId = null; state.units = 'metric' })
+beforeEach(() => { localStorage.clear(); state.favorites = []; state.navExpanded = []; state.locations = []; state.designs = []; state.stationId = null; state.units = 'metric' })
 const type = async (w: ReturnType<typeof mount>, sel: string, v: string) => { const i = w.find(sel); await i.setValue(v); await flushPromises() }
 
 describe('NumField', () => {
@@ -115,6 +115,15 @@ describe('tools', () => {
 })
 
 describe('registry & store', () => {
+  it('starts with collapsed navigation groups and persists the expanded groups', async () => {
+    expect(state.navExpanded).toEqual([])
+    state.navExpanded = ['antenna', 'ops']
+    await flushPromises()
+    expect(JSON.parse(localStorage.getItem('hrt:v1')!).navExpanded).toEqual(['antenna', 'ops'])
+    state.navExpanded = ['ops']
+    await flushPromises()
+    expect(JSON.parse(localStorage.getItem('hrt:v1')!).navExpanded).toEqual(['ops'])
+  })
   it('search matches keywords', () => {
     expect(searchTools('vswr').map((t) => t.id)).toEqual(['swr'])
     expect(searchTools('qth grid').map((t) => t.id)).toContain('maidenhead')

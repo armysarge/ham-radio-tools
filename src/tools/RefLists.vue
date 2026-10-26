@@ -3,24 +3,26 @@
 import { computed, ref } from 'vue'
 import ToolLayout from '../components/ToolLayout.vue'
 import { platform } from '../platform'
-import { ABBREVIATIONS, ABBR_META, CONSTANTS, CONSTANTS_META, CTCSS, CTCSS_META } from '../data/reference'
+import { ABBREVIATIONS, ABBR_META, CONSTANTS, CONSTANTS_META, CTCSS, CTCSS_META, DCS_CODES, DCS_META } from '../data/reference'
 
-const props = defineProps<{ which: 'ctcss' | 'abbreviations' | 'constants' }>()
+const props = defineProps<{ which: 'ctcss' | 'dcs' | 'abbreviations' | 'constants' }>()
 const q = ref('')
 const t = computed(() => q.value.trim().toLowerCase())
 const ctcss = computed(() => CTCSS.filter(([hz, std]) => !t.value || String(hz).includes(t.value) || (t.value === 'extended' && !std) || (t.value === 'standard' && std)))
+const dcs = computed(() => DCS_CODES.filter(code => !t.value || code.includes(t.value.replace(/^d/i, ''))))
 const abbr = computed(() => ABBREVIATIONS.filter((r) => !t.value || r.join(' ').toLowerCase().includes(t.value)))
 const consts = computed(() => CONSTANTS.filter((c) => !t.value || [c.name, c.symbol, c.note, c.unit].join(' ').toLowerCase().includes(t.value)))
-const meta = computed(() => ({ ctcss: CTCSS_META, abbreviations: ABBR_META, constants: CONSTANTS_META })[props.which])
-const ids = { ctcss: 'ctcss', abbreviations: 'abbreviations', constants: 'constants' }
+const meta = computed(() => ({ ctcss: CTCSS_META, dcs: DCS_META, abbreviations: ABBR_META, constants: CONSTANTS_META })[props.which])
+const ids = { ctcss: 'ctcss', dcs: 'dcs', abbreviations: 'abbreviations', constants: 'constants' }
 </script>
 
 <template>
   <ToolLayout :id="ids[which]" :references="[`${meta.source} (revision ${meta.revision}).`]">
     <div class="card stack">
       <label class="field"><span class="lbl">Filter</span>
-        <input v-model="q" type="text" autocomplete="off" :placeholder="which === 'ctcss' ? 'e.g. 88.5, standard, extended' : which === 'constants' ? 'e.g. light, noise, impedance' : 'e.g. 73, power, CW'" /></label>
+        <input v-model="q" type="text" autocomplete="off" :placeholder="which === 'ctcss' ? 'e.g. 88.5, standard, extended' : which === 'dcs' ? 'e.g. 023, 754' : which === 'constants' ? 'e.g. light, noise, impedance' : 'e.g. 73, power, CW'" /></label>
       <p v-if="meta.note" class="hint" style="margin:0">{{ meta.note }}</p>
+      <p v-if="which === 'dcs' && meta.sourceUrl" class="hint" style="margin:0">Official source: <a :href="meta.sourceUrl" target="_blank" rel="noopener noreferrer">Yaesu FT-3165R/FT-3165E Advance Manual</a></p>
     </div>
 
     <div v-if="which === 'ctcss'" class="stack" style="margin-top:1rem">
@@ -31,6 +33,16 @@ const ids = { ctcss: 'ctcss', abbreviations: 'abbreviations', constants: 'consta
         </button>
       </div>
       <p class="hint">Tap a tone to copy it. Tones are sub-audible and only open a repeater’s squelch; they are not security.</p>
+    </div>
+
+    <div v-else-if="which === 'dcs'" class="stack" style="margin-top:1rem">
+      <p v-if="!dcs.length" class="empty">No DCS code matches “{{ q }}”.</p>
+      <template v-else>
+        <p class="hint" style="margin:0">Showing {{ dcs.length }} of {{ DCS_CODES.length }} standard codes · select a code to copy it.</p>
+        <div class="grid dcs-grid" style="grid-template-columns:repeat(auto-fill,minmax(82px,1fr))" aria-label="Standard DCS codes">
+          <button v-for="code in dcs" :key="code" class="card dcs-code" :aria-label="`DCS code ${code}. Copy`" @click="platform.copyText(code)"><span class="mono" style="font-size:1.15rem;font-weight:700">{{ code }}</span><br /><span class="hint">octal</span></button>
+        </div>
+      </template>
     </div>
 
     <div v-else-if="which === 'abbreviations'" style="margin-top:1rem">
@@ -48,7 +60,8 @@ const ids = { ctcss: 'ctcss', abbreviations: 'abbreviations', constants: 'consta
     </div>
 
     <template #explain>
-      <p v-if="which === 'ctcss'">CTCSS (also called PL or “tone squelch”) mixes a continuous sub-audible tone, 67–254 Hz, into FM transmissions. A repeater or receiver set to the same tone only opens for signals carrying it. The 38 EIA-603 tones are the standard set; the 12 “extended” tones appear on some radios but are not universal. DCS (digital codes) is not listed yet.</p>
+      <p v-if="which === 'ctcss'">CTCSS (also called PL or “tone squelch”) mixes a continuous sub-audible tone, 67–254 Hz, into FM transmissions. A repeater or receiver set to the same tone only opens for signals carrying it. The 38 EIA-603 tones are the standard set; the 12 “extended” tones appear on some radios but are not universal. See <router-link to="/tool/dcs">DCS codes</router-link> for digital coded squelch.</p>
+      <p v-else-if="which === 'dcs'">DCS sends a repeating digital squelch code with FM audio; it is not encryption and does not provide privacy. The three digits are octal. Normal and Inverted describe signal polarity, not different code lists; radios may label these settings differently or support both receive polarities. Match the repeater’s code and polarity, and check your radio manual because supported codes vary by model.</p>
       <p v-else-if="which === 'abbreviations'">Many abbreviations came from CW, where every character costs time. On phone, plain language is better; keep these for CW and written logs. Meanings are paraphrased and some vary slightly between regions.</p>
       <p v-else>“Exact” values are definitions of the SI and carry no uncertainty. “Measured” values come from CODATA 2022 with the uncertainty shown in brackets. “Convention” values are agreed standards. “Rule” rows are empirical rules of thumb and are used (with k factors) in the antenna tools. Copy buttons give the full-precision number.</p>
     </template>

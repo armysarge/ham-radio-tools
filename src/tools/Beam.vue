@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import '../components/antenna-diagrams.css'
 import ToolLayout from '../components/ToolLayout.vue'
 import NumField from '../components/NumField.vue'
 import { FREQ_UNITS, feetInches } from '../lib/units'
 import { quad, yagi } from '../lib/beams'
 import { state } from '../core/store'
 import BeamDiagram from '../components/BeamDiagram.vue'
+import RadiationPattern from '../components/RadiationPattern.vue'
 
 const props = defineProps<{ which: 'yagi' | 'quad' }>()
 const isYagi = props.which === 'yagi'
@@ -39,7 +41,11 @@ const diagram = computed(() => {
         <p class="notice" role="status">A starting design, not an optimised one. No gain or pattern is claimed: build it, then trim with an antenna analyser.</p>
       </div>
       <div class="card">
-        <BeamDiagram v-if="diagram.length" :kind="which" :rows="diagram" />
+        <div v-if="diagram.length" class="antenna-drawing beam-drawing">
+          <BeamDiagram :kind="which" :rows="diagram" />
+          <p class="hint">← Back · front (beam direction) →</p>
+          <p class="hint">R = reflector · DE = driven · D = director. Dimensions are listed below.</p>
+        </div>
         <div class="table-wrap"><table class="table">
           <thead v-if="isYagi"><tr><th>Element</th><th>Length</th><th>Distance from reflector</th></tr></thead>
           <thead v-else><tr><th>Loop</th><th>Perimeter</th><th>Side</th><th>Distance from reflector</th></tr></thead>
@@ -55,9 +61,16 @@ const diagram = computed(() => {
         </template>
       </div>
     </div>
+    <RadiationPattern kind="beam" />
     <template #explain>
       <p v-if="isYagi">A Yagi’s parasitic elements are not fed. The one behind the driven element is slightly long, so it re-radiates forward; the ones in front are slightly short, so they pull the pattern forward. Real optimised designs trade lengths and spacings against each other; these proportions are a sound place to begin. The result will cover a narrow band. Every figure is an empirical starting point, not a computed optimum.</p>
       <p v-else>A quad element is a full-wave loop. Making the reflector loop a little bigger and the directors a little smaller produces the same “pull forward” as a Yagi, with a lower impedance and often a quieter receive. The perimeters come from empirical formulas; trim for the frequency you want.</p>
     </template>
   </ToolLayout>
 </template>
+
+<style scoped>
+/* Dense arrays use the dimension table so neighbouring element labels stay distinct. */
+.beam-drawing :deep(.dg-dimtext),
+.beam-drawing :deep(.dg-tick) { display: none; }
+</style>

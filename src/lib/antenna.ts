@@ -103,3 +103,18 @@ export function jpole(fHz: number, k = 0.957) {
     tapMin: 0.015 * lambda, tapMax: 0.04 * lambda,
   }
 }
+
+/**
+ * Frequency-scaled starting dimensions for the published 137.55 MHz NOAA receive-QFH prototype described by EDN.
+ * This scales that prototype's two loop heights, former diameter and vertical offset; it is not a general QFH solver.
+ */
+export function qfh(fHz: number) {
+  if (!(fHz >= 1e6 && fHz <= 1e9)) throw new RangeError('Frequency must be between 1 MHz and 1 GHz')
+  const scale = 137.55e6 / fHz
+  return {
+    longHeight: 0.56 * scale,
+    shortHeight: 0.512 * scale,
+    diameter: 0.3556 * scale,
+    loopOffset: 0.024 * scale,
+  }
+}

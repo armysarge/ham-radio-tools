@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import '../components/antenna-diagrams.css'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
 import NumField from '../components/NumField.vue'
@@ -7,6 +8,7 @@ import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
 import ModsPanel from '../components/ModsPanel.vue'
 import MaterialsPanel from '../components/MaterialsPanel.vue'
+import RadiationPattern from '../components/RadiationPattern.vue'
 import { FREQ_UNITS, feetInches, fmt } from '../lib/units'
 import { jpole } from '../lib/antenna'
 import { loadedParams, state } from '../core/store'
@@ -58,24 +60,24 @@ const X2 = X1 + SP
       </div>
       <div class="stack">
         <div class="card">
-          <svg ref="svgEl" class="diagram dg-big" viewBox="0 0 540 340" role="img" :aria-label="`J-pole: overall ${dim(r?.total)}, stub ${dim(r?.stub)}, feed tap ${dim(r?.tap)} above the shorted bottom`">
+          <svg ref="svgEl" class="diagram dg-big antenna-drawing" viewBox="0 0 640 370" role="img" :aria-label="`J-pole: overall ${dim(r?.total)}, stub ${dim(r?.stub)}, feed tap ${dim(r?.tap)} above the shorted bottom`">
             <path class="dg-wire" :d="`M${X1} ${TOP} V${yBottom} H${X2} V${yStubTop}`" style="stroke-width:7" />
-            <text class="dg-text" :x="X1 + 12" :y="TOP + 6">open top</text>
-            <text class="dg-text" :x="X2 + 12" :y="yStubTop + 6">stub open end</text>
-            <text class="dg-text" :x="(X1 + X2) / 2" :y="yBottom + 26" text-anchor="middle">shorted bottom</text>
+            <text class="dg-text" :x="X1 + 18" :y="TOP + 6">open top</text>
+            <text class="dg-text" :x="X2 + 24" :y="yStubTop - 20">stub open end</text>
+            <text class="dg-text" :x="(X1 + X2) / 2" :y="yBottom + 38" text-anchor="middle">shorted bottom</text>
             <!-- feed: centre conductor to the long element, shield to the stub, at the tap height -->
             <line class="dg-ground" :x1="X1" :y1="yTap" :x2="X2" :y2="yTap" stroke-dasharray="3 3" />
             <circle class="dg-solid" :cx="X1" :cy="yTap" r="5" /><circle class="dg-solid" :cx="X2" :cy="yTap" r="5" />
             <path class="dg-ground" :d="`M${X2} ${yTap} H${X2 + 130}`" />
-            <text class="dg-text" :x="X2 + 14" :y="yTap + 22">coax to radio (with choke)</text>
-            <text class="dg-tick" :x="X2 + 12" :y="yTap - 12">feed tap</text>
+            <text class="dg-text" :x="X2 + 24" y="350">coax to radio (with choke)</text>
+            <text class="dg-tick" :x="X2 + 80" :y="yTap + 36">feed tap</text>
             <!-- dimensions -->
             <g><line class="dg-dim" :x1="X1 - 44" :y1="TOP" :x2="X1 - 44" :y2="yBottom" /><line class="dg-dim" :x1="X1 - 50" :y1="TOP" :x2="X1 - 38" :y2="TOP" /><line class="dg-dim" :x1="X1 - 50" :y1="yBottom" :x2="X1 - 38" :y2="yBottom" />
-              <text class="dg-dimtext" :x="X1 - 54" :y="(TOP + yBottom) / 2" text-anchor="end">{{ dim(r?.total) }}</text></g>
-            <g><line class="dg-dim" :x1="X2 + 170" :y1="yStubTop" :x2="X2 + 170" :y2="yBottom" /><line class="dg-dim" :x1="X2 + 164" :y1="yStubTop" :x2="X2 + 176" :y2="yStubTop" /><line class="dg-dim" :x1="X2 + 164" :y1="yBottom" :x2="X2 + 176" :y2="yBottom" />
-              <text class="dg-dimtext" :x="X2 + 164" :y="(yStubTop + yBottom) / 2 - 8" text-anchor="end">stub {{ dim(r?.stub) }}</text></g>
+              <text class="dg-dimtext" :x="X1 - 64" :y="(TOP + yBottom) / 2" text-anchor="middle" :transform="`rotate(-90 ${X1 - 64} ${(TOP + yBottom) / 2})`">{{ dim(r?.total) }}</text></g>
+            <g><line class="dg-dim" :x1="X2 + 280" :y1="yStubTop" :x2="X2 + 280" :y2="yBottom" /><line class="dg-dim" :x1="X2 + 274" :y1="yStubTop" :x2="X2 + 286" :y2="yStubTop" /><line class="dg-dim" :x1="X2 + 274" :y1="yBottom" :x2="X2 + 286" :y2="yBottom" />
+              <text class="dg-dimtext" :x="X2 + 258" :y="(yStubTop + yBottom) / 2 - 8" text-anchor="end">{{ dim(r?.stub) }}</text></g>
             <line class="dg-dim" :x1="X1" :y1="TOP + 70" :x2="X2" :y2="TOP + 70" /><line class="dg-dim" :x1="X1" :y1="TOP + 64" :x2="X1" :y2="TOP + 76" /><line class="dg-dim" :x1="X2" :y1="TOP + 64" :x2="X2" :y2="TOP + 76" />
-            <text class="dg-dimtext" :x="(X1 + X2) / 2" :y="TOP + 60" text-anchor="middle">{{ dim(r?.spacing) }}</text>
+            <text class="dg-dimtext" :x="X2 + 24" :y="TOP + 60">{{ dim(r?.spacing) }}</text>
           </svg>
           <p class="hint">Vertical lengths are drawn to scale; the spacing and the tap height are exaggerated so they stay readable. Coax centre conductor goes to the long element, the shield to the stub, at the tap.</p>
         </div>
@@ -96,6 +98,7 @@ const X2 = X1 + SP
     </div>
 
     <MaterialsPanel antenna="jpole" />
+    <RadiationPattern kind="jpole" />
     <ModsPanel antenna="jpole" />
 
     <template #explain>

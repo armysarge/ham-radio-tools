@@ -29,7 +29,7 @@ const groups = computed(() => [
           <h3 style="display:flex;gap:.5rem;align-items:center"><NavIcon :name="iconFor(t.id)" style="color:var(--accent);width:1.4em;height:1.4em" />{{ t.title }}</h3><p>{{ t.summary }}</p>
         </router-link>
         <button class="star ghost" :aria-pressed="isFavorite(t.id)" :aria-label="`${isFavorite(t.id) ? 'Remove' : 'Add'} ${t.title} ${isFavorite(t.id) ? 'from' : 'to'} favorites`" @click="toggleFavorite(t.id)">
-          {{ isFavorite(t.id) ? '★' : '☆' }}
+          <span class="favorite-star">{{ isFavorite(t.id) ? '★' : '☆' }}</span>
         </button>
       </div>
     </div>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import '../components/antenna-diagrams.css'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
 import ModsPanel from '../components/ModsPanel.vue'
 import MaterialsPanel from '../components/MaterialsPanel.vue'
+import RadiationPattern from '../components/RadiationPattern.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
@@ -64,23 +66,23 @@ const SHAPES: [LoopShape, string][] = [['square', 'Square'], ['triangle', 'Trian
       </div>
       <div class="stack">
         <div class="card">
-          <svg ref="svgEl" class="diagram dg-big" viewBox="0 0 640 300" role="img" :aria-label="`Full-wave ${shape} loop, perimeter ${dim(r?.perimeter)}`">
+          <svg ref="svgEl" class="diagram dg-big antenna-drawing" viewBox="0 0 640 330" role="img" :aria-label="`Full-wave ${shape} loop, perimeter ${dim(r?.perimeter)}`">
             <template v-if="shape === 'square'">
               <rect class="dg-wire" x="220" y="40" width="200" height="200" fill="none" />
               <text class="dg-dimtext" x="320" y="30" text-anchor="middle">{{ dim(r?.side) }}</text>
-              <text class="dg-dimtext" x="210" y="145" text-anchor="end">{{ dim(r?.side) }}</text>
-              <circle class="dg-solid" cx="320" cy="240" r="6" /><text class="dg-text" x="320" y="268" text-anchor="middle">feed (bottom centre)</text>
+              <text class="dg-dimtext" x="180" y="145" text-anchor="middle" transform="rotate(-90 180 145)">{{ dim(r?.side) }}</text>
+              <circle class="dg-solid" cx="320" cy="240" r="6" /><text class="dg-text" x="320" y="290" text-anchor="middle">feed (bottom centre)</text>
             </template>
             <template v-else-if="shape === 'triangle'">
               <path class="dg-wire" d="M320 40 L430 235 L210 235 Z" fill="none" />
-              <text class="dg-dimtext" x="396" y="122">{{ dim(r?.side) }}</text>
-              <text class="dg-dimtext" x="244" y="122" text-anchor="end">{{ dim(r?.side) }}</text>
+              <text class="dg-dimtext" x="410" y="122">{{ dim(r?.side) }}</text>
+              <text class="dg-dimtext" x="230" y="122" text-anchor="end">{{ dim(r?.side) }}</text>
               <text class="dg-dimtext" x="320" y="262" text-anchor="middle">{{ dim(r?.side) }}</text>
-              <circle class="dg-solid" cx="320" cy="235" r="6" /><text class="dg-text" x="320" y="286" text-anchor="middle">feed (base centre)</text>
+              <circle class="dg-solid" cx="320" cy="235" r="6" /><text class="dg-text" x="320" y="310" text-anchor="middle">feed (base centre)</text>
             </template>
             <template v-else>
               <circle class="dg-wire" cx="320" cy="140" r="100" fill="none" />
-              <line class="dg-dim" x1="220" y1="140" x2="420" y2="140" /><text class="dg-dimtext" x="320" y="132" text-anchor="middle">⌀ {{ dim(r?.diameter) }}</text>
+              <line class="dg-dim" x1="220" y1="140" x2="420" y2="140" /><text class="dg-dimtext" x="320" y="30" text-anchor="middle">⌀ {{ dim(r?.diameter) }}</text>
               <circle class="dg-solid" cx="320" cy="240" r="6" /><text class="dg-text" x="320" y="268" text-anchor="middle">feed (bottom)</text>
             </template>
           </svg>
@@ -91,6 +93,7 @@ const SHAPES: [LoopShape, string][] = [['square', 'Square'], ['triangle', 'Trian
       </div>
     </div>
     <MaterialsPanel antenna="loop" />
+    <RadiationPattern kind="loop" />
     <ModsPanel antenna="loop" />
 
     <template #explain>

@@ -36,16 +36,21 @@ const hasClasses = computed(() => sorted.value.some((r) => r.classes))
 const bandFilter = ref('all'), query = ref('')
 const availableBands = computed(() => [...new Set(sorted.value.map(r => r.band))])
 const filtered = computed(() => sorted.value.filter(r => (bandFilter.value === 'all' || r.band === bandFilter.value) && query.value.toLowerCase().split(/\s+/).filter(Boolean).every(term => [r.band, r.use, r.modes, r.classes, r.power, r.status, r.note].join(' ').toLowerCase().includes(term))))
-watch([source, region], () => { bandFilter.value = 'all'; query.value = '' })
 const mhz = (hz: number) => fmt(hz / 1e6, 7)
 
-// log-scale bar chart of the allocations (HF/VHF only, so the chart stays readable)
-const W = 600, L = 70
+// Fixed logarithmic axis makes allocations comparable across sources and regions.
+const W = 860, L = 100, R = 20, CHART_MIN = 100e3, CHART_MAX = 1.3e9, TOP = 28, ROW = 22
 const chartRows = computed(() => sorted.value.filter((r) => r.toHz <= 1.3e9))
-const lo = computed(() => Math.log10(Math.min(...chartRows.value.map((r) => r.fromHz), 1.8e6) * 0.95))
-const hi = computed(() => Math.log10(Math.max(...chartRows.value.map((r) => r.toHz), 450e6) * 1.05))
-const X = (hz: number) => L + ((Math.log10(hz) - lo.value) / (hi.value - lo.value)) * (W - L - 10)
-const bands = computed(() => [...new Set(chartRows.value.map((r) => r.band))])
+const chartHeight = computed(() => TOP + chartRows.value.length * ROW + 34)
+const axisY = computed(() => TOP + chartRows.value.length * ROW + 2)
+const X = (hz: number) => L + ((Math.log10(hz) - Math.log10(CHART_MIN)) / (Math.log10(CHART_MAX) - Math.log10(CHART_MIN))) * (W - L - R)
+const ticks = [[100e3, '0.1'], [1e6, '1'], [10e6, '10'], [100e6, '100'], [1e9, '1000']] as const
+const chartFrequencyX = computed(() => f.value != null && f.value >= CHART_MIN && f.value <= CHART_MAX ? X(f.value) : null)
+const selectedChartIndex = ref<number | null>(null)
+const selectedChartRow = computed(() => selectedChartIndex.value == null ? null : chartRows.value[selectedChartIndex.value] ?? null)
+function selectChartRow(i: number) { selectedChartIndex.value = i }
+function showChartBand() { if (selectedChartRow.value) { bandFilter.value = selectedChartRow.value.band; query.value = '' } }
+watch([source, region], () => { bandFilter.value = 'all'; query.value = ''; selectedChartIndex.value = null })
 const colour = (s?: string) => (s?.startsWith('primary') || s?.startsWith('co-primary') ? 'var(--good)' : s?.startsWith('secondary') ? 'var(--warn)' : 'var(--accent)')
 </script>
 
@@ -82,14 +87,28 @@ const colour = (s?: string) => (s?.startsWith('primary') || s?.startsWith('co-pr
       <div class="stack">
         <details class="card allocation-chart" v-if="chartRows.length">
           <summary>View allocation chart</summary>
-          <svg class="diagram" :viewBox="`0 0 ${W} ${bands.length * 22 + 30}`" role="img" aria-label="Amateur allocations on a logarithmic frequency scale">
-            <g v-for="(b, i) in bands" :key="b">
-              <text class="dg-tick" x="4" :y="22 + i * 22 + 4">{{ b }}</text>
-              <rect v-for="r in chartRows.filter((x) => x.band === b)" :key="r.fromHz" :x="X(r.fromHz)" :y="14 + i * 22" :width="Math.max(X(r.toHz) - X(r.fromHz), 3)" height="14" rx="2" :fill="colour(r.status)" />
-            </g>
-            <line v-if="f && f > 0" stroke="var(--wire)" stroke-width="2" :x1="X(f)" :x2="X(f)" y1="4" :y2="bands.length * 22 + 20" />
-          </svg>
-          <p class="hint">Bars span each allocation up to 1.3 GHz (log scale). Green = primary, amber = secondary, accent = other; the orange line is your frequency.</p>
+          <p class="hint chart-intro">Each bar is one allocation. The horizontal axis is logarithmic: equal spacing means a tenfold frequency change. Select a bar for its details.</p>
+          <div class="chart-legend" aria-label="Allocation status legend"><span><i class="primary-key"></i>Primary</span><span><i class="secondary-key"></i>Secondary</span><span><i class="other-key"></i>Other or shared</span><span><i class="frequency-key"></i>Your frequency</span></div>
+          <div class="chart-scroll">
+            <svg class="allocation-svg" :viewBox="`0 0 ${W} ${chartHeight}`" role="img" aria-label="Amateur frequency allocations from 0.1 to 1300 megahertz on a logarithmic scale">
+              <g v-for="[hz, label] in ticks" :key="hz">
+                <line class="chart-grid" :x1="X(hz)" :x2="X(hz)" y1="12" :y2="axisY" />
+                <text class="chart-axis-label" :x="X(hz)" :y="axisY + 18" text-anchor="middle">{{ label }} MHz</text>
+              </g>
+              <g v-for="(r, i) in chartRows" :key="`${r.band}:${r.fromHz}:${r.toHz}:${i}`" class="chart-row" :class="{ selected: selectedChartIndex === i }" role="button" tabindex="0" :aria-pressed="selectedChartIndex === i" :aria-label="`${r.band}, ${mhz(r.fromHz)} to ${mhz(r.toHz)} megahertz, ${r.status || 'status unspecified'}. Select for details.`" @click="selectChartRow(i)" @keydown.enter="selectChartRow(i)" @keydown.space.prevent="selectChartRow(i)">
+                <title>{{ r.band }} · {{ mhz(r.fromHz) }}–{{ mhz(r.toHz) }} MHz · {{ r.status || 'status unspecified' }}</title>
+                <text class="chart-band-label" x="6" :y="TOP + i * ROW + 14">{{ r.band }}</text>
+                <rect class="chart-hit" :x="L" :y="TOP + i * ROW" :width="W - L - R" :height="ROW" />
+                <rect class="allocation-bar" :x="X(r.fromHz)" :y="TOP + i * ROW + 4" :width="X(r.toHz) - X(r.fromHz)" height="14" rx="2" :fill="colour(r.status)" />
+              </g>
+              <line v-if="chartFrequencyX != null" class="chart-frequency" :x1="chartFrequencyX" :x2="chartFrequencyX" y1="8" :y2="axisY" />
+              <line class="chart-axis" :x1="L" :x2="W - R" :y1="axisY" :y2="axisY" />
+            </svg>
+          </div>
+          <div v-if="selectedChartRow" class="selected-allocation" aria-live="polite">
+            <div><strong>{{ selectedChartRow.band }} · {{ mhz(selectedChartRow.fromHz) }}–{{ mhz(selectedChartRow.toHz) }} MHz</strong><br /><span class="muted">{{ selectedChartRow.use }}{{ selectedChartRow.status ? ` · ${selectedChartRow.status}` : '' }}</span><p v-if="selectedChartRow.note" class="hint">{{ selectedChartRow.note }}</p></div>
+            <button type="button" aria-label="Show this band in the table" @click="showChartBand">Show this band in the table</button>
+          </div>
         </details>
         <div class="card" v-if="sorted.length">
           <div class="band-filters">
@@ -131,6 +150,26 @@ const colour = (s?: string) => (s?.startsWith('primary') || s?.startsWith('co-pr
 .band-table .hint{margin-top:.4rem;max-width:65ch}
 .frequency-hit{background:color-mix(in srgb,var(--accent) 9%,var(--panel))}
 .allocation-chart summary{cursor:pointer;font-weight:600;min-height:28px}
+.chart-intro{margin:.55rem 0}
+.chart-legend{display:flex;flex-wrap:wrap;gap:.5rem 1rem;font-size:.82rem;color:var(--muted);margin-bottom:.25rem}
+.chart-legend span{display:inline-flex;align-items:center;gap:.35rem}
+.chart-legend i{display:inline-block;width:.75rem;height:.75rem;border-radius:2px;background:var(--accent)}
+.chart-legend .primary-key{background:var(--good)}.chart-legend .secondary-key{background:var(--warn)}.chart-legend .frequency-key{height:2px;border-radius:0;background:var(--wire)}
+.chart-scroll{max-height:440px;overflow:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.allocation-svg{display:block;width:100%;min-width:680px;height:auto}
+.chart-grid{stroke:var(--line);stroke-dasharray:3 4;stroke-width:1}
+.chart-axis{stroke:var(--muted);stroke-width:1}
+.chart-axis-label,.chart-band-label{fill:var(--muted);font:12px var(--font)}
+.chart-row{cursor:pointer;outline:none}
+.chart-row .chart-hit{fill:transparent;pointer-events:all}
+.chart-row:hover .chart-hit,.chart-row:focus .chart-hit{fill:color-mix(in srgb,var(--accent) 8%,transparent)}
+.chart-row .allocation-bar{transition:filter .12s,stroke .12s;vector-effect:non-scaling-stroke;pointer-events:none}
+.chart-row:hover .allocation-bar{filter:brightness(1.12)}
+.chart-row:focus .allocation-bar,.chart-row.selected .allocation-bar{stroke:var(--ink);stroke-width:2}
+.chart-frequency{stroke:var(--wire);stroke-width:2;stroke-dasharray:5 3;pointer-events:none;vector-effect:non-scaling-stroke}
+.selected-allocation{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-top:.6rem;padding:.65rem;background:var(--panel2);border-radius:8px}
+.selected-allocation .hint{margin:.35rem 0 0}
+@media(max-width:540px){.selected-allocation{align-items:stretch;flex-direction:column}.selected-allocation button{width:100%}}
 @media(max-width:1100px){.band-plan-layout{grid-template-columns:1fr}.band-filters{grid-template-columns:1fr 2fr}}
 @media(max-width:480px){.band-filters{grid-template-columns:1fr}}
 </style>

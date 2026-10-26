@@ -39,7 +39,7 @@ The second command builds installers for the current OS:
 | Windows | `ham-radio-tools-<version>-win-x64.exe` (NSIS installer) |
 | Linux | `ham-radio-tools-<version>-linux-x64.AppImage` and `.deb` |
 
-Build Windows on Windows and Linux on Linux. The GitHub release workflow does this with separate runners. Default configuration is unsigned: Windows may display a reputation warning. Do not describe unsigned builds as signed or verified by Microsoft.
+Build Windows on Windows and Linux on Linux. The GitHub release workflow does this with separate runners. Windows may display a reputation warning for a newly published installer.
 
 ## Window controls and appearance
 
@@ -71,7 +71,7 @@ Dependency audit at implementation time: npm reports eight moderate advisories t
 Record actual outcomes here after testing. A build or automated smoke check does not prove clean-machine installation, hardware microphone operation or Linux compatibility.
 
 - Windows 10 build 19045, Node 24, Electron 44.9.1: development shell and packaged `win-unpacked` executable passed startup, calculation, map, saved-design persistence across restart, renderer isolation and blocked external-fetch checks on 2026-10-20.
-- Windows x64 NSIS installer was generated as `ham-radio-tools-0.3.0-win-x64.exe`. It has not been installed on a clean machine and is unsigned.
+- Windows x64 NSIS installer was generated as `ham-radio-tools-0.3.0-win-x64.exe`. It has not been installed on a clean machine.
 - Linux packaging and runtime: configured for CI, not exercised locally.
 - Expanded Windows development and packaged-executable checks on 2026-10-20 passed project file export/import, copy bridge and native clipboard round trip, PDF print-engine rendering, plus explicit update check/download and tampered-file rejection using mocked GitHub responses. The clipboard probe previously returned empty in this environment; the harness reports this limitation explicitly if it recurs. These are not hardware or real release upgrade tests.
 - Clean-machine installation, offline first launch, microphone hardware and printer checks: pending. Follow [the desktop acceptance checklist](DESKTOP_ACCEPTANCE.md) and record actual OS versions and results.

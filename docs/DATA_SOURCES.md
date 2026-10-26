@@ -14,7 +14,7 @@ Every piece of regulated reference data in this app comes from a named official 
 | `jp-mic-notification-80` | MIC 令和5年告示第80号 usage chart + licence-symbol leaflet | amended 17 Jul 2025 (告示第259号) | 2026-10-19 | 180 days |
 | `br-anatel-ato-926` | Anatel Ato nº 926/2024 (Tabela I, Tabelas II–XXIX, item 5) | 2024 | 2026-10-19 | 90 days |
 
-Also dated in their own tools: ITU region allocations (Article 5, simplified), CTCSS tones, abbreviations, constants (CODATA 2022), ITU call-sign blocks (Appendix 42), Q codes (ITU-R M.1172), time stations. Their source and revision date are shown in each tool and in `src/data/*.ts`.
+Also dated in their own tools: ITU region allocations (Article 5, simplified), CTCSS tones, the 104-code DCS list ([Yaesu FT-3165R/FT-3165E Advance Manual](https://www.yaesu.com/Files/4CB3F875-1018-01AF-FAF21EE346767CA2/FT-3165R_E_AM_2411-A.pdf), items 30–31; code/polarity support varies by model), abbreviations, constants (CODATA 2022), ITU call-sign blocks (Appendix 42), Q codes (ITU-R M.1172), time stations. Their source and revision date are shown in each tool and in `src/data/*.ts`.
 
 ### Not included yet
 
@@ -57,6 +57,7 @@ The simplified ITU overview is maintained separately in `src/data/reference.ts`.
 ## Other bundled reference data
 
 - **Toroid AL values** (`src/data/cores.ts`): typical catalogue figures for Amidon / Micrometals iron-powder (T-xx-2, -6) and ferrite (FT-xx-43, -61) cores, rounded; tolerance ±10–25 %. Not compiled from a single document: check a supplier datasheet when buying a core.
+- **Baluns and RF transformers** (`src/tools/DiyMagnetic.vue`, `src/lib/magnetics.ts`): current-balun/choke distinctions reference Roy Lewallen's ARRL archive paper. The [Fair-Rite technical catalogue](https://fair-rite.com/wp-content/uploads/2023/05/Fair-Rite_Catalog_17th_Edition.pdf) supports the AL/turns model and frequency-dependent ferrite limitations; the [RSGB winding guide](https://rsgb.org/main/technical/emc/using-emc-filters-and-ferrites/) covers winding sense, stray capacitance and bend precautions. [Amphenol Procom's RG-400 specification](https://amphenolprocom.com/product/rg-400/) supplies cable construction context. Reviewed 2026-10-23. The calculator uses nominal AL only for a low-frequency inductance estimate; it does not predict broadband common-mode impedance, power, temperature, isolation or SWR. Stacked AL is approximated by adding identical cores. Transformer secondary turns round to the nearest integer and the resulting ideal impedance is shown. Material length uses the existing core-perimeter allowance, π times conductor diameter per turn, 15% slack and the entered leads. Illustrations are original SVG; no source figures are redistributed.
 - **Cable loss presets** (`src/tools/FeedlineLoss.vue`): approximate dB per 100 ft at 100 MHz for RG-174, RG-58, RG-8X, RG-213 and LMR-400 types; users should enter their datasheet value.
 - **Satellite elements** are never bundled; users paste a TLE from CelesTrak, AMSAT or Space-Track.
 

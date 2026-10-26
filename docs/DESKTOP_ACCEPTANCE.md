@@ -41,7 +41,7 @@ Reconnect only after offline checks. Publish a test stable release with the exac
 
 ## Record the result
 
-`npm run report:desktop` (after `npm run desktop:dist`) writes `desktop-out/acceptance-<version>-<os>.md` with the installer's SHA-256, size, signature status and build-machine details already filled in, and every manual row set to **not tested**. Copy it to the test machine's notes and complete the rest by hand.
+`npm run report:desktop` (after `npm run desktop:dist`) writes `desktop-out/acceptance-<version>-<os>.md` with the installer's SHA-256, size and build-machine details already filled in, and every manual row set to **not tested**. Copy it to the test machine's notes and complete the rest by hand.
 
 Copy this table into the release notes or a dated report. Use **pass**, **fail**, **not tested**, or **not applicable**, with evidence. Never convert an untested row to a pass because the app compiled.
 
@@ -57,11 +57,11 @@ Copy this table into the release notes or a dated report. Use **pass**, **fail**
 | Microphone hardware / permissions | |
 | PDF and physical printing | |
 | Real release check / download / installer / preserved data | |
-| Signature status / Linux prerequisites | |
+| Linux prerequisites | |
 | Tester, date, failures and reproduction steps | |
 
 ## Automated checks and their limits
 
 `npm run check:desktop` uses a disposable profile to check offline tools, project exports/imports, PDF print-engine rendering, the copy bridge, window behavior and mocked update transport/tampered-file rejection. It probes the native clipboard separately and reports an unavailable OS round trip explicitly. Set `HRT_REQUIRE_CLIPBOARD=1` to make an unavailable native clipboard fail the check. For example in PowerShell: `$env:HRT_REQUIRE_CLIPBOARD='1'; npm run check:desktop`.
 
-The release workflow checks both development and packaged executables on Windows/Linux runners. These runners have Node.js and network access; they do not certify clean-machine installation, hardware, publisher signing or an end-to-end real release upgrade.
+The release workflow checks both development and packaged executables on Windows/Linux runners. These runners have Node.js and network access; they do not certify clean-machine installation, hardware or an end-to-end real release upgrade.

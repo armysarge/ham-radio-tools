@@ -26,4 +26,11 @@ describe('registry integrity', () => {
     }
     expect(problems).toEqual([])
   })
+  it('places DIY Components under RF & Electronics', () => {
+    expect(tools.find((t) => t.id === 'diy-components')).toMatchObject({ title: 'DIY Components', category: 'rf' })
+    expect(CATEGORIES.map((c) => c.id)).not.toContain('diy')
+  })
+  it('keeps antenna menu titles free of parenthetical labels', () => {
+    expect(tools.filter((t) => t.category === 'antenna').every((t) => !/[()]/.test(t.title))).toBe(true)
+  })
 })

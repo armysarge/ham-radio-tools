@@ -1,22 +1,27 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { MODS_META, modsFor, type AntennaId, type Evidence } from '../data/antennaMods'
+import { MODS_META, modsFor, type AntennaId, type Evidence, type ModGoal } from '../data/antennaMods'
 
 const props = defineProps<{ antenna: AntennaId }>()
-const GOALS: Record<string, string> = { range: 'Range', bands: 'More bands', bandwidth: 'Bandwidth', size: 'Smaller size', safety: 'Safety' }
+const GOALS: Record<ModGoal, string> = { range: 'Range', reception: 'Reception', bands: 'More bands', bandwidth: 'Bandwidth', size: 'Smaller size', portable: 'Portable', safety: 'Safety' }
 const EV: [Evidence, string][] = [['proven', 'Proven'], ['situational', 'Situational'], ['unproven', 'Unproven / myth']]
 const filter = ref<Evidence | 'all'>('all')
+const goal = ref<ModGoal | 'all'>('all')
 const mods = computed(() => modsFor(props.antenna))
-const shown = computed(() => mods.value.filter((m) => filter.value === 'all' || m.evidence === filter.value))
+const shown = computed(() => mods.value.filter((m) => (filter.value === 'all' || m.evidence === filter.value) && (goal.value === 'all' || m.goal === goal.value)))
 const count = (e: Evidence) => mods.value.filter((m) => m.evidence === e).length
 </script>
 
 <template>
   <section class="card stack" style="margin-top:1rem">
-    <h2>Mods to extend range or bands</h2>
-    <p class="muted" style="margin:0">Ideas builders use on this antenna, labelled by how well each claim is supported. No gain numbers are quoted: the result depends on your site, and this app does not simulate antennas.</p>
+    <h2>Antenna system improvements</h2>
+    <p class="muted" style="margin:0">Ideas for the antenna, feedline, receive setup, and portable station. Filter by goal and evidence. Results depend on frequency, installation, and local noise; this app does not simulate antenna performance.</p>
+    <div class="seg" role="group" aria-label="Filter by improvement goal">
+      <button :aria-pressed="goal === 'all'" @click="goal = 'all'">All goals</button>
+      <button v-for="(label, key) in GOALS" :key="key" :aria-pressed="goal === key" @click="goal = key as ModGoal">{{ label }}</button>
+    </div>
     <div class="seg" role="group" aria-label="Filter by evidence">
-      <button :aria-pressed="filter === 'all'" @click="filter = 'all'">All ({{ mods.length }})</button>
+      <button :aria-pressed="filter === 'all'" @click="filter = 'all'">All ({{ shown.length }})</button>
       <button v-for="[k, t] in EV" :key="k" :aria-pressed="filter === k" @click="filter = k">{{ t }} ({{ count(k) }})</button>
     </div>
     <details v-for="m in shown" :key="m.id" class="explain" style="margin:0">

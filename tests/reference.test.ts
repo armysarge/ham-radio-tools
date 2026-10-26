@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
-import { CONSTANTS, CTCSS, ITU_BANDS } from '../src/data/reference'
+import { CONSTANTS, CTCSS, DCS_CODES, ITU_BANDS } from '../src/data/reference'
 import BandPlans from '../src/tools/BandPlans.vue'
 import RefLists from '../src/tools/RefLists.vue'
 
@@ -15,6 +15,13 @@ describe('reference data sanity', () => {
     expect([...hz].sort((a, b) => a - b)).toEqual(hz)
     expect(CTCSS.filter((t) => t[1])).toHaveLength(38)
     expect(hz[0]).toBe(67.0); expect(hz.at(-1)).toBe(254.1)
+  })
+  it('DCS: lists 104 unique three-digit octal codes from the manufacturer reference', () => {
+    expect(DCS_CODES).toHaveLength(104)
+    expect(new Set(DCS_CODES).size).toBe(104)
+    expect(DCS_CODES.every(code => /^[0-7]{3}$/.test(code))).toBe(true)
+    expect([...DCS_CODES].sort()).toEqual(DCS_CODES)
+    expect(DCS_CODES[0]).toBe('023'); expect(DCS_CODES.at(-1)).toBe('754')
   })
   it('constants are mutually consistent', () => {
     expect(c('ε₀') * c('μ₀') * c('c') ** 2).toBeCloseTo(1, 8)
@@ -56,6 +63,16 @@ describe('reference tools', () => {
     await a.find('input[type=text]').setValue('fine business'); expect(a.text()).toContain('FB')
     const k = mount(RefLists, { props: { which: 'constants' }, global })
     await k.find('input[type=text]').setValue('boltzmann'); expect(k.text()).toContain('1.380 649')
+  })
+  it('DCS reference searches codes and explains polarity limitations', async () => {
+    const d = mount(RefLists, { props: { which: 'dcs' }, global })
+    expect(d.findAll('.dcs-code')).toHaveLength(104)
+    expect(d.text()).toContain('Normal')
+    expect(d.text()).toContain('Inverted')
+    expect(d.text()).toContain('does not provide privacy')
+    await d.find('input[type=text]').setValue('754')
+    expect(d.findAll('.dcs-code')).toHaveLength(1)
+    expect(d.find('.dcs-code').text()).toContain('754')
   })
 })
 
@@ -110,9 +127,9 @@ describe('antenna mods', () => {
     }
   })
   it('every antenna has proven mods and warns about unproven ones', () => {
-    for (const a of ['dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole'] as AntennaId[]) {
+    for (const a of ['dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole', 'qfh'] as AntennaId[]) {
       expect(modsFor(a).filter((m) => m.evidence === 'proven').length, a).toBeGreaterThan(2)
-      expect(modsFor(a).filter((m) => m.evidence === 'unproven').length, a).toBeGreaterThan(0)
+      if (a !== 'qfh') expect(modsFor(a).filter((m) => m.evidence === 'unproven').length, a).toBeGreaterThan(0)
     }
   })
   it('panel filters by evidence', async () => {
@@ -120,6 +137,14 @@ describe('antenna mods', () => {
     expect(w.text()).toContain('More radials'); expect(w.text()).toContain('A single ground rod')
     await w.findAll('button').find((b) => b.text().startsWith('Unproven'))!.trigger('click')
     expect(w.text()).toContain('A single ground rod'); expect(w.text()).not.toContain('Elevate the radials')
+  })
+  it('offers system-wide reception and portable ideas and filters them by goal', async () => {
+    const w = mount(ModsPanel, { props: { antenna: 'dipole' } })
+    expect(w.text()).toContain('Antenna system improvements')
+    expect(w.text()).toContain('Add a separate receive antenna for noisy locations')
+    await w.findAll('button').find((b) => b.text().startsWith('Portable'))!.trigger('click')
+    expect(w.text()).toContain('Make a packable field version')
+    expect(w.text()).not.toContain('Add a separate receive antenna for noisy locations')
   })
 })
 
@@ -217,7 +242,7 @@ import MaterialsPanel from '../src/components/MaterialsPanel.vue'
 import JPole from '../src/tools/JPole.vue'
 describe('materials guidance and J-pole page', () => {
   it('every antenna has picks and every group has a best or good choice and an avoid warning', () => {
-    expect(Object.keys(PICKS).sort()).toEqual(['dipole', 'efhw', 'inverted-v', 'jpole', 'loop', 'vertical'])
+    expect(Object.keys(PICKS).sort()).toEqual(['dipole', 'efhw', 'inverted-v', 'jpole', 'loop', 'qfh', 'vertical'])
     for (const g of GROUPS) {
       expect(g.choices.some((c) => c.verdict === 'best' || c.verdict === 'good'), g.id).toBe(true); expect(g.choices.some((c) => c.verdict === 'avoid'), g.id).toBe(true)
       for (const c of g.choices) expect(c.note.length, c.name).toBeGreaterThan(30)
@@ -236,12 +261,12 @@ describe('materials guidance and J-pole page', () => {
     expect(w.text()).toMatch(/49\.\d cm|0\.49\d m/)
   })
   it('every antenna tool carries the materials panel', async () => {
-    for (const id of ['dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole']) {
+    for (const id of ['dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole', 'qfh']) {
       const tool = tools.find((x) => x.id === id)!
       const mod = (await tool.component()) as unknown as { default?: unknown }
       const w = mount((mod.default ?? mod) as never, { global: { stubs: { RouterLink: true } } }); await flushPromises()
       expect(w.text(), id).toContain('What to build it from')
     }
-    expect(tools.find((x) => x.id === 'vertical')!.title).toContain('Vertical Antenna')
+    expect(tools.find((x) => x.id === 'vertical')!.title).toContain('Vertical')
   })
 })

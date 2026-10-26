@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import '../components/antenna-diagrams.css'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
 import ModsPanel from '../components/ModsPanel.vue'
 import MaterialsPanel from '../components/MaterialsPanel.vue'
+import RadiationPattern from '../components/RadiationPattern.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
@@ -55,14 +57,14 @@ const usable = computed(() => r.value?.harmonics.filter((h) => h.band) ?? [])
       </div>
       <div class="stack">
         <div class="card">
-          <svg ref="svgEl" class="diagram dg-big" viewBox="0 0 640 220" role="img" :aria-label="`End-fed half-wave: wire ${dim(r?.length)}, ${ratio} to 1 transformer at one end`">
+          <svg ref="svgEl" class="diagram dg-big antenna-drawing" viewBox="0 0 640 220" role="img" :aria-label="`End-fed half-wave: wire ${dim(r?.length)}, ${ratio} to 1 transformer at one end`">
             <line class="dg-ground" x1="10" y1="200" x2="630" y2="200" />
             <line class="dg-ground" x1="610" y1="60" x2="610" y2="200" />
             <path class="dg-wire" d="M95 70 H610" />
             <rect class="dg-solid" x="55" y="52" width="40" height="36" rx="4" />
             <text class="dg-text" x="75" y="44" text-anchor="middle">{{ ratio }}:1</text>
-            <path class="dg-wire" d="M55 78 H25 V150" style="stroke-width:3;opacity:.6" /><text class="dg-text" x="30" y="170">counterpoise</text>
-            <path class="dg-ground" d="M75 88 V150 H110" /><text class="dg-text" x="116" y="154">coax</text>
+            <path class="dg-wire" d="M55 78 H25 V150" style="stroke-width:3;opacity:.6" /><text class="dg-text" x="24" y="182">counterpoise</text>
+            <path class="dg-ground" d="M75 88 V150 H215" /><text class="dg-text" x="230" y="177">coax</text>
             <line class="dg-dim" x1="95" y1="105" x2="610" y2="105" /><line class="dg-dim" x1="95" y1="97" x2="95" y2="113" /><line class="dg-dim" x1="610" y1="97" x2="610" y2="113" />
             <text class="dg-dimtext" x="352" y="126" text-anchor="middle">{{ dim(r?.length) }}</text>
           </svg>
@@ -97,6 +99,7 @@ const usable = computed(() => r.value?.harmonics.filter((h) => h.band) ?? [])
     </div>
 
     <MaterialsPanel antenna="efhw" />
+    <RadiationPattern kind="efhw" />
     <ModsPanel antenna="efhw" />
 
     <template #explain>

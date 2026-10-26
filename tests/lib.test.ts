@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import * as rf from '../src/lib/rf'
 import * as mh from '../src/lib/maidenhead'
 import * as geo from '../src/lib/geo'
-import { dipoleLength, trimPerLeg, invertedV, vertical, loop, efhw, efhwMatch, jpole } from '../src/lib/antenna'
+import { dipoleLength, trimPerLeg, invertedV, vertical, loop, efhw, efhwMatch, jpole, qfh } from '../src/lib/antenna'
 import { fmt, feetInches } from '../src/lib/units'
 
 describe('rf', () => {
@@ -186,6 +186,13 @@ describe('antenna & formatting', () => {
     expect(jpole(435e6).total).toBeLessThan(0.55); expect(jpole(50.15e6).total).toBeGreaterThan(4)
     expect(j.tap).toBeGreaterThan(j.tapMin); expect(j.tap).toBeLessThan(j.tapMax)
     expect(() => jpole(5e6)).toThrow(/practical/); expect(() => jpole(146e6, 0.5)).toThrow(/Shortening/)
+  })
+  it('QFH scales the documented 137.55 MHz prototype geometry by frequency', () => {
+    expect(qfh(137.55e6)).toMatchObject({ longHeight: 0.56, shortHeight: 0.512, diameter: 0.3556, loopOffset: 0.024 })
+    const doubled = qfh(275.1e6)
+    expect(doubled.longHeight).toBeCloseTo(0.28, 9)
+    expect(doubled.diameter).toBeCloseTo(0.1778, 9)
+    expect(() => qfh(0)).toThrow()
   })
   it('fmt', () => {
     expect(fmt(21.11212)).toBe('21.11'); expect(fmt(Infinity)).toBe('∞'); expect(fmt(null)).toBe('—'); expect(fmt(0)).toBe('0')

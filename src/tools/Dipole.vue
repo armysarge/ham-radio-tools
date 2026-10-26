@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import '../components/antenna-diagrams.css'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
 import ModsPanel from '../components/ModsPanel.vue'
@@ -7,6 +8,7 @@ import MaterialsPanel from '../components/MaterialsPanel.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import LineChart from '../components/LineChart.vue'
+import RadiationPattern from '../components/RadiationPattern.vue'
 import { FREQ_UNITS, feetInches, fmt } from '../lib/units'
 import { dipoleLength, trimPerLeg } from '../lib/antenna'
 import { saveDesign, state } from '../core/store'
@@ -71,12 +73,12 @@ const printPage = () => window.print()
       </div>
       <div class="stack">
         <div class="card">
-          <svg ref="svgEl" class="diagram dg-big" viewBox="0 0 640 270" role="img" :aria-label="`Dipole drawing: each leg ${dim(leg)}, total ${dim(total)}`">
+          <svg ref="svgEl" class="diagram dg-big antenna-drawing" viewBox="0 0 640 270" role="img" :aria-label="`Dipole drawing: each leg ${dim(leg)}, total ${dim(total)}`">
             <line class="dg-ground" x1="10" y1="245" x2="630" y2="245" />
             <line class="dg-ground" x1="40" y1="70" x2="40" y2="245" /><line class="dg-ground" x1="600" y1="70" x2="600" y2="245" />
             <path class="dg-wire" d="M40 85 H300 M340 85 H600" />
             <rect class="dg-solid" x="300" y="77" width="40" height="16" rx="3" />
-            <path class="dg-ground" d="M320 93 V200" /><text class="dg-text" x="332" y="150">coax to radio</text>
+            <path class="dg-ground" d="M320 93 V200" /><text class="dg-text" x="350" y="174">coax to radio</text>
             <text class="dg-text" x="320" y="66" text-anchor="middle">feed point</text>
             <g><line class="dg-dim" x1="40" y1="118" x2="320" y2="118" /><line class="dg-dim" x1="40" y1="108" x2="40" y2="128" /><line class="dg-dim" x1="320" y1="108" x2="320" y2="128" />
               <text class="dg-dimtext" x="180" y="112" text-anchor="middle">{{ dim(leg) }}</text></g>
@@ -120,6 +122,7 @@ const printPage = () => window.print()
     </div>
 
     <MaterialsPanel antenna="dipole" />
+    <RadiationPattern kind="dipole" />
     <ModsPanel antenna="dipole" />
 
     <template #explain>

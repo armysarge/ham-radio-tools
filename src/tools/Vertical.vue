@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import '../components/antenna-diagrams.css'
 import { useRoute } from 'vue-router'
 import ToolLayout from '../components/ToolLayout.vue'
 import ModsPanel from '../components/ModsPanel.vue'
 import MaterialsPanel from '../components/MaterialsPanel.vue'
+import RadiationPattern from '../components/RadiationPattern.vue'
 import NumField from '../components/NumField.vue'
 import ResultRow from '../components/ResultRow.vue'
 import DesignActions from '../components/DesignActions.vue'
@@ -61,7 +63,7 @@ const ry = computed(() => RP * Math.sin(((mode.value === 'elevated' ? droop.valu
       </div>
       <div class="stack">
         <div class="card">
-          <svg ref="svgEl" class="diagram dg-big" viewBox="0 0 640 300" role="img" :aria-label="`Quarter-wave vertical: radiator ${dim(r?.radiator)}, radials ${dim(r?.radial)}`">
+          <svg ref="svgEl" class="diagram dg-big antenna-drawing" viewBox="0 0 640 385" role="img" :aria-label="`Quarter-wave vertical: radiator ${dim(r?.radiator)}, radials ${dim(r?.radial)}`">
             <line class="dg-ground" x1="10" :y1="GY" x2="630" :y2="GY" />
             <path class="dg-wire" :d="`M${FX} ${feedY} V${feedY - RP}`" />
             <template v-if="mode === 'elevated'">
@@ -75,21 +77,17 @@ const ry = computed(() => RP * Math.sin(((mode.value === 'elevated' ? droop.valu
             <template v-if="mode === 'elevated'">
               <line :x1="FX" :y1="feedY" :x2="FX" :y2="GY" stroke="var(--muted)" stroke-width="6" opacity=".55" />
               <path class="dg-ground" fill="none" :d="`M${FX + 9} ${feedY} V${GY - 6} H${FX + 90}`" /><rect :x="FX + 5" :y="feedY + 24" width="16" height="12" rx="2" style="fill:var(--wire)" />
-              <text class="dg-tick" :x="FX + 96" :y="GY - 2">coax + choke to the shack</text>
-              <text class="dg-tick" :x="FX + rx + 8" :y="feedY + ry + 4">radials (4 recommended, 2 shown)</text>
             </template>
-            <template v-else>
-              <text class="dg-tick" :x="FX + 14" :y="GY - 32">feed point (insulated base)</text>
-              <text class="dg-tick" :x="FX + 14" :y="GY - 16">coax + choke to the shack</text>
-              <text class="dg-tick" :x="FX - RP - 8" :y="GY - 8" text-anchor="end">16+ radials on or just under the ground</text>
-            </template>
+
             <rect class="dg-solid" :x="FX - 9" :y="feedY - 4" width="18" height="12" rx="3" />
-            <circle class="dg-solid" :cx="FX" :cy="feedY" r="3" /><text v-if="mode === 'elevated'" class="dg-text" :x="FX + 14" :y="feedY - 8">feed point (insulated base)</text>
+            <circle class="dg-solid" :cx="FX" :cy="feedY" r="3" /><text class="dg-text" :x="FX + 70" :y="feedY - (mode === 'ground' ? 36 : 18)">feed point<tspan :x="FX + 70" dy="28">(insulated base)</tspan></text>
             <text class="dg-text" :x="FX - 12" :y="feedY - RP / 2" text-anchor="end">radiator</text>
             <line class="dg-dim" :x1="FX + 40" :y1="feedY" :x2="FX + 40" :y2="feedY - RP" /><line class="dg-dim" :x1="FX + 32" :y1="feedY" :x2="FX + 48" :y2="feedY" /><line class="dg-dim" :x1="FX + 32" :y1="feedY - RP" :x2="FX + 48" :y2="feedY - RP" />
-            <text class="dg-dimtext" :x="FX + 56" :y="feedY - RP / 2">{{ dim(r?.radiator) }}</text>
-            <text class="dg-dimtext" :x="FX - rx - 6" :y="feedY + ry + 6" text-anchor="end">radial {{ dim(r?.radial) }}</text>
+            <text class="dg-dimtext" :x="FX + 56" :y="feedY - (mode === 'ground' ? RP + 16 : RP / 2)">{{ dim(r?.radiator) }}</text>
+            <text class="dg-dimtext" x="320" y="310" text-anchor="middle">each radial {{ dim(r?.radial) }}</text>
             <text class="dg-tick" x="14" :y="GY + 16">ground</text>
+            <text class="dg-tick" x="24" y="347">{{ mode === 'elevated' ? '4 radials' : '16+ radials' }}<tspan x="24" dy="27">{{ mode === 'elevated' ? '(2 shown)' : 'on / under ground' }}</tspan></text>
+            <text class="dg-tick" x="616" y="347" text-anchor="end">coax + choke<tspan x="616" dy="27">to the shack</tspan></text>
           </svg>
           <p class="hint">Side view, to scale for the angles entered. Mount the base on a non-metal pole. Sloping radials show 2 of the 4 suggested; ground radials show a spread.</p>
         </div>
@@ -98,6 +96,7 @@ const ry = computed(() => RP * Math.sin(((mode.value === 'elevated' ? droop.valu
       </div>
     </div>
     <MaterialsPanel antenna="vertical" />
+    <RadiationPattern kind="vertical" />
     <ModsPanel antenna="vertical" />
 
     <template #explain>

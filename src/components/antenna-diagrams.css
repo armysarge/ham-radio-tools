@@ -1,0 +1,6 @@
+/* Keep antenna labels predictable when the shared mobile SVG rules enlarge text. */
+svg.diagram.antenna-drawing .dg-text,
+.antenna-drawing svg.diagram .dg-text { font-family: var(--font); font-size: 24px; font-weight: 500; }
+svg.diagram.antenna-drawing .dg-dimtext { font-size: 26px; font-variant-numeric: tabular-nums; }
+svg.diagram.antenna-drawing .dg-tick,
+.antenna-drawing svg.diagram .dg-tick { font-family: var(--font); font-size: 22px; }

@@ -19,7 +19,7 @@ async function* walk(d) { for (const e of await readdir(d, { withFileTypes: true
 const hostsFromSources = JSON.parse(await readFile('scripts/pack-data/sources.json', 'utf8')).sources.flatMap((x) => [x.officialUrl, ...x.check.map((c) => c.url)]).map((u) => new URL(u.replace(/\{[a-zA-Z]+\}/g, 'x')).hostname)
 const esc = (h) => h.replace(/\./g, '\\.')
 const repo = /REPO_URL = '([^']+)'/.exec(await readFile('src/core/meta.ts', 'utf8'))[1].replace(/^https?:\/\//, '')
-const allowed = new RegExp('^https?://(www\\.w3\\.org/|www\\.sitemaps\\.org/|schema\\.org|opensource\\.org|hamradiotools\\.armysarge\\.co\\.za|github\\.com/armysarge|localhost|vuejs\\.org|github\\.com/vuejs|vue-router|router\\.vuejs\\.org|' + [...new Set(hostsFromSources)].map(esc).join('|') + '|' + esc(repo) + ')')
+const allowed = new RegExp('^https?://(www\\.w3\\.org/|www\\.sitemaps\\.org/|schema\\.org|opensource\\.org|hamradiotools\\.armysarge\\.co\\.za|github\\.com/armysarge|www\\.yaesu\\.com|www\\.edn\\.com|noaasis\\.noaa\\.gov|www\\.arrl\\.org|fair-rite\\.com|rsgb\\.org|amphenolprocom\\.com|farside\\.ph\\.utexas\\.edu|www\\.cv\\.nrao\\.edu|localhost|vuejs\\.org|github\\.com/vuejs|vue-router|router\\.vuejs\\.org|' + [...new Set(hostsFromSources)].map(esc).join('|') + '|' + esc(repo) + ')')
 let found = 0
 for await (const f of walk(dist)) {
   if (/[\\/](frame-guard\.js|_headers)$/.test(f)) continue // lists the sites allowed to embed the app: configuration, never requested
@@ -53,6 +53,36 @@ const step = async (name, fn) => { try { await fn(); ok(name) } catch (e) { fail
 const expectText = async (sel, re) => { const t = await page.locator(sel).first().innerText(); if (!re.test(t)) throw new Error(`"${t.slice(0, 80)}" !~ ${re}`) }
 
 await step('app starts', async () => { await page.goto(base); await page.getByRole('heading', { name: 'Ham Radio Tools' }).waitFor() })
+await step('tool categories start collapsed and remember changes across restart', async () => {
+  const groups = page.locator('aside.sidebar nav details')
+  if (await groups.count() === 0 || !(await groups.evaluateAll(els => els.every(el => !el.open)))) throw new Error('a category was expanded on first launch')
+  await groups.first().locator('summary').click(); await page.waitForFunction(() => JSON.parse(localStorage.getItem('hrt:v1') || '{}').navExpanded?.length === 1); await page.reload(); await page.getByRole('heading', { name: 'Ham Radio Tools' }).waitFor()
+  if (!(await page.locator('aside.sidebar nav details').first().evaluate(el => el.open))) throw new Error('expanded category did not persist')
+  await page.locator('aside.sidebar nav details').first().locator('summary').click(); await page.waitForFunction(() => JSON.parse(localStorage.getItem('hrt:v1') || '{}').navExpanded?.length === 0); await page.reload(); await page.getByRole('heading', { name: 'Ham Radio Tools' }).waitFor()
+  if (await page.locator('aside.sidebar nav details').first().evaluate(el => el.open)) throw new Error('collapsed category did not persist')
+})
+await step('sidebar and header remain responsive after repeated navigation', async () => {
+  const groups = page.locator('aside.sidebar nav details'), count = await groups.count()
+  for (let i = 0; i < 5; i++) {
+    await groups.nth(i % count).locator('summary').click()
+    await page.getByRole('button', { name: /Theme:/ }).click()
+    await page.getByLabel('Measurement system').selectOption(i % 2 ? 'metric' : 'imperial')
+    await page.goto(base + (i % 2 ? '#/tool/ctcss' : '#/tool/dcs'))
+    await page.getByRole('heading', { name: i % 2 ? 'CTCSS Tones' : 'DCS Codes' }).waitFor()
+  }
+  await page.goto(base + '#/tool/propagation-report')
+  await page.getByRole('heading', { name: 'Propagation Report' }).waitFor()
+  const theme = await page.getByRole('button', { name: /Theme:/ }).getAttribute('aria-label')
+  await page.getByRole('button', { name: /Theme:/ }).click()
+  if (await page.getByRole('button', { name: /Theme:/ }).getAttribute('aria-label') === theme) throw new Error('header theme control stopped responding after propagation report render')
+  await page.goto(base)
+  await page.getByRole('heading', { name: 'Ham Radio Tools' }).waitFor()
+  await page.getByLabel('Search tools').fill('dipole')
+  await page.getByRole('heading', { name: 'Results for “dipole”' }).waitFor()
+  await page.getByLabel('Search tools').fill('')
+  await page.getByRole('heading', { name: 'Ham Radio Tools' }).waitFor()
+  await page.getByLabel('Measurement system').selectOption('metric')
+})
 await step('search filters tools', async () => { await page.getByLabel('Search tools').fill('swr'); await page.getByRole('heading', { name: 'SWR & Return Loss' }).waitFor(); await page.getByLabel('Search tools').fill('') })
 await step('frequency converter: 14.2 MHz = 21.11 m', async () => { await page.goto(base + '#/tool/frequency-wavelength'); await page.getByText('21.11').first().waitFor() })
 await step('SWR 2 -> 9.542 dB', async () => { await page.goto(base + '#/tool/swr'); await page.getByLabel('SWR', { exact: true }).fill('2'); await page.getByText('9.542').first().waitFor() })
@@ -131,7 +161,7 @@ await step('downloads, clean tool headers, band filtering and non-selectable map
 await step('no uncaught errors', async () => { if (errors.length) throw new Error(errors.join(' | ')) })
 await step('phone width (375px): no horizontal overflow on any page, menu drawer opens', async () => {
   const m = await ctx.newPage(); await m.setViewportSize({ width: 375, height: 812 })
-  const routes = ['', 'downloads', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/components', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/efhw', 'tool/jpole', 'tool/vertical', 'tool/loop', 'tool/maidenhead', 'tool/q-codes', 'tool/band-plans', 'tool/itu-regulations', 'tool/ctcss', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'tool/feedline-loss', 'tool/link-budget', 'tool/l-network', 'tool/low-pass-filter', 'tool/coils', 'tool/power-planner', 'tool/yagi', 'tool/quad', 'tool/radial-planner', 'tool/logbook', 'tool/clock', 'tool/morse-trainer', 'tool/propagation', 'tool/propagation-report', 'tool/satellite-passes', 'tool/diy-components', 'settings', 'saved']
+  const routes = ['', 'downloads', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/components', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/efhw', 'tool/jpole', 'tool/vertical', 'tool/loop', 'tool/qfh', 'tool/maidenhead', 'tool/q-codes', 'tool/band-plans', 'tool/itu-regulations', 'tool/ctcss', 'tool/dcs', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'tool/feedline-loss', 'tool/link-budget', 'tool/l-network', 'tool/low-pass-filter', 'tool/coils', 'tool/power-planner', 'tool/yagi', 'tool/quad', 'tool/radial-planner', 'tool/logbook', 'tool/clock', 'tool/morse-trainer', 'tool/propagation', 'tool/propagation-report', 'tool/satellite-passes', 'tool/diy-components', 'tool/diy-baluns', 'tool/diy-transformers', 'settings', 'saved']
   const bad = []
   for (const r of routes) { await m.goto(base + '#/' + r); await m.waitForTimeout(400); const w = await m.evaluate(() => [document.documentElement.scrollWidth, innerWidth]); if (w[0] > w[1]) bad.push(r + ' ' + w.join('>')) }
   if (bad.length) throw new Error('overflow: ' + bad.join(', '))

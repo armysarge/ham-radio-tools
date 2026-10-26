@@ -27,7 +27,7 @@ async function act(kind: 'check' | 'download' | 'install') {
   <section v-if="desktop" class="card stack" aria-labelledby="desktop-updates-title">
     <h2 id="desktop-updates-title">Desktop updates</h2>
     <p>Installed version: <strong>{{ version }}</strong>. Checks contact GitHub only when you click. Downloads and installer launch are separate actions; nothing runs in the background.</p>
-    <p class="hint">Export important projects before updating. SHA-256 verifies the download against the release; it does not replace publisher signing. No account is required.</p>
+    <p class="hint">Export important projects before updating. SHA-256 verifies the download against the release checksum. No account is required.</p>
     <div class="seg">
       <button :disabled="busy" @click="act('check')">Check for updates</button>
       <button v-if="release && !downloaded" :disabled="busy" @click="act('download')">Download {{ release.version }} ({{ (release.size / 1048576).toFixed(1) }} MB)</button>

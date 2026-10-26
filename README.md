@@ -10,14 +10,14 @@ Ham Radio Tools is a free, open-source collection of practical tools for radio a
 
 | Area | Tools |
 |---|---|
-| RF & electronics | Frequency and wavelength, Ohm's law, power, dB/dBm, SWR, reactance, resonance and component colour codes |
-| Antenna building | Dipole, inverted-V, EFHW, vertical, J-pole, loop, Yagi and quad designs; radial planning, dimensions, materials and build guidance |
+| RF & electronics | Frequency and wavelength, Ohm's law, power, dB/dBm, SWR, reactance, resonance, component colour codes, DIY baluns and RF transformers |
+| Antenna building | Dipole, inverted-V, EFHW, vertical, J-pole, full-wave loop, QFH satellite receive design, Yagi and quad; dimensions, materials, build guidance and clearly qualified pattern illustrations |
 | Station planning | Feedline loss, link budgets, matching networks, filters, coils, toroids, batteries and solar |
 | Maps | Offline world map, Maidenhead grids, saved locations, distance and bearing |
-| Operating | Band tables, callsign lookup, Q codes, phonetics, CTCSS, clocks and timers |
+| Operating | Band tables, callsign lookup, Q codes, phonetics, CTCSS and DCS codes, clocks and timers |
 | CW & logging | Morse player and trainer, experimental decoder, logbook with ADIF import/export |
 | Listening & propagation | QRM hunting and a sniffer-loop build guide, broadcast schedules, grey line, MUF estimates, a band-by-hour **propagation report** between two places (built-in DVOACAP model, offline) and satellite passes from your own TLE |
-| DIY components | Build coils, capacitors, dummy loads and ferrite chokes with illustrated instructions |
+| DIY components | Build coils, capacitors, dummy loads and ferrite chokes; calculate balun/transformer turns and material lengths, with winding diagrams and cable guidance |
 
 Search for a tool, add favourites, choose Metric or Imperial, and switch between light and dark themes. Open **Show** below a tool for its explanation and references.
 
@@ -68,6 +68,8 @@ The CW microphone decoder processes audio locally and asks for microphone permis
 ## Support the project
 
 Report problems or suggest tools through [GitHub Issues](https://github.com/armysarge/ham-radio-tools/issues). Include the tool name, inputs and expected result when reporting a calculation problem.
+
+We are investigating a report that the sidebar and header can occasionally stop responding after extended use. Our repeated-navigation check in Edge on Windows has not reproduced it, so the cause is not yet confirmed. If you encounter it, please include your operating system, browser or desktop app, and the last tool or action before it happened.
 
 MIT licensed — see [LICENSE](LICENSE). Map data: Natural Earth, public domain. The app uses Vue, satellite.js and other credited open-source libraries. The it-tools project inspired its tool organisation; no it-tools code or assets were copied.
 
