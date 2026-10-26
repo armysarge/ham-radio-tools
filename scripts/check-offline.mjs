@@ -56,6 +56,19 @@ const step = async (name, fn) => { try { await fn(); ok(name) } catch (e) { fail
 const expectText = async (sel, re) => { const t = await page.locator(sel).first().innerText(); if (!re.test(t)) throw new Error(`"${t.slice(0, 80)}" !~ ${re}`) }
 
 await step('app starts', async () => { await page.goto(base); await page.getByRole('heading', { name: 'Ham Radio Tools' }).waitFor() })
+await step('voltage divider circuit and engineering-value inputs work offline', async () => {
+  await page.goto(base + '#/tool/voltage-divider')
+  await page.getByLabel('Input voltage', { exact: true }).fill('12')
+  await page.getByLabel('R1 (top)', { exact: true }).fill('1k')
+  await page.getByLabel('R2 (bottom)', { exact: true }).fill('3k')
+  await page.locator('.divider-diagram').getByText('9 V', { exact: true }).waitFor()
+  await page.getByLabel('R1 (top)', { exact: true }).fill('0')
+  await page.getByLabel('R2 (bottom)', { exact: true }).fill('0')
+  await page.getByRole('alert').filter({ hasText: 'cannot both be 0' }).waitFor()
+  if (await page.locator('.divider-diagram').count()) throw new Error('invalid divider retained its circuit')
+  await page.goto(base)
+  await page.getByRole('heading', { name: 'Ham Radio Tools', exact: true }).waitFor()
+})
 await step('quad 3D construction view rotates offline', async () => {
   await page.goto(base + '#/tool/quad')
   await page.getByRole('img', { name: /Rotatable 3D cubical quad/ }).waitFor()
@@ -75,7 +88,11 @@ await step('BBC bundled frequencies and UTC season expiry work offline', async (
   try {
     await bbcPage.clock.install({ time: new Date('2026-10-26T05:30:00Z') })
     await bbcPage.goto(base + '#/tool/broadcast-schedules')
-    await bbcPage.locator('main select').first().selectOption('bbc:b26')
+    await bbcPage.getByRole('region', { name: 'On the air now', exact: true }).getByText('9410, 9915 kHz', { exact: true }).waitFor()
+    await bbcPage.getByLabel('Schedule', { exact: true }).selectOption('bbc:b26')
+    await bbcPage.getByRole('button', { name: 'Everything', exact: true }).click()
+    await bbcPage.locator('.schedule-results').getByText('30 transmissions', { exact: true }).waitFor()
+    await bbcPage.getByRole('button', { name: 'On air at…', exact: true }).click()
     const live = bbcPage.getByRole('region', { name: 'On the air now', exact: true })
     await live.getByText('9410, 9915 kHz', { exact: true }).waitFor()
     await bbcPage.clock.setSystemTime(new Date('2027-03-28T05:30:00Z'))
@@ -350,7 +367,7 @@ await step('downloads, clean tool headers, band filtering and non-selectable map
 await step('no uncaught errors', async () => { if (errors.length) throw new Error(errors.join(' | ')) })
 await step('phone width (375px): no horizontal overflow on any page, menu drawer opens', async () => {
   const m = await ctx.newPage(); await m.setViewportSize({ width: 375, height: 812 })
-  const routes = ['', 'downloads', 'tool/coordinate-converter', 'tool/unit-converter', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/components', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/efhw', 'tool/jpole', 'tool/vertical', 'tool/loop', 'tool/qfh', 'tool/maidenhead', 'tool/number-codes', 'tool/q-codes', 'tool/band-plans', 'tool/itu-regulations', 'tool/ctcss', 'tool/dcs', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'tool/feedline-loss', 'tool/link-budget', 'tool/l-network', 'tool/low-pass-filter', 'tool/high-pass-filter', 'tool/radiated-power', 'tool/coils', 'tool/power-planner', 'tool/yagi', 'tool/quad', 'tool/radial-planner', 'tool/logbook', 'tool/clock', 'tool/morse-trainer', 'tool/propagation', 'tool/propagation-report', 'tool/satellite-passes', 'tool/diy-components', 'tool/diy-baluns', 'tool/diy-transformers', 'settings', 'saved']
+  const routes = ['', 'downloads', 'tool/coordinate-converter', 'tool/unit-converter', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/voltage-divider', 'tool/components', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/efhw', 'tool/jpole', 'tool/vertical', 'tool/loop', 'tool/qfh', 'tool/maidenhead', 'tool/number-codes', 'tool/q-codes', 'tool/band-plans', 'tool/itu-regulations', 'tool/ctcss', 'tool/dcs', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'tool/feedline-loss', 'tool/link-budget', 'tool/l-network', 'tool/low-pass-filter', 'tool/high-pass-filter', 'tool/radiated-power', 'tool/coils', 'tool/power-planner', 'tool/yagi', 'tool/quad', 'tool/radial-planner', 'tool/logbook', 'tool/clock', 'tool/morse-trainer', 'tool/propagation', 'tool/propagation-report', 'tool/satellite-passes', 'tool/diy-components', 'tool/diy-baluns', 'tool/diy-transformers', 'settings', 'saved']
   const bad = []
   for (const r of routes) { await m.goto(base + '#/' + r); await m.waitForTimeout(400); const w = await m.evaluate(() => [document.documentElement.scrollWidth, innerWidth]); if (w[0] > w[1]) bad.push(r + ' ' + w.join('>')) }
   if (bad.length) throw new Error('overflow: ' + bad.join(', '))

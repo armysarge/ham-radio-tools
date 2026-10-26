@@ -20,18 +20,18 @@ See [DESKTOP.md](DESKTOP.md) for launching Electron, packaging targets and clean
 Use `MAJOR.MINOR.PATCH`: patch for fixes, minor for new features, major for incompatible stable changes. Before 1.0, document saved-data compatibility changes in the changelog.
 
 1. Commit your tested changes on `main`.
-2. Choose a new version that has no existing tag. Add its entry to `CHANGELOG.md`, for example `## [0.3.1] - 2026-10-20`, with the changes and actual platforms tested. Commit the changelog first.
+2. Choose a new version that has no existing tag. Add its entry to `CHANGELOG.md`, for example `## [0.4.0] - 2026-10-26`, with the changes and actual platforms tested. Commit the changelog first.
 3. Run:
 
    ```sh
-   npm version 0.3.1 -m "Release %s"
+   npm version 0.4.0 -m "Release %s"
    git push origin main
-   git push origin v0.3.1
+   git push origin v0.4.0
    ```
 
 `npm version` runs tests, updates `package.json` and `package-lock.json`, commits them and creates the matching tag. Replace the example version in **both commands**. For a preview release use a version such as `0.4.0-rc.1`.
 
-If `package.json` already contains the intended version (currently 0.3.1), ensure the lockfile matches and commit it with the matching changelog, then use `git tag -a v0.3.1 -m "Release 0.3.1"`. Do not run `npm version` again if you intend to release the already-selected version: it would increment it again.
+If `package.json` already contains the intended version (currently 0.4.0), ensure the lockfile matches and commit it with the matching changelog, then use `git tag -a v0.4.0 -m "Release 0.4.0"`. Do not run `npm version` again if you intend to release the already-selected version: the same-version command fails unless explicitly allowed.
 
 Never move a published tag. Fix a released problem with a new patch version.
 

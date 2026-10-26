@@ -144,9 +144,13 @@ export const parallel = (v: number[]) => {
   return clean(1 / v.reduce((a, b) => a + 1 / b, 0))
 }
 export function divider(vin: number, r1: number, r2: number) {
+  need([vin, r1, r2].every(Number.isFinite), 'Voltage and resistances must be finite')
   need(r1 >= 0 && r2 >= 0 && r1 + r2 > 0, 'R1 and R2 cannot both be 0')
-  const vout = (vin * r2) / (r1 + r2)
-  return { vout, current: vin / (r1 + r2), ratio: r2 / (r1 + r2), thevenin: parallel([r1, r2]) }
+  const total = r1 + r2
+  need(Number.isFinite(total), 'Resistance total exceeds the supported numeric range')
+  const ratio = r2 / total, vout = vin * ratio, current = vin / total, thevenin = (r1 / total) * r2
+  need([vout, current, thevenin].every(Number.isFinite), 'Values exceed the supported numeric range')
+  return { vout, current, ratio, thevenin }
 }
 /** Series resistor for an LED: R = (Vs − Vf) / I. Returns the exact value, the next E24 value at or above it, and the power in it. */
 export function ledResistor(vs: number, vf: number, amps: number) {

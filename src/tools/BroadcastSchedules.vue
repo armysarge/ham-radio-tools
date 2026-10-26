@@ -21,12 +21,28 @@ onMounted(() => { void refreshPacks(); timer = window.setInterval(() => { clock.
 onUnmounted(() => clearInterval(timer))
 
 const schedulePacks = computed(() => installedPacks.value.filter((p) => p.kind === 'broadcast-schedule'))
+type Schedule = { id: string; title: string; revision: string; source: string; entries: BroadcastEntry[]; error?: string }
+const localSchedules = ref<Schedule[]>([])
+const loadingLive = ref(false)
+watch(schedulePacks, async (packs, _previous, onCleanup) => {
+  let cancelled = false
+  onCleanup(() => { cancelled = true })
+  localSchedules.value = []
+  loadingLive.value = packs.length > 0
+  const loaded = await Promise.all(packs.map(async p => {
+    try {
+      const data = await getPack<{ entries: BroadcastEntry[] }>(p.id)
+      if (!data) throw new Error('This schedule is no longer installed.')
+      return { ...p, entries: data.data.entries }
+    } catch (e) { return { ...p, entries: [], error: (e as Error).message } }
+  }))
+  if (!cancelled) { localSchedules.value = loaded; loadingLive.value = false }
+}, { immediate: true })
 const pack = computed(() => schedulePacks.value.find((p) => p.id === source.value))
 watch(source, async (id, _previous, onCleanup) => {
   let cancelled = false
   onCleanup(() => { cancelled = true })
   err.value = ''
-  showAllNow.value = false
   loading.value = false
   if (id === 'time') { entries.value = TIME_STATIONS; return }
   if (id === 'bbc:b26') { entries.value = BBC_SCHEDULE; return }
@@ -50,21 +66,25 @@ const day = computed(() => (useNow.value ? isoDay(clock.value) : manualDay.value
 const DAYS = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 const timeErr = computed(() => (!useNow.value && hhmm.value === null ? 'Enter the time as four digits, 24-hour UTC, e.g. 0930.' : ''))
 
-const filteredEntries = computed(() => {
+function filterEntries(list: BroadcastEntry[]) {
   const t = q.value.trim().toLowerCase(), lo = fromKhz.value ? Number(fromKhz.value) : null, hi = toKhz.value ? Number(toKhz.value) : null
-  return entries.value.filter((e) =>
+  return list.filter((e) =>
     (!t || [e.station, e.language, e.country, e.target, e.note].join(' ').toLowerCase().includes(t)) &&
     (lo === null || Number.isNaN(lo) || e.freqKhz >= lo) && (hi === null || Number.isNaN(hi) || e.freqKhz <= hi),
   ).sort((a, b) => a.freqKhz - b.freqKhz || a.startUtc.localeCompare(b.startUtc))
-})
+}
+const filteredEntries = computed(() => filterEntries(entries.value))
 const bbcStatus = computed(() => source.value === 'bbc:b26' ? bbcDateStatus(clock.value) : 'current')
 const dateRangeActive = computed(() => bbcStatus.value === 'current')
-const scheduleName = computed(() => source.value === 'time' ? 'Bundled time & frequency stations' : source.value === 'bbc:b26' ? BBC_META.title : pack.value?.title ?? 'Selected schedule')
 const rows = computed(() => filteredEntries.value.filter(e => mode.value === 'all' || (dateRangeActive.value && hhmm.value !== null && transmissionOnAirAt(e, hhmm.value, day.value))))
-const nowGroups = computed(() => {
-  if (!dateRangeActive.value) return []
+const liveSchedules = computed(() => [
+  { id: 'bundled:time', title: 'Time & frequency stations (bundled)', ...TIME_STATIONS_META, entries: TIME_STATIONS, error: undefined },
+  { id: 'bundled:bbc', ...BBC_META, entries: BBC_SCHEDULE, error: undefined },
+  ...localSchedules.value,
+].map(s => {
+  const status = s.id === 'bundled:bbc' ? bbcDateStatus(clock.value) : 'current'
   const groups = new Map<string, { station: string; details: string; frequencies: Set<number> }>()
-  for (const e of filteredEntries.value) {
+  for (const e of status === 'current' ? filterEntries(s.entries) : []) {
     if (!transmissionOnAirAt(e, nowHhmm.value, isoDay(clock.value))) continue
     const details = [e.country, e.language, e.target, e.note].filter(Boolean).join(' · ')
     const key = JSON.stringify([e.station, e.country, e.language, e.target, e.note])
@@ -72,8 +92,9 @@ const nowGroups = computed(() => {
     group.frequencies.add(e.freqKhz)
     groups.set(key, group)
   }
-  return [...groups.entries()].map(([key, g]) => ({ key, station: g.station, details: g.details, frequencies: [...g.frequencies].join(', ') }))
-})
+  return { ...s, status, stale: s.id !== 'bundled:time' && ageDays(s.revision, clock.value) > STALE_DAYS,
+    groups: [...groups.entries()].map(([key, g]) => ({ key, station: g.station, details: g.details, frequencies: [...g.frequencies].join(', ') })) }
+}))
 const LIMIT = 300
 const meta = computed(() => (source.value === 'time' ? { revision: TIME_STATIONS_META.revision, source: TIME_STATIONS_META.source } : source.value === 'bbc:b26' ? BBC_META : pack.value ? { revision: pack.value.revision, source: pack.value.source } : null))
 const age = computed(() => (meta.value ? ageDays(meta.value.revision, clock.value) : 0))
@@ -84,8 +105,8 @@ const dayText = (d: string) => (d === 'daily' ? 'daily' : [...d].map((x) => DAYS
 <template>
   <ToolLayout id="broadcast-schedules" :references="[`${TIME_STATIONS_META.source} (bundled time stations, revision ${TIME_STATIONS_META.revision}).`, 'Programme schedules: whichever source the installed pack names.']">
     <div class="card stack">
-      <label class="field"><span class="lbl">Schedule</span>
-        <select v-model="source"><option value="time">Time &amp; frequency stations (bundled)</option>
+      <label class="field"><span id="schedule-label" class="lbl">Schedule</span>
+        <select v-model="source" aria-labelledby="schedule-label"><option value="time">Time &amp; frequency stations (bundled)</option>
           <option value="bbc:b26">{{ BBC_META.title }} (bundled)</option>
           <option v-for="p in schedulePacks" :key="p.id" :value="p.id">{{ p.title }} (installed)</option></select></label>
       <div v-if="meta" class="notice" :style="age > STALE_DAYS && source !== 'time' ? 'border-left-color:var(--bad)' : ''" role="status">
@@ -101,21 +122,25 @@ const dayText = (d: string) => (d === 'daily' ? 'daily' : [...d].map((x) => DAYS
 
     <section class="card now-section" aria-label="On the air now">
       <div class="now-heading"><h2>On the air now:</h2><time :datetime="clock.toISOString()" class="mono">{{ pad(clock.getUTCHours()) }}:{{ pad(clock.getUTCMinutes()) }} UTC · {{ DAYS[isoDay(clock)] }} · {{ clock.toISOString().slice(0, 10) }}</time></div>
-      <p class="hint">{{ scheduleName }} · scheduled activity, not confirmed reception. Uses the device’s current UTC clock, even when browsing another time below. Station/frequency filters below apply here too.</p>
-      <p v-if="source !== 'time' && age > STALE_DAYS" class="notice">This schedule is more than {{ STALE_DAYS }} days old. Check for a newer pack before relying on these entries.</p>
-      <p v-if="loading" role="status">Loading the selected schedule…</p>
-      <p v-else-if="err" class="empty">Schedule unavailable. See the error above or select another schedule.</p>
-      <p v-else-if="!dateRangeActive" class="empty">{{ bbcStatus === 'expired' ? 'This BBC frequency schedule has expired.' : 'This BBC frequency schedule is not yet in effect.' }} No current transmissions are listed from this season. Choose another schedule or obtain a newer version.</p>
-      <p v-else-if="!nowGroups.length" class="empty">Nothing is scheduled at the current UTC time with these filters. Clear the filters, choose another schedule, or install a dated broadcast pack in Settings &amp; content.</p>
-      <template v-else>
+      <p class="hint">All bundled schedules and installed broadcast packs · scheduled activity, not confirmed reception. Uses the device’s current UTC clock, even when browsing another time below. Station/frequency filters below apply here too. The Schedule dropdown controls only the detailed table.</p>
+      <p v-if="loadingLive" role="status">Loading installed schedules… Bundled schedules remain available below.</p>
+      <div v-for="s in liveSchedules" :key="s.id" class="live-source">
+        <h3>{{ s.title }}</h3>
+        <p class="hint">{{ s.source }} · revision {{ s.revision }}</p>
+        <p v-if="s.error" class="err" role="alert">Schedule unavailable: {{ s.error }}</p>
+        <p v-else-if="s.status !== 'current'" class="notice">{{ s.status === 'expired' ? 'This BBC frequency schedule has expired.' : 'This BBC frequency schedule is not yet in effect.' }} Valid {{ BBC_META.validFrom }}–{{ BBC_META.validUntil }} UTC. No current transmissions are listed from this season.</p>
+        <template v-else>
+        <p v-if="s.stale" class="notice">This schedule is more than {{ STALE_DAYS }} days old. Check for a newer pack before relying on these entries.</p>
+        <p v-if="!s.groups.length" class="empty">Nothing is scheduled from this source at the current UTC time with these filters.</p>
         <ul class="now-grid">
-          <li v-for="g in nowGroups.slice(0, showAllNow ? LIMIT : 6)" :key="g.key">
+          <li v-for="g in s.groups.slice(0, showAllNow ? LIMIT : 6)" :key="g.key">
             <strong>{{ g.station }}</strong><div class="mono now-frequencies">{{ g.frequencies }} kHz</div><p v-if="g.details" class="hint">{{ g.details }}</p>
           </li>
         </ul>
-        <p v-if="nowGroups.length > LIMIT && showAllNow" class="hint">Showing the first {{ LIMIT }} station groups. Narrow the station or frequency filters to see others.</p>
-        <button v-if="nowGroups.length > 6" :aria-expanded="showAllNow" @click="showAllNow = !showAllNow">{{ showAllNow ? 'Show fewer stations' : `Show more stations (${nowGroups.length} groups)` }}</button>
-      </template>
+        <p v-if="s.groups.length > LIMIT && showAllNow" class="hint">Showing the first {{ LIMIT }} station groups from this source. Narrow the station or frequency filters to see others.</p>
+        </template>
+      </div>
+      <button v-if="liveSchedules.some(s => s.groups.length > 6)" :aria-expanded="showAllNow" @click="showAllNow = !showAllNow">{{ showAllNow ? 'Show fewer stations' : 'Show more stations from all sources' }}</button>
     </section>
 
     <div class="cols" style="margin-top:1rem">
@@ -142,7 +167,8 @@ const dayText = (d: string) => (d === 'daily' ? 'daily' : [...d].map((x) => DAYS
       </div>
       <div class="card schedule-results" aria-live="polite">
         <p v-if="!dateRangeActive && mode === 'all'" class="notice">{{ bbcStatus === 'expired' ? 'Archive' : 'Upcoming reference' }} — these BBC rows are outside their current validity window and do not indicate present activity.</p>
-        <p v-if="!rows.length" class="empty" style="margin:0">{{ entries.length ? 'Nothing matches. Try a wider frequency range, clear the search, or switch to “Everything”.' : 'This schedule has no rows loaded.' }}</p>
+        <p v-if="loading" role="status">Loading the selected schedule…</p>
+        <p v-else-if="!rows.length" class="empty" style="margin:0">{{ entries.length ? 'Nothing matches. Try a wider frequency range, clear the search, or switch to “Everything”.' : 'This schedule has no rows loaded.' }}</p>
         <template v-else>
           <p class="muted" style="margin-top:0">{{ rows.length }} {{ rows.length === 1 ? 'transmission' : 'transmissions' }}{{ rows.length > LIMIT ? ` (showing the first ${LIMIT}; narrow the search)` : '' }}</p>
           <div class="table-wrap"><table class="table">
@@ -158,7 +184,7 @@ const dayText = (d: string) => (d === 'daily' ? 'daily' : [...d].map((x) => DAYS
     <template #explain>
       <p>The bundled BBC frequency table applies only to {{ BBC_META.validFrom }}–{{ BBC_META.validUntil }} inclusive, UTC. Outside that season both live matches and the time-filtered table are disabled; Everything retains labelled reference rows. Imported packs currently have revision/age information but no enforced seasonal validity fields.</p>
       <p>Broadcast programme schedules change with the seasons (late March and late October) and many stations change monthly, so a schedule is only good for a while. That is why they are installed as <strong>dated packs</strong>: the app shows the pack’s revision date, warns when it is more than {{ STALE_DAYS }} days old, and never goes online to refresh itself. Download an updated schedule file whenever you are online, then convert and install it under Settings &amp; content.</p>
-      <p>“On the air now” always uses the device’s current UTC time; “On air at…” below can use your chosen time and weekday. Both use start-inclusive/end-exclusive windows. Weekdays identify the UTC start day: a Sunday 23:00–01:00 transmission is still scheduled at 00:30 Monday. Equal start/end times represent an all-day row on its selected weekdays.</p>
+      <p>“On the air now” combines all bundled schedules and every installed broadcast pack using the device’s current UTC time. Each source keeps its own revision and warnings; BBC expiry affects only BBC rows. The dropdown selects the detailed table, where “On air at…” can use your chosen time and weekday. Both use start-inclusive/end-exclusive windows. Weekdays identify the UTC start day: a Sunday 23:00–01:00 transmission is still scheduled at 00:30 Monday. Equal start/end times represent an all-day row on its selected weekdays.</p>
       <p>Rows with unusual day patterns (“irr”, ranges) are treated as daily and say so in the details. A schedule match does not confirm reception, transmitter availability, seasonal validity, propagation or signal strength. No network requests or live receiver observations are used.</p>
     </template>
   </ToolLayout>
@@ -173,4 +199,5 @@ const dayText = (d: string) => (d === 'daily' ? 'daily' : [...d].map((x) => DAYS
 .now-grid li { min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: .75rem; overflow-wrap: anywhere; }
 .now-grid p { margin: .3rem 0 0; }
 .now-frequencies { margin-top: .4rem; color: var(--accent); }
+.live-source { border-top: 1px solid var(--line); margin-top: 1rem; padding-top: .5rem; }
 </style>

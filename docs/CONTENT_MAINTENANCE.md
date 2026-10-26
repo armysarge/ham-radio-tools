@@ -42,7 +42,7 @@ Snapshot of the existing registry, not a second source of truth. Recalculate the
 - **BBC validity enforced:** both “On the air now” and the time-filtered table suppress BBC rows before 2026-10-25 and after 2027-03-27 (inclusive UTC dates). “Everything” retains a labelled upcoming/reference or archive view. Unit/UI tests cover both boundaries and expiry while the page is open. Do not roll forward old rows when updating dates.
 - **Imported-pack limitation:** the generic pack schema still has revision/age information without enforced seasonal bounds. Its warning after 45 days is not equivalent to publisher validity; extending that schema remains on the roadmap.
 
-The “On the air now” section uses only the selected bundled/imported schedule and the device's current UTC clock, with the station/frequency filters applied. It is a schedule match, not a live availability feed. Entry weekdays denote UTC start days; after midnight, the remainder of an overnight transmission is checked against the previous weekday. Check each imported source's day convention before conversion.
+The “On the air now” section combines all bundled schedules and every installed broadcast pack, grouped by source with revision dates and stale-data warnings, independently of the detailed-table dropdown and the device's current UTC clock, with the station/frequency filters applied. BBC validity dates exclude only BBC rows; other sources remain available. It is a schedule match, not a live availability feed. Entry weekdays denote UTC start days; after midnight, the remainder of an overnight transmission is checked against the previous weekday. Check each imported source's day convention before conversion.
 
 ## Monthly check and release checklist
 

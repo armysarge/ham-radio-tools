@@ -2,7 +2,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import BroadcastSchedules from '../src/tools/BroadcastSchedules.vue'
 import { transmissionOnAirAt, type BroadcastEntry } from '../src/lib/packs'
-import { getPack } from '../src/core/packs'
+import { getPack, installedPacks } from '../src/core/packs'
 
 vi.mock('../src/core/packs', async () => {
   const { shallowRef } = await import('vue')
@@ -51,7 +51,7 @@ it('groups current frequencies, remains live during manual browsing and updates 
     await vi.advanceTimersByTimeAsync(60_000)
     expect(now.text()).toContain('00:31 UTC')
     expect(now.text()).not.toContain('Night service')
-    expect(now.text()).toContain('Nothing is scheduled')
+    expect(now.text()).toContain('WWV (Fort Collins')
   } finally { w.unmount() }
 })
 
@@ -79,7 +79,57 @@ it('ignores a previous schedule load after switching back to bundled stations', 
     finish(null); await flushPromises()
     const now = w.get('section[aria-label="On the air now"]')
     expect(now.text()).toContain('WWV (Fort Collins')
-    expect(now.text()).not.toContain('unavailable')
-    expect(now.text()).not.toContain('Nothing is scheduled')
+    expect(now.text()).toContain('Schedule unavailable')
+    expect(now.text()).toContain('WWV (Fort Collins')
   } finally { w.unmount() }
+})
+
+it('combines bundled and multiple installed sources independently of the dropdown, and handles removal', async () => {
+  vi.setSystemTime(new Date('2026-10-26T05:30:00Z'))
+  const original = installedPacks.value
+  installedPacks.value = [...original, { ...original[0]!, id: 'second', title: 'Second schedule' }]
+  vi.mocked(getPack).mockImplementation(async id => ({ data: { entries: [
+    { station: id === 'second' ? 'Second service' : 'First service', freqKhz: 8000, startUtc: '0000', endUtc: '0000', days: 'daily' },
+  ] } }) as Awaited<ReturnType<typeof getPack>>)
+  const w = mount(BroadcastSchedules, { global: { stubs: { RouterLink: true } } })
+  try {
+    await flushPromises()
+    const now = w.get('section[aria-label="On the air now"]')
+    for (const text of ['WWV (Fort Collins', '9410, 9915 kHz', 'First service', 'Second service']) expect(now.text()).toContain(text)
+    const before = now.text()
+    await w.get('select').setValue('second'); await flushPromises()
+    expect(now.text()).toBe(before)
+    expect(w.get('.schedule-results').text()).toContain('Second service')
+    installedPacks.value = original
+    await flushPromises()
+    expect(now.text()).not.toContain('Second service')
+    expect(now.text()).toContain('First service')
+  } finally { w.unmount(); installedPacks.value = original }
+})
+
+it('keeps successful sources visible when another installed pack fails to load', async () => {
+  vi.mocked(getPack).mockRejectedValueOnce(new Error('Read failed'))
+  const w = mount(BroadcastSchedules, { global: { stubs: { RouterLink: true } } })
+  try {
+    await flushPromises()
+    const now = w.get('section[aria-label="On the air now"]')
+    expect(now.text()).toContain('Read failed')
+    expect(now.text()).toContain('WWV (Fort Collins')
+  } finally { w.unmount() }
+})
+
+it('does not restore a removed pack when its pending read finishes or reload packs on clock ticks', async () => {
+  const original = installedPacks.value
+  let finish!: (value: Awaited<ReturnType<typeof getPack>>) => void
+  vi.mocked(getPack).mockClear().mockImplementationOnce(() => new Promise(resolve => { finish = resolve }))
+  const w = mount(BroadcastSchedules, { global: { stubs: { RouterLink: true } } })
+  try {
+    installedPacks.value = []
+    await flushPromises()
+    finish({ data: { entries: [{ station: 'Removed service', freqKhz: 8000, startUtc: '0000', endUtc: '0000', days: 'daily' }] } } as Awaited<ReturnType<typeof getPack>>)
+    await flushPromises()
+    await vi.advanceTimersByTimeAsync(30_000)
+    expect(w.get('section[aria-label="On the air now"]').text()).not.toContain('Removed service')
+    expect(getPack).toHaveBeenCalledTimes(1)
+  } finally { w.unmount(); installedPacks.value = original }
 })

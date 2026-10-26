@@ -14,7 +14,7 @@ Status reviewed **2026-10-26**. Recent additions passed the production build, au
 - [x] Morse tools and Koch trainer, clocks/timers and ADIF logbook.
 - [x] Propagation basics, satellite passes from imported elements and a band-by-hour propagation report (DVOACAP engine, offline).
 - [x] National band tables, reference tools, QRM guide and dated content packs.
-- [x] “On the air now” schedule section with live UTC matching, grouped station frequencies, filtering, stale-data notices and overnight weekday handling. Uses the selected local schedule; no live reception/status service.
+- [x] “On the air now” schedule section with live UTC matching, grouped station frequencies, filtering, stale-data notices and overnight weekday handling. Combines all bundled schedules and installed broadcast packs, independently of the detailed-table dropdown; no live reception/status service.
 - [x] Searchable DCS code reference with octal and polarity guidance.
 - [x] Project import/export and a repeatable web offline acceptance check.
 - [x] Coordinate conversion: decimal degrees, degrees/decimal minutes, DMS, locator centres, offline map and saved locations. Notation only; no datum or UTM conversion.
@@ -25,14 +25,13 @@ Status reviewed **2026-10-26**. Recent additions passed the production build, au
 - [x] Low-pass and high-pass LC filter designers with pi/T connection diagrams, part values, Butterworth/Chebyshev responses and ideal attenuation curves.
 - [x] Number Codes & 92 Code: searchable 73/88/QRP 72, usage examples, International Morse and selected historical 1/6/30 meanings. A curated guide, not a complete historical codebook.
 - [x] SWR/VSWR page: voltage maxima/minima input, validated extrema, ideal matched/total-reflection cases and an interactive normalised standing-wave envelope.
-- [x] Unloaded voltage-divider calculator in Component Codes → Series, parallel, divider, LED: output voltage, divider current and equivalent source resistance. Circuit illustration/discovery improvements remain below.
+- [x] Voltage Divider tool with a live labelled circuit, engineering-notation inputs, output voltage/current, ratio and equivalent source resistance. Shared with the calculator in Component Codes; searchable and independently favouritable.
 - [x] Maintainer content-update calendar with monthly schedule checks, seasonal handoffs, source review dates and a review log; see [CONTENT_MAINTENANCE.md](docs/CONTENT_MAINTENANCE.md).
 
 ## Next: calculator and operating-guide improvements
 
 Work through these in order, keeping each increment runnable and verified.
 
-- [ ] Improve the existing voltage-divider calculator's discoverability and add a circuit diagram linked to its inputs/results.
 - [ ] Improve formula presentation in explanation panels using readable mathematical notation and labelled variables. SWR/VSWR and filters already have expanded explanations; this remains an app-wide task.
 - [ ] Add pronunciation guidance to the phonetic alphabet page.
 - [ ] Doppler shift calculator.

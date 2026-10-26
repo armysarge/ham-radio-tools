@@ -69,9 +69,10 @@ Filter by band or search for a frequency. Expand the allocation chart to inspect
 
 To add a schedule or regional plan, import its JSON pack under **Settings & content**. That screen can also convert a supported EiBi-layout or CSV shortwave schedule. Packs can be carried on a USB drive. Schedules are dated and show a warning when old; downloads are your choice. [Data sources and pack details](docs/DATA_SOURCES.md).
 
-**On the air now** shows scheduled stations and frequencies from your selected schedule using the device's current UTC clock. It updates locally while you browse other times and respects station/frequency filters. Entries indicate scheduled activity, not confirmed reception or transmitter status.
+**On the air now** shows scheduled stations and frequencies from all bundled schedules and every installed broadcast pack using the device's current UTC clock. It updates locally while you browse other times and respects station/frequency filters. Entries are grouped by source with revision dates and stale-data warnings; the schedule dropdown controls only the detailed table. Entries indicate scheduled activity, not confirmed reception or transmitter status.
 
 Choose **BBC World Service · 2026–27 season** in Broadcast Schedules & Time Stations for the bundled frequency reference from **25 October 2026 to 27 March 2027**. Medium-wave and DRM entries are labelled. Outside that season, live matches are disabled and “Everything” shows dated reference rows. This is a frequency schedule, not a programme guide.
+
 
 ## Privacy and offline use
 

@@ -4,9 +4,14 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-26
+
+Validation: 381 automated tests, production build, Edge offline acceptance (including 375 px layouts) and Windows development Electron smoke checks passed. Linux, packaged-executable CI checks, clean-machine installation and real release upgrades still require verification for this version.
+
 ### Added
+- Dedicated, searchable Voltage Divider tool and shared calculator in Component Codes, with an input-linked SVG circuit, readable ratio formula, validation and unloaded-divider assumptions.
 - Bundled BBC World Service frequency reference transcribed from the supplied official-page snapshot: 30 frequency entries across five regional tables, preserving weekday restrictions, midnight boundaries, medium-wave and DRM details. Published UTC season is enforced for live/time-filtered matches; dated rows remain viewable outside the season.
-- “On the air now” section in Broadcast Schedules & Time Stations: current UTC activity from the selected local schedule, grouped frequencies, station/frequency filtering, stale-data guidance and a compact expandable station list. Manual-time browsing remains independent.
+- “On the air now” section in Broadcast Schedules & Time Stations: current UTC activity from all bundled schedules and installed broadcast packs, grouped frequencies, station/frequency filtering, stale-data guidance and a compact expandable station list. Manual-time browsing remains independent.
 - SWR/VSWR voltage maxima/minima input with cross-field validation and a live normalised standing-wave voltage envelope; existing SWR, return-loss, reflection and resistive-load inputs remain available.
 - Number Codes & 92 Code reference: searchable 73/88/QRP 72, selected historical 1/6/30 examples, usage notes, copy actions, International Morse notation and links to the CW tools.
 - Maintainer content-update calendar covering monthly broadcast checks, seasonal handoffs, national-table review dates, satellite/propagation inputs and the supplied BBC schedule's provenance and expiry limitations.
@@ -26,6 +31,7 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 - Radiation pattern concept illustrations across all antenna design pages, with idealized assumptions and clear limits; no simulated gain or site-specific pattern claims.
 
 ### Fixed
+- “On the air now” combines all local schedule sources independently of the dropdown, with source-specific revision, expiry and loading-error notices. BBC remains available in the Schedule dropdown; removed the redundant BBC shortcut.
 - Overnight broadcast entries now use the UTC start weekday after midnight, including Sunday-to-Monday rollover. Switching schedules also ignores late responses from the previous selection.
 - Filter results now clear when Chebyshev ripple is empty or invalid, instead of silently falling back to 0.1 dB. Filter inputs reject non-finite frequency/impedance and invalid prototypes.
 - Electron tool links no longer fail when a development build replaces `dist/` while the app is running. The app retains its launch-time bundle in memory; restart Electron to load a newer build. Added regression coverage for removed lazy tool files and a replaced entry page.

@@ -3,9 +3,10 @@ import { computed, reactive, ref } from 'vue'
 import ToolLayout from '../components/ToolLayout.vue'
 import ResultRow from '../components/ResultRow.vue'
 import ValueInput from '../components/ValueInput.vue'
+import VoltageDividerCalculator from '../components/VoltageDividerCalculator.vue'
 import {
   CAP_TOLERANCE, CAP_VOLTAGE, COLOURS, DIGIT_COLOURS, MULT_COLOURS, PPM_COLOURS, SERIES, TOL_COLOURS,
-  decodeCapacitor, decodeResistor, decodeSmd, divider, encodeResistor, formatValue, ledResistor, nearestPreferred, parallel, parseValue, seriesSum,
+  decodeCapacitor, decodeResistor, decodeSmd, encodeResistor, formatValue, ledResistor, nearestPreferred, parallel, parseValue, seriesSum,
   type Colour, type SeriesName,
 } from '../lib/components'
 
@@ -69,9 +70,6 @@ const combined = computed(() => {
   if (!v?.length) return null
   try { const a = seriesSum(v), b = parallel(v); return part.value === 'R' ? { series: a, parallel: b } : { series: b, parallel: a } } catch { return null }
 })
-const vin = ref<number | null>(5), r1 = ref<number | null>(10000), r2 = ref<number | null>(10000)
-const vinT = ref('5'), r1T = ref('10k'), r2T = ref('10k')
-const div = computed(() => { try { return vin.value !== null && r1.value !== null && r2.value !== null ? divider(vin.value, r1.value, r2.value) : null } catch { return null } })
 const vs = ref<number | null>(5), vf = ref<number | null>(2), ma = ref<number | null>(0.02)
 const vsT = ref('5'), vfT = ref('2'), maT = ref('20m')
 const ledErr = ref('')
@@ -228,15 +226,8 @@ void parseValue
         </div>
         <div class="card stack">
           <h2>Voltage divider</h2>
-          <ValueInput v-model="vinT" label="Input voltage" unit="V" @value="vin = $event" />
-          <ValueInput v-model="r1T" label="R1 (top)" unit="Ω" @value="r1 = $event" />
-          <ValueInput v-model="r2T" label="R2 (bottom)" unit="Ω" @value="r2 = $event" />
-          <div v-if="div" class="results" aria-live="polite">
-            <ResultRow label="Output voltage" :value="div.vout" unit="V" big />
-            <ResultRow label="Current through the divider" :value="div.current * 1000" unit="mA" />
-            <ResultRow label="Source resistance seen by the load" :value="formatValue(div.thevenin)" />
-          </div>
-          <p class="hint">Unloaded. A load draws current and pulls the output down unless it is much larger than R2.</p>
+          <VoltageDividerCalculator />
+          <p class="hint"><RouterLink to="/tool/voltage-divider">Open the dedicated Voltage Divider tool</RouterLink> for its explanation and sources.</p>
         </div>
       </div>
       <div class="card stack">

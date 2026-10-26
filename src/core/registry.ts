@@ -48,6 +48,9 @@ export const tools: ToolDef[] = [
   { id: 'ohms-law', title: "Ohm's Law & Power", category: 'rf', kind: 'analytical',
     summary: 'Enter any two of voltage, current, resistance or power to get the rest.',
     keywords: ['volts', 'amps', 'watts', 'resistance', 'ohm'], component: load(() => import('../tools/OhmsLaw.vue')) },
+  { id: 'voltage-divider', title: 'Voltage Divider', category: 'rf', kind: 'analytical',
+    summary: 'Unloaded two-resistor voltage divider with a live circuit drawing, output voltage, current and source resistance.',
+    keywords: ['voltage divider', 'potential divider', 'r1', 'r2', 'thevenin', 'output voltage'], component: load(() => import('../tools/VoltageDivider.vue')) },
   { id: 'dbm-watts', title: 'dBm, Watts & dB', category: 'rf', kind: 'analytical',
     summary: 'Convert watts, dBm and voltage; work out dB gain or loss from ratios.',
     keywords: ['decibel', 'power', 'gain', 'loss', 'milliwatt'], component: load(() => import('../tools/DbmWatts.vue')) },
@@ -188,7 +191,7 @@ export const tools: ToolDef[] = [
 export const CATEGORY_ICON: Record<string, string> = { rf: 'rf', antenna: 'antenna', maps: 'map', station: 'station', prop: 'sun', ops: 'ops' }
 const TOOL_ICON: Record<string, string> = {
   'coordinate-converter': 'globe', 'unit-converter': 'scale',
-  'frequency-wavelength': 'wave', 'ohms-law': 'resistor', components: 'chip', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
+  'frequency-wavelength': 'wave', 'ohms-law': 'resistor', 'voltage-divider': 'resistor', components: 'chip', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
   dipole: 'dipole', efhw: 'endfed', 'inverted-v': 'invertedv', vertical: 'vertical', jpole: 'jpole', loop: 'loop', qfh: 'antenna', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
   'band-plans': 'plan', 'itu-regulations': 'scale', ctcss: 'pulse', dcs: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'number-codes': 'list', 'q-codes': 'q', phonetic: 'letterA',
   'feedline-loss': 'cable', 'link-budget': 'link', 'radiated-power': 'broadcast', 'l-network': 'match', 'low-pass-filter': 'filter', 'high-pass-filter': 'filter', coils: 'toroid', 'power-planner': 'battery', yagi: 'yagi', quad: 'loop', 'radial-planner': 'vertical', logbook: 'book', clock: 'clock', 'morse-trainer': 'morse', propagation: 'sun', 'propagation-report': 'heat', 'satellite-passes': 'sat', 'diy-components': 'diy', 'diy-baluns': 'toroid', 'diy-transformers': 'match',
