@@ -4,6 +4,14 @@
 
 Ham Radio Tools is a free, open-source collection of practical tools for radio amateurs, made by **ZS6SHZ**. Get a quick answer, explore an illustrated design, or expand an explanation to understand the method.
 
+## Screenshots
+
+| Dashboard | Dipole designer |
+|---|---|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Dipole designer](docs/screenshots/dipole.png) |
+| Offline map and grid tools | SWR calculator |
+| ![Map](docs/screenshots/maidenhead.png) | ![SWR](docs/screenshots/swr.png) |
+
 > **Early release:** antenna designs are starting estimates. Measure and tune your finished antenna with an analyser. Check your current licence and local rules before transmitting.
 
 ## What can I do with it?
@@ -48,14 +56,6 @@ To add a schedule or regional plan, import its JSON pack under **Settings & cont
 The desktop and standard web builds have no analytics or background update checks. The hosted demo offers optional Google Analytics after you accept its consent banner; you can change that choice in Settings. Your saved projects, logbook and search text are not deliberately included in page-view events.
 
 The CW microphone decoder processes audio locally and asks for microphone permission. It is experimental. Satellite predictions need a recent element set supplied by you.
-
-## Screenshots
-
-| Dashboard | Dipole designer |
-|---|---|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Dipole designer](docs/screenshots/dipole.png) |
-| Offline map and grid tools | SWR calculator |
-| ![Map](docs/screenshots/maidenhead.png) | ![SWR](docs/screenshots/swr.png) |
 
 ## Development and releases
 
