@@ -6,6 +6,11 @@ Status reviewed **2026-10-26**. Recent additions passed the production build, au
 
 ## Available
 
+- [x] Integrated all-service allocations in Band Plans: searchable lookup, chart and list, service/range filters, ITU 2024 Regions 1/2/3 and Canadian national 2026 data; labelled regional context alongside other national amateur tables.
+
+- [x] Startup splash with named loading stages, accessible progress, light/dark appearance and slow/failed-start recovery for web and Electron. Desktop retains a fast splash for 700 ms from first native window display; web hands off immediately. No preloading of every tool.
+- [x] Animated desktop update progress with actual percentages, checksum-verification status, reduced-motion support and progress retained while navigating between tools.
+
 - [x] Search, categories, favourites, themes, measurement units and responsive layouts.
 - [x] RF/electronics calculators and component codes.
 - [x] Illustrated antenna estimates, materials and band guidance, HF wire installation-height references, Yagi/quad starting designs, radial planning and a sourced QFH receive-design estimator.
@@ -69,6 +74,8 @@ The desktop wrapper is **Electron**, following the request to test Electron. It 
 - [ ] Complete a real published-release upgrade test on clean Windows and Linux machines; automated update transport is mocked.
 
 ## Planned: reference and mapping improvements
+
+- [ ] Additional national all-service datasets and fuller footnote handling, with official source verification, dated updates and redistribution review. Regional frameworks remain clearly distinguished from national rules.
 
 - [ ] Licensed and maintained DXCC entities, CQ zones and ITU zones.
 - [ ] Verified UK and India tables; broader licence-class coverage where currently limited.

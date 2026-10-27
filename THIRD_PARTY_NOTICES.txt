@@ -722,3 +722,24 @@ Source material copyright BBC 2026. The app includes factual frequency,
 time, weekday and target-region records in its own format. Original HTML,
 prose, artwork and logos are not included. The app's MIT licence does not
 grant rights in BBC source material. No BBC endorsement or affiliation is implied.
+
+ALL-SERVICE ALLOCATION FACTS
+----------------------------
+ITU Radio Regulations 2024 Volume 1 Article 5 (Regions 1, 2 and 3).
+Source: https://search.itu.int/history/HistoryDigitalCollectionDocLibrary/1.49.48.en.101.pdf
+Original publication copyright ITU 2024, all rights reserved. Only factual
+numeric limits, standardized service designations, priority, qualifiers and
+footnote identifiers are summarized in an original representation. The PDF,
+artwork and original explanatory/footnote prose are not redistributed. The
+application MIT licence does not grant rights in ITU source material.
+
+ISED Canadian Table of Frequency Allocations 2026, modified 2026-10-15.
+Source: https://ised-isde.canada.ca/site/spectrum-management-telecommunications/en/spectrum-allocation/canadian-table-frequency-allocations-sf10759
+Canadian government source. Factual limits, standardized service designations
+and footnote identifiers are represented in the app's own format. Original
+webpages, artwork and full footnote prose are not included. No government
+endorsement or affiliation is implied. Source rights are not relicensed as MIT.
+
+Both sources retrieved 2026-10-27. Regional allocations are not national
+operating authorizations or channel assignments; consult national rules and
+source footnotes. Government does not mean military-only.

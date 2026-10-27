@@ -19,7 +19,7 @@
     "desktop": "npm run build && electron .",
     "desktop:unpacked": "npm run build && electron-builder --dir --publish never",
     "desktop:dist": "npm run build && electron-builder --publish never",
-    "check:desktop": "npm run build && node scripts/check-desktop.mjs",
+    "check:desktop": "npm run build && node scripts/check-desktop-startup.mjs && node scripts/check-desktop.mjs",
     "report:desktop": "node scripts/desktop-report.mjs"
   },
   "dependencies": {

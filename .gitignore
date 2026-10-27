@@ -5,3 +5,8 @@ desktop-out
 .env
 .env.local
 .env.*.local
+
+# Development-only official source downloads (copyrighted publications are not shipped)
+/scripts/pack-data/itu-rr-2024-vol1-source.pdf
+/scripts/pack-data/ca-full-spectrum-source.json
+/scripts/pack-data/ca-spectrum-footnotes-source.json

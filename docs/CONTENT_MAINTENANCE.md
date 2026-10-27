@@ -8,6 +8,7 @@ Use [DATA_SOURCES.md](DATA_SOURCES.md) for provenance and known gaps, and [`scri
 
 | Content | Review policy | What to check |
 |---|---|---|
+| All-service allocations: ITU 2024 Regions 1/2/3 and ISED Canada 2026 | Every 180 days; before release and after allocation changes | Review official publications/JSON and footnotes, verify hashes in `sources.json`, rerun `python scripts/build-allocation-data.py`, review generated limits/priority/qualifiers and run data/UI/offline tests. Keep national vs regional coverage labels accurate; never infer military assignments from generic fixed/mobile services. |
 | Broadcast frequency schedules, including BBC and user-supplied EiBi-layout files | First week of every month; before each content release; again before the publisher's seasonal expiry | Frequency, UTC time, weekday, target region, mode, effective dates and withdrawals. Use the publisher's explicit validity dates, not an assumed season. |
 | Programme guides, when implemented | Before each guide publication and whenever the broadcaster revises it | Programme title, service/language, timezone, date and exceptions. A frequency table is not a programme guide. Do not infer programme names from transmission times. |
 | National band tables | Run the source check monthly; conduct the full review at the intervals below and immediately on regulatory amendments | Latest regulator text, effective date, licence classes, emissions, power limits, footnotes and national exceptions. Hashes alone cannot reveal a newer document at another URL. |

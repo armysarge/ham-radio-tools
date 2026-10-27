@@ -4,6 +4,14 @@ For desktop testing see [DESKTOP.md](DESKTOP.md); for releases see [RELEASING.md
 
 For broadcast schedules, satellite inputs and reference-data review dates, use [CONTENT_MAINTENANCE.md](CONTENT_MAINTENANCE.md).
 
+## Startup
+
+`index.html` provides the splash before Vue loads. `public/startup.js` controls its accessible stage progress and slow/failure recovery; `public/startup.css` uses local system fonts and the app's light/dark colours. The small `src/main.ts` entry imports `src/bootstrap.ts`, which applies preferences, waits for the initial route, mounts Vue and removes the splash after rendering. Progress represents completed startup stages, not byte counts or every available tool; tools and optional content remain loaded on demand. Desktop retains the splash for at least 700 ms from its first native window display, showing Ready if loading finishes sooner; slow starts have no additional hold. Web hands off immediately. There is no startup network request.
+
+After building, `node scripts/check-desktop-startup.mjs` uses a disposable Electron copy to inspect the first window display and measure readable splash duration. It does not use the real saved-data profile.
+
+Keep the splash resources in every web and desktop bundle. A failed required application import offers Reload; the 30-second slow-start notice allows either waiting or reloading without clearing saved data. The offline acceptance check delays and aborts startup resources to exercise both progress and recovery, including phone layouts.
+
 ## Requirements
 
 | Requirement | Notes |

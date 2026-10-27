@@ -1,0 +1,62 @@
+import { afterEach, expect, it, vi } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
+import BandPlans from '../src/tools/BandPlans.vue'
+import { state } from '../src/core/store'
+const global = { stubs: { RouterLink: true } }
+afterEach(() => { state.showAllRadioServices = false })
+it('adds other services to the existing lookup, list and interactive chart for all ITU regions', async () => {
+  const w = mount(BandPlans, { global })
+  try {
+    await flushPromises()
+    await w.get('input[type=text]').setValue('7.25')
+    expect(w.text()).toContain('Not inside any amateur allocation')
+    await w.get('input[aria-label="Show all radio services"]').setValue(true)
+    await vi.waitFor(() => expect(w.find('table.band-table').exists()).toBe(true))
+    expect(w.find('.spectrum-image').exists()).toBe(false)
+    expect(w.find('table.band-table').exists()).toBe(true)
+    expect(w.get('.frequency-results').text()).toContain('Broadcasting')
+    await w.findAll('button').find(b => b.text() === 'Region 2')!.trigger('click')
+    expect(w.get('.frequency-results').text()).toContain('Amateur')
+    expect(w.get('.frequency-results').text()).not.toContain('Broadcasting')
+    await w.findAll('button').find(b => b.text() === 'Region 3')!.trigger('click')
+    expect(w.get('.frequency-results').text()).toContain('Broadcasting')
+    await w.get('input[type=text]').setValue('125')
+    expect(w.get('.frequency-results').text()).toContain('Aeronautical mobile')
+    await w.get('select[aria-label="Filter by service"]').setValue('aviation')
+    await w.get('select[aria-label="Frequency range"]').setValue('vhf')
+    expect(w.get('table.band-table').text()).toContain('Aeronautical')
+    expect(w.get('.allocation-svg').text()).toContain('Aeronautical')
+    expect(w.findAll('.allocation-svg [role=button]').length).toBeLessThanOrEqual(80)
+    await w.get('.allocation-svg [role=button]').trigger('click')
+    expect(w.get('.selected-allocation').text()).toContain('Aeronautical')
+    await w.get('select[aria-label="Filter by service"]').setValue('all')
+    await w.get('select[aria-label="Frequency range"]').setValue('all')
+    const firstRange = w.get('table.band-table tbody tr').text()
+    await w.findAll('button').find(b => b.text() === 'Next allocations')!.trigger('click')
+    expect(w.get('.allocation-pages').text()).toContain('Page 2')
+    expect(w.get('table.band-table tbody tr').text()).not.toBe(firstRange)
+    await w.get('input[type=search]').setValue('radiolocation')
+    expect(w.findAll('table.band-table tbody tr').every(r => r.text().toLowerCase().includes('radiolocation'))).toBe(true)
+  } finally { w.unmount() }
+})
+it('uses Canadian national data and labels regional fallbacks for countries without a national all-service dataset', async () => {
+  const w = mount(BandPlans, { global })
+  try {
+    await w.get('input[aria-label="Show all radio services"]').setValue(true)
+    await flushPromises()
+    await vi.waitFor(() => expect(w.find('table.band-table').exists()).toBe(true))
+    await w.get('select[aria-label="Band plan"]').setValue('b:ca-ised-rbr4')
+    await flushPromises()
+    await w.get('input[type=text]').setValue('125')
+    expect(w.get('.frequency-results').text()).toContain('ISED 2026')
+    expect(w.get('.frequency-results').text()).toContain('Aeronautical mobile')
+    await w.get('input[type=text]').setValue('145.9')
+    expect(w.get('.frequency-results').text()).toContain('Amateur-satellite')
+    await w.get('select[aria-label="Band plan"]').setValue('b:za-icasa-annexure-i')
+    await flushPromises()
+    expect(w.text()).toContain('ITU Region 1 framework')
+    expect(w.text()).toContain('not a South Africa national all-service table')
+    await w.get('input[type=text]').setValue('125')
+    expect(w.get('.frequency-results').text()).toContain('Aeronautical mobile')
+  } finally { w.unmount() }
+})

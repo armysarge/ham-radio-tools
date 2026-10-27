@@ -1,0 +1,31 @@
+#app[inert] { visibility: hidden; }
+#startup {
+  position: fixed; inset: 0; z-index: 100; display: grid; place-items: center;
+  padding: 24px; overflow: auto; background: #f3f0e8; color: #1b2229;
+  font: 16px/1.5 system-ui, 'Segoe UI', sans-serif;
+  --startup-muted: #55606a; --startup-line: #c9c3b3; --startup-accent: #0b6e6e;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-resolved='light']) #startup {
+    background: #11161b; color: #e8e6df;
+    --startup-muted: #a2adb6; --startup-line: #3a4652; --startup-accent: #f2b84b;
+  }
+}
+html[data-resolved='dark'] #startup {
+  background: #11161b; color: #e8e6df;
+  --startup-muted: #a2adb6; --startup-line: #3a4652; --startup-accent: #f2b84b;
+}
+.startup-panel { width: min(100%, 420px); }
+.startup-brand { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+.startup-brand img { width: 56px; height: 56px; flex-shrink: 0; }
+#startup-title { margin: 0; color: inherit; font-size: clamp(22px, 5vw, 28px); line-height: 1.2; font-weight: 650; }
+.startup-brand p { margin: 6px 0 0; color: var(--startup-muted); }
+#startup-progress { display: block; width: 100%; height: 8px; appearance: none; border: 0; border-radius: 8px; overflow: hidden; background: var(--startup-line); color: var(--startup-accent); accent-color: var(--startup-accent); }
+#startup-progress::-webkit-progress-bar { background: var(--startup-line); }
+#startup-progress::-webkit-progress-value { background: var(--startup-accent); transition: width .15s ease; }
+#startup-progress::-moz-progress-bar { background: var(--startup-accent); }
+#startup-status { margin: 16px 0 8px; }
+.startup-note { font-size: 13px; color: var(--startup-muted); }
+#startup-reload { margin-top: 12px; padding: 10px 18px; min-height: 44px; border: 1px solid currentColor; border-radius: 6px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+#startup-reload:focus-visible { outline: 3px solid var(--startup-accent); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { #startup-progress::-webkit-progress-value { transition: none; } }

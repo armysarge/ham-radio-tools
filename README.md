@@ -16,6 +16,8 @@ Ham Radio Tools is a free, open-source collection of practical tools for radio a
 
 ## What can I do with it?
 
+In **Band Plans**, enable **Show all radio services** to include aviation, maritime, broadcasting, satellite and other services in the existing frequency lookup, interactive chart and table. Filter by service and frequency range. Bundled data covers all three ITU regions (2024) and Canada’s national table (2026). Other countries combine clearly labelled regional service rows with their national amateur licence details; regional rows do not replace national rules. Everything works offline.
+
 | Area | Tools |
 |---|---|
 | RF & electronics | Frequency and wavelength, Ohm's law, power, dB/dBm, SWR, reactance, resonance, component colour codes, DIY baluns and RF transformers |

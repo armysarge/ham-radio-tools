@@ -4,6 +4,14 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+### Fixed
+- Desktop splash no longer flashes past on fast local startup: retain it for at least 700 ms from its first native window display, showing Ready if loading finishes sooner. Slow startups receive no extra hold; the browser handoff remains immediate. Added a real Electron first-display regression check.
+
+### Added
+- Band Plans: all-service allocations integrated into the existing frequency lookup, interactive chart and table, with service/range filters, matched-frequency filtering, pagination and saved mode preference. Bundled ITU 2024 Regions 1/2/3 and ISED Canada 2026 data; other national amateur tables show explicitly labelled regional service context. Source footnotes, priority and coverage limitations are preserved.
+- Animated desktop update download bar with actual percentages, a checksum-verification state and a verified completion state. Progress keeps updating when Settings is closed; reduced-motion preferences disable animation.
+- Offline startup splash for web and Electron, with the app icon, accessible progress bar tied to resource import, preferences, first-page loading and rendering. Slow/failed startup offers a reload action; tool modules remain lazy-loaded and saved projects are retained.
+
 ## [0.4.0] - 2026-10-26
 
 Validation: 381 automated tests, production build, Edge offline acceptance (including 375 px layouts) and Windows development Electron smoke checks passed. Linux, packaged-executable CI checks, clean-machine installation and real release upgrades still require verification for this version.

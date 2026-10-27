@@ -79,7 +79,7 @@ async function downloadRelease(release, destination, { fetchImpl, progress = () 
       bytes += chunk.length
       if (bytes > release.asset.size || bytes > MAX_DOWNLOAD) throw new Error('Installer exceeds its declared size.')
       digest.update(chunk); await file.writeFile(chunk)
-      progress(Math.round(bytes / release.asset.size * 100))
+      progress(Math.floor(bytes / release.asset.size * 100))
     }
     if (bytes !== release.asset.size || digest.digest('hex') !== hash) throw new Error('Installer checksum or size does not match. Nothing was installed.')
     await file.close(); file = null

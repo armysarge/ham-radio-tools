@@ -183,6 +183,51 @@
         }
       ],
       "gaps": "Simplified overview only: manually review the international table, country exclusions and national authorizations. The hash includes other FCC footnotes and may change for unrelated reasons."
+    },
+    {
+      "pack": "itu-all-services-2024",
+      "jurisdiction": "ITU Regions 1, 2 and 3",
+      "publisher": "International Telecommunication Union",
+      "document": "Radio Regulations 2024 Volume 1 Article 5",
+      "version": "2024 edition; incorporates WRC-23",
+      "officialUrl": "https://search.itu.int/history/HistoryDigitalCollectionDocLibrary/1.49.48.en.101.pdf",
+      "retrieved": "2026-10-27",
+      "licence": "Original publication copyright ITU 2024, all rights reserved. Only factual bounds, standardized service names, priority, qualifiers and footnote identifiers are summarized; publication/artwork/prose not redistributed.",
+      "reviewEveryDays": 180,
+      "extraction": "scripts/build-allocation-data.py extracts structured allocation facts into src/data/allocations.json. Source downloads are development-only, ignored by Git and not shipped. Review outputs and tests after any source change.",
+      "check": [
+        {
+          "url": "https://search.itu.int/history/HistoryDigitalCollectionDocLibrary/1.49.48.en.101.pdf",
+          "kind": "bytes",
+          "sha256": "040907a35846479b1f34ba628e35964dd4ce6d2b3fc05c2ff9b45e8ff215f5de"
+        }
+      ],
+      "gaps": "Regional framework, not national authorization. Country exceptions and footnote prose are not automatically applied. Numeric coverage below 8.3 kHz through 3 THz includes unallocated ranges."
+    },
+    {
+      "pack": "ca-all-services-2026",
+      "jurisdiction": "Canada",
+      "publisher": "Innovation, Science and Economic Development Canada",
+      "document": "Canadian Table of Frequency Allocations",
+      "version": "2026 table; source modified 2026-10-15",
+      "officialUrl": "https://ised-isde.canada.ca/site/spectrum-management-telecommunications/en/spectrum-allocation/canadian-table-frequency-allocations-sf10759",
+      "retrieved": "2026-10-27",
+      "licence": "Canadian government source. Factual numeric limits, service designations and footnote identifiers in an original representation; no source webpage, artwork or full footnote prose redistributed. No government endorsement.",
+      "reviewEveryDays": 180,
+      "extraction": "scripts/build-allocation-data.py extracts structured allocation facts into src/data/allocations.json. Source downloads are development-only, ignored by Git and not shipped. Review outputs and tests after any source change.",
+      "check": [
+        {
+          "url": "https://ised-isde.canada.ca/site/spectrum-management-telecommunications/sites/default/files/documents/ctfa_table_2026.json?open",
+          "kind": "bytes",
+          "sha256": "d170a81cb8606a7f7024ea8f488fe467a9c1eb7f8e3dafc8b23c4661b0021703"
+        },
+        {
+          "url": "https://ised-isde.canada.ca/site/spectrum-management-telecommunications/sites/default/files/documents/ctfa_footnotes_2026.json?open",
+          "kind": "bytes",
+          "sha256": "682f14977d94cb8f07c4fcbaa6f92bf827de72b1e473e9574f4728301320c821"
+        }
+      ],
+      "gaps": "National allocation table through 300 GHz; allocations are not channel assignments. C5 is government use, not military-only. C16A/C17 summaries flag documented military-base conditions; consult full source footnotes."
     }
   ],
   "notIncluded": [

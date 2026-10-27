@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/startup.css" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'" />
     <title>Ham Radio Tools — offline calculators, antenna designs and references for amateur radio</title>
     <meta name="description" content="Free, open-source, offline-first toolkit for radio amateurs: antenna designers (dipole, EFHW, vertical, J-pole, Yagi, quad), SWR and feedline loss, link budgets, filters, grid squares, band plans, Morse trainer, logbook with ADIF and satellite passes." />
@@ -57,8 +58,18 @@
     </script>
   </head>
   <body>
-    <noscript><p style="font-family:system-ui,sans-serif;padding:1rem">Ham Radio Tools is a web app and needs JavaScript. It runs entirely on your device and works offline once loaded.</p></noscript>
-    <div id="app"></div>
+    <noscript><style>#startup { display: none; }</style><p style="font-family:system-ui,sans-serif;padding:1rem">Ham Radio Tools is a web app and needs JavaScript. It runs entirely on your device and works offline once loaded.</p></noscript>
+    <section id="startup" aria-labelledby="startup-title">
+      <div class="startup-panel">
+        <div class="startup-brand"><img src="./app-icon.svg" alt="" /><div><p id="startup-title">Ham Radio Tools</p><p>Your amateur-radio workbench</p></div></div>
+        <progress id="startup-progress" max="100" value="5" aria-label="Application startup" aria-describedby="startup-status"></progress>
+        <p id="startup-status" role="status" aria-live="polite">Loading application resources…</p>
+        <p class="startup-note">Startup stages, not download size. Tools load as you open them.</p>
+        <button id="startup-reload" type="button" hidden>Reload app</button>
+      </div>
+    </section>
+    <div id="app" inert aria-hidden="true"></div>
+    <script src="/startup.js"></script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

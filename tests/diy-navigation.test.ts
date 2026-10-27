@@ -15,7 +15,8 @@ beforeAll(async () => {
   root = document.createElement('div')
   root.id = 'app'
   document.body.appendChild(root)
-  await import('../src/main')
+  const { startup } = await import('../src/main')
+  await startup
   app = (root as HTMLElement & { __vue_app__: App }).__vue_app__
   router = app.config.globalProperties.$router
   await router.isReady()

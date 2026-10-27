@@ -7,7 +7,7 @@ import { extname, join, resolve } from 'node:path'
 import { chromium } from 'playwright-core'
 
 const dist = resolve('dist')
-const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' }
+const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png' }
 const fail = (m) => { console.error('FAIL:', m); process.exitCode = 1 }
 const ok = (m) => console.log('ok  :', m)
 
@@ -56,6 +56,66 @@ const step = async (name, fn) => { try { await fn(); ok(name) } catch (e) { fail
 const expectText = async (sel, re) => { const t = await page.locator(sel).first().innerText(); if (!re.test(t)) throw new Error(`"${t.slice(0, 80)}" !~ ${re}`) }
 
 await step('app starts', async () => { await page.goto(base); await page.getByRole('heading', { name: 'Ham Radio Tools' }).waitFor() })
+await step('all services share the offline lookup, chart and list across regions and countries; persist and fit a phone', async () => {
+  await page.goto(base + '#/tool/band-plans')
+  const toggle = page.getByRole('checkbox', { name: 'Show all radio services', exact: true })
+  await toggle.check()
+  await page.getByLabel('Filter by service', { exact: true }).selectOption('aviation')
+  await page.getByLabel('Frequency range', { exact: true }).selectOption('vhf')
+  await page.getByLabel('What is at this frequency?', { exact: true }).fill('125')
+  await expectText('.frequency-results', /Aeronautical mobile/)
+  await expectText('table.band-table', /Aeronautical/)
+  await page.locator('.allocation-chart summary').click()
+  await page.locator('.allocation-svg [role=button]').first().click()
+  await expectText('.selected-allocation', /Aeronautical/)
+  await page.getByRole('button', { name: 'Region 3', exact: true }).click()
+  await expectText('.frequency-results', /ITU Region 3/)
+  await page.getByLabel('Band plan', { exact: true }).selectOption('b:ca-ised-rbr4')
+  await expectText('.frequency-results', /ISED 2026/)
+  await page.getByLabel('Band plan', { exact: true }).selectOption('b:za-icasa-annexure-i')
+  await expectText('.frequency-results', /ITU Region 1/)
+  await page.reload()
+  await page.getByLabel('Filter by service', { exact: true }).waitFor()
+  if (!await toggle.isChecked()) throw new Error('all-service preference did not persist')
+  await page.setViewportSize({ width: 375, height: 812 })
+  await page.locator('.allocation-chart summary').click()
+  if (await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)) throw new Error('allocations overflow the phone page')
+  await toggle.uncheck()
+  await page.locator('table.band-table').waitFor()
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto(base)
+  await page.getByRole('heading', { name: 'Ham Radio Tools', exact: true }).waitFor()
+})
+await step('startup splash shows real loading progress, recovers from missing resources and fits a phone', async () => {
+  const startup = await ctx.newPage()
+  await startup.setViewportSize({ width: 375, height: 812 })
+  let release
+  const gate = new Promise(resolve => { release = resolve })
+  try {
+    await startup.route('**/assets/bootstrap-*.js', async route => { await gate; await route.continue() })
+    await startup.goto(base, { waitUntil: 'domcontentloaded' })
+    await startup.locator('#startup').waitFor()
+    await startup.waitForFunction(() => document.querySelector('progress')?.value === 15)
+    if (!await startup.locator('#app').evaluate(el => el.inert)) throw new Error('app is interactive before startup completes')
+    if (await startup.evaluate(() => document.documentElement.scrollWidth > innerWidth)) throw new Error('splash overflows a phone viewport')
+    release()
+    await startup.locator('#startup').waitFor({ state: 'detached' })
+    await startup.getByRole('heading', { name: 'Ham Radio Tools', exact: true }).waitFor()
+    await startup.unroute('**/assets/bootstrap-*.js')
+    await startup.route('**/assets/bootstrap-*.js', route => route.abort())
+    await startup.reload()
+    await startup.getByRole('alert').filter({ hasText: 'Couldn’t start Ham Radio Tools' }).waitFor()
+    await startup.unroute('**/assets/bootstrap-*.js')
+    await startup.getByRole('button', { name: 'Reload app', exact: true }).click()
+    await startup.locator('#startup').waitFor({ state: 'detached' })
+    await startup.getByRole('heading', { name: 'Ham Radio Tools', exact: true }).waitFor()
+    await startup.route('**/startup.js', route => route.abort(), { times: 1 })
+    await startup.reload()
+    await startup.locator('#startup').waitFor({ state: 'detached' })
+    await startup.getByRole('heading', { name: 'Ham Radio Tools', exact: true }).waitFor()
+    if (await startup.locator('#app').evaluate(el => el.inert)) throw new Error('missing splash controller left the app inaccessible')
+  } finally { release(); await startup.close() }
+})
 await step('voltage divider circuit and engineering-value inputs work offline', async () => {
   await page.goto(base + '#/tool/voltage-divider')
   await page.getByLabel('Input voltage', { exact: true }).fill('12')

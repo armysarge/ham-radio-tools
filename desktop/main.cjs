@@ -13,7 +13,7 @@ app.setPath('userData', process.env.HRT_TEST_PROFILE || path.join(app.getPath('a
 app.commandLine.appendSwitch('disable-background-networking')
 app.commandLine.appendSwitch('disable-component-update')
 
-let mainWindow
+let mainWindow, startupVisible
 
 async function openLink(url) {
   if (!externalUrl(url)) return
@@ -38,7 +38,9 @@ function createWindow() {
   win.on('maximize', () => { saved.maximized = true; changed() })
   win.on('unmaximize', () => { saved.maximized = false; changed() })
   win.on('close', save)
-  win.once('ready-to-show', () => { if (saved.maximized) win.maximize(); if (!process.env.HRT_TEST_PROFILE) win.show() })
+  startupVisible = new Promise(resolve => {
+    win.once('ready-to-show', () => { if (saved.maximized) win.maximize(); if (!process.env.HRT_TEST_PROFILE) win.show(); resolve() })
+  })
   mainWindow.setMenuBarVisibility(false)
   mainWindow.webContents.setWindowOpenHandler(({ url }) => { void openLink(url); return { action: 'deny' } })
   mainWindow.webContents.on('will-navigate', (event, url) => {
@@ -51,6 +53,7 @@ function createWindow() {
 app.whenReady().then(async () => {
   app.setAppUserModelId('za.co.armysarge.hamradiotools')
   const trusted = event => mainWindow && !mainWindow.isDestroyed() && event.sender === mainWindow.webContents && event.senderFrame === mainWindow.webContents.mainFrame && isInternal(event.senderFrame.url)
+  ipcMain.handle('startup:visible', event => { if (!trusted(event)) throw new Error('Untrusted window'); return startupVisible })
   ipcMain.handle('window:state', event => { if (!trusted(event)) throw new Error('Untrusted window'); return { maximized: mainWindow.isMaximized() } })
   ipcMain.on('window:minimize', event => { if (trusted(event)) mainWindow.minimize() })
   ipcMain.on('window:toggle-maximize', event => { if (trusted(event)) mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize() })

@@ -2,6 +2,7 @@ export interface DesktopWindowState { maximized: boolean }
 export interface UpdateRelease { version: string; name: string; size: number }
 export interface UpdateResult { error?: string; canceled?: boolean; release?: UpdateRelease | null; downloaded?: boolean; platform?: string; revealed?: boolean; opened?: boolean }
 export interface DesktopControls {
+  startupVisible?(): Promise<void>
   minimize(): void
   toggleMaximize(): void
   close(): void

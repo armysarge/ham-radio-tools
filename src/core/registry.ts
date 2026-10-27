@@ -148,7 +148,7 @@ export const tools: ToolDef[] = [
     summary: 'What the ITU Radio Regulations are, who changes them, the three Regions, primary vs secondary, and Article 25 for amateurs.',
     keywords: ['itu', 'treaty', 'wrc', 'region', 'article 5', 'article 25', 'allocation', 'primary', 'secondary', 'iaru', 'regulations'], component: load(() => import('../tools/ItuRegulations.vue')) },
   { id: 'band-plans', title: 'Band Plans', category: 'ops', kind: 'reference',
-    summary: 'ITU region amateur allocations, a “what is at this frequency?” lookup, and installable national plans.',
+    summary: 'Amateur tables and searchable all-service allocations, with interactive regional charts and source-labelled national details.',
     keywords: ['allocation', 'region', 'frequency', 'iaru', 'itu', 'license', 'sub-band'], component: load(() => import('../tools/BandPlans.vue')) },
   { id: 'ctcss', title: 'CTCSS Tones', category: 'ops', kind: 'reference',
     summary: 'The 38 standard sub-audible repeater tones plus common extended tones.',

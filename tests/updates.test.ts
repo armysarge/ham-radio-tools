@@ -56,4 +56,18 @@ describe('explicit release updates', () => {
     await expect(checkRelease('0.3.0', 'win32', 'x64', async () => new Response(null, { status: 302, headers: { location: 'https://evil.test/file' } }))).rejects.toThrow(/Blocked/)
     await expect(checkRelease('0.3.0', 'win32', 'x64', async () => new Response(null, { status: 404 }))).rejects.toThrow(/No published release/)
   })
+  it('reports streamed byte progress without rounding an incomplete file up to 100%', async () => {
+    const folder = await mkdtemp(path.join(tmpdir(), 'hrt-progress-'))
+    const bytes = Buffer.alloc(1000, 1), hash = createHash('sha256').update(bytes).digest('hex')
+    const chosen = selectRelease(release, '0.3.0', 'win32', 'x64')
+    chosen.asset.size = bytes.length
+    const progress: number[] = []
+    const fetchImpl = async (url: string) => url.endsWith('SHA256SUMS.txt') ? new Response(`${hash}  ${name}`) : new Response(new ReadableStream({ start(controller) {
+      controller.enqueue(bytes.subarray(0, 997)); controller.enqueue(bytes.subarray(997)); controller.close()
+    } }))
+    try {
+      await downloadRelease(chosen, path.join(folder, name), { fetchImpl, progress: (value: number) => progress.push(value) })
+      expect(progress).toEqual([99, 100])
+    } finally { await rm(folder, { recursive: true, force: true }) }
+  })
 })

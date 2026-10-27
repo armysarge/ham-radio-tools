@@ -10,6 +10,7 @@ interface State {
   callsign: string
   favorites: string[]
   navExpanded: string[]
+  showAllRadioServices: boolean
   locations: SavedLocation[]
   stationId: string | null
   designs: SavedDesign[]
@@ -17,13 +18,14 @@ interface State {
 }
 
 const KEY = 'hrt:v1'
-const defaults = (): State => ({ theme: 'system', units: 'metric', textSize: 'normal', callsign: '', favorites: [], navExpanded: [], locations: [], stationId: null, designs: [], analytics: 'unset' })
+const defaults = (): State => ({ theme: 'system', units: 'metric', textSize: 'normal', callsign: '', favorites: [], navExpanded: [], showAllRadioServices: false, locations: [], stationId: null, designs: [], analytics: 'unset' })
 
 // localStorage can be missing or throw (private windows, blocked storage); the app must still work without it.
 function load(): State {
   try {
     const raw = localStorage.getItem(KEY)
     const loaded: State = { ...defaults(), ...(raw ? JSON.parse(raw) : {}) }
+    loaded.showAllRadioServices = loaded.showAllRadioServices === true
     loaded.favorites = Array.isArray(loaded.favorites)
       ? [...new Set(loaded.favorites.filter(id => typeof id === 'string').map(id => id === 'diy-transformers' ? 'diy-components' : id))]
       : []
