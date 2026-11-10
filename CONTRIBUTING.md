@@ -20,6 +20,6 @@ npm run build        # type-check + build
 npm run check:offline
 ```
 
-Add a tool: see *Adding a tool* in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) (it also needs an icon and an entry in the offline phone-width route list; `npm test` checks this).
+Add a tool: see *Adding a tool* in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) (it also needs an icon, a plain-language “What is this?” entry in `src/data/toolInfo.ts` and an entry in the offline phone-width route list; `npm test` checks this).
 
 Updating schedules or dated reference data: use the [content maintenance calendar](docs/CONTENT_MAINTENANCE.md) for monthly/seasonal checks, source records and release steps.

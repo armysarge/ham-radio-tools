@@ -165,8 +165,12 @@ svg.diagram { width: 100%; height: auto; display: block; }
 
 .gh-link { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; min-width: 44px; justify-content: center; color: var(--ink); text-decoration: none; border-radius: 8px; padding: 0 .4rem; }
 .gh-link:hover { color: var(--accent); background: var(--panel2); }
-.favorite-icon{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-width:44px;padding:0;flex:none;font-size:1.6rem;line-height:1}
+.favorite-icon,.info-icon{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-width:44px;padding:0;flex:none;font-size:1.6rem;line-height:1}
 .favorite-icon .pop{line-height:1}
+.tool-actions{display:flex;gap:.25rem;flex:none}
+.tool-info{margin:.25rem 0 1rem}
+.tool-info h2{margin:0 0 .4rem;font-size:1.05rem}
+.tool-info p{margin:.35rem 0}
 .nav-groups-heading{display:flex;align-items:center;justify-content:space-between;gap:.4rem;margin:.9rem .3rem .3rem;color:var(--muted);font-size:.8rem}
 .nav-groups-heading button{padding:.15rem .35rem;font-size:.75rem;min-height:32px}
 .sidebar details{border-bottom:1px solid var(--line);padding:.2rem 0}

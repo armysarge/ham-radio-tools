@@ -45,3 +45,17 @@ describe('registry integrity', () => {
     expect(tools.filter((t) => t.category === 'antenna').every((t) => !/[()]/.test(t.title))).toBe(true)
   })
 })
+
+import { TOOL_INFO } from '../src/data/toolInfo'
+describe('plain-language tool info', () => {
+  it('gives every tool a layman explanation and has none for unknown tools', () => {
+    const missing = tools.filter((t) => !TOOL_INFO[t.id]).map((t) => t.id)
+    const unknown = Object.keys(TOOL_INFO).filter((id) => !tools.some((t) => t.id === id))
+    expect({ missing, unknown }).toEqual({ missing: [], unknown: [] })
+    for (const [id, i] of Object.entries(TOOL_INFO)) {
+      expect(i.what.length, `${id} what`).toBeGreaterThan(80)
+      expect(i.when.length, `${id} when`).toBeGreaterThan(30)
+      expect(i.what + i.when, `${id} unfinished`).not.toMatch(/TODO|TBD|lorem/i)
+    }
+  })
+})

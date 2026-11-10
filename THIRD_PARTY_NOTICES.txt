@@ -1,6 +1,11 @@
 Third-party notices for the bundled web application. Electron ships its own LICENSE and LICENSES.chromium.html alongside the desktop executable.
 Natural Earth map data: public domain.
 
+=== Font Awesome Free 6.7.2 ===
+Circle Info icon by Fonticons, Inc. Licensed under CC BY 4.0.
+https://github.com/FortAwesome/Font-Awesome/blob/6.7.2/svgs/solid/circle-info.svg
+https://creativecommons.org/licenses/by/4.0/
+
 === vue ===
 The MIT License (MIT)
 
