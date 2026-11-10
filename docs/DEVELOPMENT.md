@@ -142,7 +142,7 @@ Band-plan pack format (`data.segments`): `{ "band": "20 m", "fromHz": 14000000, 
 | Logbook | ADIF 3.1.4 fields, ASCII only; duplicate = call + band + mode + UTC day | Stored in this browser: export regularly; no DXCC entity is written |
 | Propagation report | DVOACAP (VE3NEA, MIT), a reimplementation of the VOACAP/ITS model, translated to TypeScript: CCIR/URSI Fourier ionospheric maps, ray-mode search, absorption/ground/spreading loss, ITU-R P.372 noise, monthly median reliability | Matches DVOACAP's own sample output to the printed digit (about 8 000 values, `tests/voacap.test.ts`). Monthly median for the SSN you enter; no sporadic E; constant-gain antennas; the 7 000 km+ long-path model is checked for sanity only |
 | Propagation | NOAA solar position (~1 min); MUF = foF2·sec θ on a spherical Earth | foF2 must be supplied; no D-layer absorption, no forecast |
-| Satellite passes | SGP4 via satellite.js 6 (MIT) from a pasted TLE | Accuracy depends on the age of the element set; no Doppler; passes in progress at the end of the window are not listed |
+| Satellite passes | SGP4 via satellite.js 6 (MIT) from a pasted TLE | Accuracy depends on element-set age. First-order Doppler uses typed frequencies or 11 dated SatNOGS DB presets. Current activity is checked through external source links. Passes in progress at the end of the window are omitted. |
 | DIY components | C = ε₀εᵣA/d; Wheeler air coil; N = √(L/AL); resistor arrays for 50 Ω | Home-made parts vary ±20 % or more; fringing ignored; plastic-film thickness must be measured; air-gap voltage ceiling is one-fifth of dry-air breakdown |
 | Components | IEC 60062 colour code, EIA capacitor and SMD/EIA-96 codes, IEC 60063 E-series, Ohm’s law | Colour codes beyond the six common temperature-coefficient colours vary by maker |
 | Inverted-V | Dipole length × sloping-leg factor 0.97; span/drop by trigonometry | Empirical. Impedance guidance is qualitative |
@@ -151,12 +151,15 @@ Band-plan pack format (`data.segments`): `{ "band": "20 m", "fromHz": 14000000, 
 | ITU band plans | Article 5 amateur allocations, simplified per region | Overview only: no sub-band (CW/phone) plans, national rules differ; always check your licence |
 | Callsign lookup | ITU call sign series reduced to 1–2 character blocks; SSA–SSM/SSN–SSZ and 3DA–3DM/3DN–3DZ split by third letter | Shows who issued the call, not where the operator is; island/home-nation list is not the full DXCC list; spot-checked against the public ITU prefix table |
 | CW | ITU-R M.1677 code; PARIS unit = 1200/WPM ms; Farnsworth gap = (60c − 37.2s)/(19cs) s | Decoder clusters key-down/gap lengths: tolerates ~±15 % jitter in tests; microphone decoding is experimental |
+| Morse Trainer | Guided recall at Farnsworth timing, two rounds at 90% to advance, edit-distance feedback and review of missed symbols | E, T, M and I follow the linked guide's simple-sounds approach. Progress, XP and badges are local to the device. |
 | QRM harmonics | Multiples n·f inside each band; small loop ≤ λ/10 perimeter | Harmonic lists are arithmetic only; source sketches are schematic, not recordings |
 | Antenna mods | Qualitative evidence labels with reasons | No gain figures; ratings reflect handbook consensus, not simulation |
 | Locator | Integer cell arithmetic; cell edge belongs to the north-east cell; lon 180 → −180; lat 90 → top row | A locator is a cell, not a point |
 | Distance / bearing | Haversine, R = 6371.0088 km; forward azimuth; long path = circumference − short | Sphere: up to ~0.5% vs. the ellipsoid; true (not magnetic) bearings; undefined for coincident or antipodal points |
 
 Band-preset buttons are convenience design frequencies, **not** a band plan; allocations differ by country. The Q-code list is a paraphrased common set, not a verbatim ITU list.
+
+The trainer combines the linked guide's starter order with Koch-style progression and ARRL timing. A historical Morse pilot found better alphabet knowledge after the same training time when pupils learned whole sounds. The short rounds alternate listening with recall and feedback, and the daily round encourages practice on separate days. Retrieval and spacing studies support those principles in general learning tasks. The sequence, two-round threshold and rewards are app design choices. [Starter guide](https://matrix207.github.io/2014/06/24/how-to-learn-morse-code/) · [Morse pilot](https://doi.org/10.1111/j.2044-8295.1958.tb00639.x) · [Koch interpretation](https://longislandcwclub.org/the-koch-method/) · [ARRL timing](https://www.arrl.org/files/file/Technology/x9004008.pdf) · [Retrieval practice](https://pubmed.ncbi.nlm.nih.gov/16507066/) · [Distributed practice](https://pubmed.ncbi.nlm.nih.gov/16719566/)
 
 ## Architecture
 
@@ -180,7 +183,10 @@ Canonical units are Hz, m, W, Ω and degrees; display units are a UI concern in 
 1. Put the maths in `src/lib/` with tests in `tests/`.
 2. Create `src/tools/MyTool.vue`: wrap it in `<ToolLayout id="my-tool" :references="[…]">`, use `NumField` / `ResultRow`, and put the formula and assumptions in the `#explain` slot.
 3. Add one entry to `tools` in `src/core/registry.ts` (id, title, category, kind, keywords, lazy import) and a `TOOL_ICON` entry (add the icon to `src/components/NavIcon.vue` if it is new). Routing, sidebar, search and favorites follow automatically.
-4. Add `'tool/my-tool'` to the phone-width route list in `scripts/check-offline.mjs`. `tests/registry.test.ts` fails if a tool is missing its icon, category, route or page wiring.
+4. Add `'tool/my-tool'` to the phone-width route list in `scripts/check-offline.mjs`.
+5. Add a plain-language entry to `TOOL_INFO` in `src/data/toolInfo.ts`: what the tool is, for someone new to it, and when to use it. It appears behind the ⓘ button on the tool page.
+
+`tests/registry.test.ts` fails if a tool is missing its icon, category, route, plain-language entry or page wiring.
 
 ## Data, licenses and attribution
 

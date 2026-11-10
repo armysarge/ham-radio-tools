@@ -4,10 +4,22 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+### Changed
+- Calculator explanations use typeset equations with stacked fractions, italic variables, radicals, powers and subscripts. Nearby definitions identify symbols and units.
+- Morse & CW is a dedicated category. The trainer starts with E and T, adds characters through short guided rounds, and brings back missed sounds for review. Daily signals, speed sprints and on-air words earn XP and badges, with progress and streaks stored on the device.
+
 ### Fixed
 - Desktop splash no longer flashes past on fast local startup: retain it for at least 700 ms from its first native window display, showing Ready if loading finishes sooner. Slow startups receive no extra hold; the browser handoff remains immediate. Added a real Electron first-display regression check.
 
 ### Added
+- Satellite Pass Calculator keeps a saved library of element sets (TLEs) on the device, so passes work offline without pasting each time. Save the pasted set, import a multi-satellite file such as CelesTrak's amateur-radio list (damaged sets are rejected, the newest set per satellite is kept), and see each set's age. The desktop app adds an explicit **Update from CelesTrak** button that follows CelesTrak's usage policy: one documented URL, at most once every 2 hours, stop on any error. Nothing downloads in the background, and the web build does not connect out.
+- Every tool page has an info button (ⓘ) beside the favourite star that opens a plain-language “What is this?” explanation and when you would use the tool. Text lives in `src/data/toolInfo.ts`; a test fails if a tool has none.
+- Satellite Pass Calculator shows Doppler for any predicted pass. Enter a downlink and optional uplink, or choose from a SatNOGS DB snapshot of 11 satellites (CC BY-SA 4.0, retrieved 2026-11-10). The page shows the source, licence and snapshot age and warns when it is over 90 days old. It links to AMSAT activity reports, ARISS ISS status and the JARL FO-29 schedule for an online check.
+- Complex Impedance (Series & Parallel) tool combines up to five resistors, inductors, capacitors or R + jX impedances in series or parallel at one frequency. Shows a circuit diagram, rectangular and polar impedance, admittance, an equivalent series resistor with inductor or capacitor and its Q, and reflection coefficient, SWR and return loss against a chosen reference impedance. Shorts and ideal parallel resonance (open circuit) are reported explicitly.
+- AWG Wire Gauge tool converts between AWG (0000–40), conductor diameter and area; shows circular mils, copper resistance at a chosen temperature and mass; calculates voltage drop and power loss for an out-and-back or single run; suggests the thinnest gauge within an allowed drop; estimates copper skin depth and AC/DC resistance ratio; includes an AWG chart. Solid bare copper only, with no ampacity ratings.
+- Moxon Rectangle designer sizes uniform-diameter wire or tubing with Cebik’s equations. Includes A–E dimensions, conductor lengths, an exportable plan view and build guidance.
+- Doppler Shift calculator estimates one-way frequency offset and received frequency from line-of-sight speed and an approaching or receding direction.
+- Phonetic Alphabet cards show written pronunciations for all 26 letters and 10 digits, with stressed syllables marked in capitals.
 - Band Plans: all-service allocations integrated into the existing frequency lookup, interactive chart and table, with service/range filters, matched-frequency filtering, pagination and saved mode preference. Bundled ITU 2024 Regions 1/2/3 and ISED Canada 2026 data; other national amateur tables show explicitly labelled regional service context. Source footnotes, priority and coverage limitations are preserved.
 - Animated desktop update download bar with actual percentages, a checksum-verification state and a verified completion state. Progress keeps updating when Settings is closed; reduced-motion preferences disable animation.
 - Offline startup splash for web and Electron, with the app icon, accessible progress bar tied to resource import, preferences, first-page loading and rendering. Slow/failed startup offers a reload action; tool modules remain lazy-loaded and saved projects are retained.

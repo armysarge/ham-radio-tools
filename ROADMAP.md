@@ -16,7 +16,8 @@ Status reviewed **2026-10-26**. Recent additions passed the production build, au
 - [x] Illustrated antenna estimates, materials and band guidance, HF wire installation-height references, Yagi/quad starting designs, radial planning and a sourced QFH receive-design estimator.
 - [x] Offline map, Maidenhead, bearings and saved station locations.
 - [x] Station calculators, battery/solar planning and DIY components.
-- [x] Morse tools and Koch trainer, clocks/timers and ADIF logbook.
+- [x] Dedicated Morse & CW category with the sender, decoder and chart, plus a guided trainer starting with E and T. Includes missed-character review, daily and speed challenges, on-air word practice, XP, streaks and badges saved on the device.
+- [x] Clocks, timers and ADIF logbook.
 - [x] Propagation basics, satellite passes from imported elements and a band-by-hour propagation report (DVOACAP engine, offline).
 - [x] National band tables, reference tools, QRM guide and dated content packs.
 - [x] “On the air now” schedule section with live UTC matching, grouped station frequencies, filtering, stale-data notices and overnight weekday handling. Combines all bundled schedules and installed broadcast packs, independently of the detailed-table dropdown; no live reception/status service.
@@ -31,19 +32,17 @@ Status reviewed **2026-10-26**. Recent additions passed the production build, au
 - [x] Number Codes & 92 Code: searchable 73/88/QRP 72, usage examples, International Morse and selected historical 1/6/30 meanings. A curated guide, not a complete historical codebook.
 - [x] SWR/VSWR page: voltage maxima/minima input, validated extrema, ideal matched/total-reflection cases and an interactive normalised standing-wave envelope.
 - [x] Voltage Divider tool with a live labelled circuit, engineering-notation inputs, output voltage/current, ratio and equivalent source resistance. Shared with the calculator in Component Codes; searchable and independently favouritable.
+- [x] Readable equations across tool explanation panels, with labelled symbols and units, consistent mathematical notation and wrapping on narrow screens.
+- [x] Phonetic Alphabet pronunciation guide for all letters and digits, with syllable stress and alternate pronunciations for Charlie and Uniform.
+- [x] Standalone Doppler Shift calculator for one-way frequency offset and received frequency from user-entered line-of-sight speed and direction.
+- [x] Moxon Rectangle starting designs from Cebik’s equations, with A–E dimensions, cut lengths, a plan view and build guidance.
+- [x] AWG Wire Gauge tool: gauge, diameter and area conversion (0000–40 AWG), copper DC resistance and mass with temperature, voltage drop and power loss on a run, thinnest gauge for an allowed drop, skin depth and an AWG chart. Solid bare copper only; no ampacity ratings.
+- [x] Complex Impedance (Series & Parallel): up to five resistors, inductors, capacitors or R + jX impedances at one frequency, with a live circuit diagram, rectangular and polar impedance, admittance, equivalent series circuit with Q, and SWR/return loss against a real reference impedance. Ideal parts at a single frequency; no parasitics, loss models or transmission lines.
+- [x] Satellite Doppler tracking: user-entered downlink and optional uplink frequencies give the Doppler-corrected receive and transmit frequencies, range rate, elevation and azimuth along any predicted pass (10/30/60 s steps). The calculation uses first-order shift from the predicted range rate and keeps TLE age visible.
+- [x] Bundled SatNOGS DB frequency presets for 11 satellites (CC BY-SA 4.0), with snapshot age and a stale-data warning. Operator activity sources open on request: AMSAT recent reports, ARISS station status for ISS and the JARL FO-29 activation schedule. Activity remains unknown within the offline app.
+- [x] Saved satellite element-set library: save pasted TLEs, import multi-satellite files, per-set age, newest epoch kept, stored on the device for offline use. The desktop app has an explicit, rate-limited **Update from CelesTrak** button; the web build uses file import only. Not part of project export, since element sets go stale within days.
+- [x] Info (ⓘ) button on every tool page with a plain-language “What is this?” explanation.
 - [x] Maintainer content-update calendar with monthly schedule checks, seasonal handoffs, source review dates and a review log; see [CONTENT_MAINTENANCE.md](docs/CONTENT_MAINTENANCE.md).
-
-## Next: calculator and operating-guide improvements
-
-Work through these in order, keeping each increment runnable and verified.
-
-- [ ] Improve formula presentation in explanation panels using readable mathematical notation and labelled variables. SWR/VSWR and filters already have expanded explanations; this remains an app-wide task.
-- [ ] Add pronunciation guidance to the phonetic alphabet page.
-- [ ] Doppler shift calculator.
-- [ ] Moxon antenna design tool.
-- [ ] AWG wire gauge calculator & conversion tool.
-- [ ] Series and parallel complex-impedance calculators with circuit diagrams. Basic series/parallel resistance helpers already exist in Component Codes.
-- [ ] Extend the existing TLE-based satellite pass predictor with operating-frequency data and Doppler frequency tracking; keep satellite status and source age visible.
 
 ## BBC frequency reference delivered; programme guide pending
 
@@ -71,6 +70,8 @@ The desktop wrapper is **Electron**, following the request to test Electron. It 
 
 - [ ] Test installers on clean Windows and Linux machines with networking disabled, without Node.js installed.
 - [ ] Verify microphone, file import/export, printing and clipboard on each supported OS.
+- [ ] Exercise **Update from CelesTrak** against the live service from an installed Windows and Linux build. The fetch logic is covered by unit tests with a mocked response only.
+- [ ] Offer the one-click element update in the web build if CelesTrak's CORS headers allow it and the content-security policy can be widened for that one host.
 - [ ] Complete a real published-release upgrade test on clean Windows and Linux machines; automated update transport is mocked.
 
 ## Planned: reference and mapping improvements

@@ -20,12 +20,13 @@ In **Band Plans**, enable **Show all radio services** to include aviation, marit
 
 | Area | Tools |
 |---|---|
-| RF & electronics | Frequency and wavelength, Ohm's law, power, dB/dBm, SWR, reactance, resonance, component colour codes, DIY baluns and RF transformers |
-| Antenna building | Dipole, inverted-V, EFHW, vertical, J-pole, full-wave loop, QFH satellite receive design, Yagi and quad; dimensions, materials, build guidance and clearly qualified pattern illustrations |
+| RF & electronics | Frequency and wavelength, AWG wire gauge, complex impedance (series/parallel), Doppler shift, Ohm's law, power, dB/dBm, SWR, reactance, resonance, component colour codes, DIY baluns and RF transformers |
+| Antenna building | Dipole, inverted-V, EFHW, vertical, J-pole, full-wave loop, Moxon, QFH satellite receive design, Yagi and quad; dimensions, materials, build guidance and clearly qualified pattern illustrations |
 | Station planning | Feedline loss, link budgets, matching networks, filters, coils, toroids, batteries and solar |
 | Maps | Offline world map, Maidenhead grids, saved locations, distance and bearing |
 | Operating | Band tables, callsign lookup, Q codes, phonetics, CTCSS and DCS codes, clocks and timers |
-| CW & logging | Morse player and trainer, experimental decoder, logbook with ADIF import/export |
+| Morse & CW | Guided lessons, missed-character review, challenges and badges, Morse player, chart and experimental decoder |
+| Logging | Logbook with ADIF import/export |
 | Listening & propagation | QRM hunting and a sniffer-loop build guide, broadcast schedules, grey line, MUF estimates, a band-by-hour **propagation report** between two places (built-in DVOACAP model, offline) and satellite passes from your own TLE |
 | DIY components | Build coils, capacitors, dummy loads and ferrite chokes; calculate balun/transformer turns and material lengths, with winding diagrams and cable guidance |
 
