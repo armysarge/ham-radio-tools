@@ -6,6 +6,21 @@ const global = { stubs: { RouterLink: true }, mocks: { $route: { query: {} } } }
 const open = async (id: string) => { const m = (await tools.find((t) => t.id === id)!.component()) as any; const c = m.default ?? m; const w = mount(c, { global }); await flushPromises(); return w }
 
 describe('station tools render with their defaults', () => {
+  it('renders Ohm’s law resistance as a native voltage-over-current fraction', async () => {
+    const w = await open('ohms-law')
+    const equation = w.findAll('details.explain math').find(math => math.text() === 'R=VI')
+    expect(equation?.element.namespaceURI).toBe('http://www.w3.org/1998/Math/MathML')
+    expect(equation?.get('mfrac').element.children[0].textContent).toBe('V')
+    expect(equation?.get('mfrac').element.children[1].textContent).toBe('I')
+    w.unmount()
+  })
+  it('distinguishes inductive and capacitive reactance with labelled subscripts', async () => {
+    const w = await open('reactance-resonance')
+    const explanation = w.get('details.explain')
+    expect(explanation.findAll('.formula msub').map(symbol => symbol.element.children[1].textContent)).toEqual(['L', 'C', '0'])
+    expect(explanation.text()).toMatch(/X\s*L.*inductive reactance.*X\s*C.*capacitive reactance/i)
+    w.unmount()
+  })
   it('feedline loss: 20 m of RG-58 at 14.2 MHz, SWR 1.5', async () => { const w = await open('feedline-loss'); expect(w.text()).toContain('Total feedline loss'); expect(w.text()).not.toContain('NaN') })
   it('link budget gives a positive margin for 5 W over 20 km on 145 MHz', async () => { const w = await open('link-budget'); expect(w.text()).toContain('Link margin'); expect(w.text()).toContain('Radio horizon') })
   it('L-network 50 to 200 ohms', async () => { const w = await open('l-network'); expect(w.text()).toContain('0.9706'); expect(w.text()).toContain('97.06') })
@@ -81,7 +96,7 @@ describe('beam and radial tools', () => {
 
 describe('antenna radiation pattern illustrations', () => {
   it('shows an explicitly qualified pattern concept on every antenna design page', async () => {
-    for (const id of ['dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole', 'qfh', 'yagi', 'quad']) {
+    for (const id of ['dipole', 'inverted-v', 'vertical', 'loop', 'efhw', 'jpole', 'qfh', 'moxon', 'yagi', 'quad']) {
       const w = await open(id)
       expect(w.find('.radiation-pattern').exists(), id).toBe(true)
       expect(w.text(), id).toContain('Illustrative pattern concept')
@@ -91,7 +106,7 @@ describe('antenna radiation pattern illustrations', () => {
 
 describe('antenna band guidance', () => {
   it('gives practical band choices on every antenna design page', async () => {
-    for (const [id, band] of [['dipole', '40 m'], ['inverted-v', '80 m'], ['vertical', '70 cm'], ['loop', '80 m'], ['efhw', '40 m fundamental'], ['jpole', '2 m'], ['qfh', '137 MHz'], ['yagi', '6 m'], ['quad', '20 m']] as const) {
+    for (const [id, band] of [['dipole', '40 m'], ['inverted-v', '80 m'], ['vertical', '70 cm'], ['loop', '80 m'], ['efhw', '40 m fundamental'], ['jpole', '2 m'], ['qfh', '137 MHz'], ['moxon', '20 m'], ['yagi', '6 m'], ['quad', '20 m']] as const) {
       const w = await open(id)
       const guide = w.find('[aria-label="Recommended bands and uses"]')
       expect(guide.exists(), id).toBe(true)
@@ -119,7 +134,17 @@ describe('logbook, clock and trainer', () => {
     const w = await open('clock'); expect(w.text()).toContain('UTC'); await w.find('input[placeholder^="e.g."]').setValue('Nowhere/Land'); await w.findAll('button').find((b) => b.text() === 'Add')!.trigger('click')
     expect(w.text()).toContain('not a time zone name')
   })
-  it('trainer shows the lesson characters', async () => { const w = await open('morse-trainer'); expect(w.text()).toContain('K M'); expect(w.text()).toContain('Play') })
+  it('introduces E and T by sound and offers practice challenges', async () => {
+    const w = await open('morse-trainer')
+    const buttons = w.findAll('button').map(button => button.text())
+    expect(buttons).toContain('Hear E')
+    expect(buttons).toContain('Hear T')
+    expect(buttons).toContain('Start round')
+    expect(buttons).toContain('Daily signal')
+    expect(buttons).toContain('Speed sprint')
+    expect(w.get('[aria-label="Characters mastered"]').attributes('value')).toBe('0')
+    w.unmount()
+  })
   it('logbook validates a call, logs it, warns on a duplicate and can delete', async () => {
     localStorage.removeItem('hrt:log'); const w = await open('logbook')
     await w.findAll('button').find((b) => b.text() === 'Log contact')!.trigger('click'); expect(w.text()).toContain('Enter a call sign')

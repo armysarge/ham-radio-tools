@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('hrtDesktop', {
   getState: () => ipcRenderer.invoke('window:state'),
   copyText: text => ipcRenderer.invoke('clipboard:copy', text),
   saveFile: (name, bytes) => ipcRenderer.invoke('files:save', name, bytes),
+  fetchElements: () => ipcRenderer.invoke('elements:fetch'),
   checkUpdate: () => ipcRenderer.invoke('updates:check'),
   downloadUpdate: () => ipcRenderer.invoke('updates:download'),
   installUpdate: () => ipcRenderer.invoke('updates:install'),

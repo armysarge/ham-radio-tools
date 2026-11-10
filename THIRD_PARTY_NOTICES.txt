@@ -743,3 +743,17 @@ endorsement or affiliation is implied. Source rights are not relicensed as MIT.
 Both sources retrieved 2026-10-27. Regional allocations are not national
 operating authorizations or channel assignments; consult national rules and
 source footnotes. Government does not mean military-only.
+
+SATELLITE OPERATING FREQUENCIES
+-------------------------------
+SatNOGS DB, Libre Space Foundation. https://db.satnogs.org/about/
+Licensed under Creative Commons Attribution-ShareAlike 4.0 International
+(CC BY-SA 4.0): https://creativecommons.org/licenses/by-sa/4.0/
+Used in src/data/satelliteFrequencies.ts: a selection of uplink and downlink
+frequencies for eleven amateur satellites, snapshot retrieved 2026-11-10.
+The data was selected and reformatted with frequency ranges in hertz, shorter
+labels and no transmitter identifiers. See docs/DATA_SOURCES.md for the
+records and cross-checks. No endorsement by SatNOGS or the Libre Space
+Foundation is implied. The data file and adaptations remain under CC BY-SA
+4.0. The application's MIT licence applies separately. Status reports and
+operator schedules are linked on their publishers' sites.

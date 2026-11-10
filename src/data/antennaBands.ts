@@ -1,6 +1,6 @@
 // Practical construction choices, not band allocations, performance rankings or multiband guarantees.
 export const ANTENNA_BANDS_REVISION = '2026-10-26'
-export type AntennaBandId = 'dipole' | 'inverted-v' | 'vertical' | 'loop' | 'efhw' | 'jpole' | 'qfh' | 'yagi' | 'quad'
+export type AntennaBandId = 'dipole' | 'inverted-v' | 'vertical' | 'loop' | 'efhw' | 'jpole' | 'qfh' | 'moxon' | 'yagi' | 'quad'
 interface BandGuide {
   choices: { bands: string; use: string }[]
   limit: string
@@ -9,6 +9,7 @@ interface BandGuide {
 const wireReference = { title: 'ARRL HF wire antennas', url: 'https://www.arrl.org/hf-wire' }
 const vhfReference = { title: 'ARRL VHF and UHF antennas', url: 'https://www.arrl.org/vhf-and-uhf' }
 const beamReference = { title: 'ARRL HF beams', url: 'https://www.arrl.org/hf-beams' }
+export const MOXON_REFERENCE = { title: 'L. B. Cebik, W4RNL, Designing Moxon Rectangles by Equation and by Model', url: 'https://antenna2.github.io/cebik/content/moxon/moxgen.html' }
 
 export const ANTENNA_BANDS: Record<AntennaBandId, BandGuide> = {
   dipole: {
@@ -65,6 +66,14 @@ export const ANTENNA_BANDS: Record<AntennaBandId, BandGuide> = {
     ],
     limit: 'Check which satellite signals are currently active before building. Other-band QFH designs require appropriate geometry, feed phasing and measurement; proportional scaling here does not validate amateur-band transmission.',
     reference: { title: 'EDN 137 MHz receive prototype (2011)', url: 'https://www.edn.com/home-weather-satellite-receiver/' },
+  },
+  moxon: {
+    choices: [
+      { bands: '20 m, 15 m and 10 m', use: 'A compact directional wire beam for HF. Lower bands need more support and turning clearance.' },
+      { bands: '6 m and 2 m', use: 'Smaller versions can use uniform-diameter rod or tubing. Measure the tip gaps carefully.' },
+    ],
+    limit: 'Size each build for one band. Check the match and rear rejection over the frequencies you use, since they can peak at different points.',
+    reference: MOXON_REFERENCE,
   },
   yagi: {
     choices: [

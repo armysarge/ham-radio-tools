@@ -5,6 +5,7 @@ const { isInternal, externalUrl } = require('./policy.cjs')
 const { createAssetHandler } = require('./asset-handler.cjs')
 const { restoreWindowState, readState, writeState } = require('./window-state.cjs')
 const { checkRelease, downloadRelease, verifyFile } = require('./updates.cjs')
+const { fetchAmateurElements } = require('./elements.cjs')
 
 protocol.registerSchemesAsPrivileged([{ scheme: 'hrt', privileges: { standard: true, secure: true, supportFetchAPI: true } }])
 app.setName('Ham Radio Tools')
@@ -71,6 +72,12 @@ app.whenReady().then(async () => {
       try { await writeFile(choice.filePath, bytes) }
       catch (error) { dialog.showErrorBox('Export failed', error.message) }
     }
+  })
+  const elementsState = { lastAttempt: 0 }
+  ipcMain.handle('elements:fetch', async event => {
+    if (!trusted(event)) throw new Error('Untrusted window')
+    try { return await fetchAmateurElements({ state: elementsState, userAgent: `Ham-Radio-Tools/${app.getVersion()} (+https://github.com/armysarge/ham-radio-tools)` }) }
+    catch (error) { return { error: error.name === 'TimeoutError' ? 'Connection timed out. Try again when online.' : error.message } }
   })
   let release, downloaded, updating = false
   const updateAction = action => async event => {

@@ -23,11 +23,19 @@ const allowed = new RegExp('^https?://(www\\.w3\\.org/|www\\.sitemaps\\.org/|sch
 const balunSource = /^https:\/\/vk6ysf\.com\/(?:balun_choke_balun_hf|balun_guanella_current_1-[14]|balun_4-1|unun_9-1)\.htm$/
 const conversionSource = /^https:\/\/www\.nist\.gov\/pml\/(?:us-surveyfoot\/revised-unit-conversion-factors|special-publication-811\/nist-guide-si-appendix-b-conversion-factors\/nist-guide-si-appendix-b8)$/
 const bbcSource = /^https:\/\/www\.bbc\.co\.uk\/programmes\/articles\/2x9tqt6mc05vB2S37j8MWMJ\/global-short-wave-frequencies$/
+const moxonSource = 'https://antenna2.github.io/cebik/content/moxon/moxgen.html'
+const satelliteSources = new Set([
+  'https://db.satnogs.org/',
+  'https://creativecommons.org/licenses/by-sa/4.0/',
+  'https://status.amsat.org/',
+  'https://www.ariss.org/current-status-of-iss-stations.html',
+  'https://www.jarl.org/Japanese/3_Fuji/fuji3-202210.htm',
+])
 let found = 0
 for await (const f of walk(dist)) {
   if (/[\\/](frame-guard\.js|_headers)$/.test(f)) continue // lists the sites allowed to embed the app: configuration, never requested
   const t = await readFile(f, 'utf8').catch(() => '')
-  for (const u of t.match(/https?:\/\/[^\s"'`)<>\\]+/g) ?? []) if (!allowed.test(u) && !balunSource.test(u) && !conversionSource.test(u) && !bbcSource.test(u)) { found++; console.log('  external URL in', f.replace(dist, ''), u) }
+  for (const u of t.match(/https?:\/\/[^\s"'`)<>\\]+/g) ?? []) if (!allowed.test(u) && !balunSource.test(u) && !conversionSource.test(u) && !bbcSource.test(u) && u !== moxonSource && !satelliteSources.has(u)) { found++; console.log('  external URL in', f.replace(dist, ''), u) }
 }
 found ? fail(`${found} external URL(s) referenced in dist (review above)`) : ok('no external URLs in dist')
 
@@ -132,6 +140,8 @@ await step('voltage divider circuit and engineering-value inputs work offline', 
 await step('quad 3D construction view rotates offline', async () => {
   await page.goto(base + '#/tool/quad')
   await page.getByRole('img', { name: /Rotatable 3D cubical quad/ }).waitFor()
+  const icon = page.locator('.sidebar a[href="#/tool/quad"] svg')
+  if (await icon.locator('path').count() !== 3) throw new Error('quad menu icon must show two loops and a boom')
   const initial = await page.locator('.quad-loop').first().getAttribute('d')
   await page.getByLabel('Quad view azimuth', { exact: true }).press('End')
   if (await page.locator('.quad-loop').first().getAttribute('d') === initial) throw new Error('view did not rotate')
@@ -301,6 +311,21 @@ await step('sidebar and header remain responsive after repeated navigation', asy
 })
 await step('search filters tools', async () => { await page.getByLabel('Search tools').fill('swr'); await page.getByRole('heading', { name: 'SWR & Return Loss' }).waitFor(); await page.getByLabel('Search tools').fill('') })
 await step('frequency converter: 14.2 MHz = 21.11 m', async () => { await page.goto(base + '#/tool/frequency-wavelength'); await page.getByText('21.11').first().waitFor() })
+await step('Doppler shift follows direction and speed units offline', async () => {
+  await page.goto(base + '#/tool/doppler-shift')
+  await page.getByRole('button', { name: 'Copy Frequency shift: +10882.53 Hz', exact: true }).waitFor()
+  await page.getByRole('button', { name: 'Receding', exact: true }).click()
+  await page.getByRole('button', { name: 'Copy Frequency shift: -10882.53 Hz', exact: true }).waitFor()
+  await page.getByRole('button', { name: 'Copy Received frequency: 434.9891175 MHz', exact: true }).waitFor()
+  await page.getByLabel('Line-of-sight speed unit').selectOption('m/s')
+  const speed = page.getByLabel('Line-of-sight speed', { exact: true })
+  if (await speed.inputValue() !== '7500') throw new Error('speed unit conversion changed the entered speed')
+  await speed.fill('0')
+  await page.getByRole('button', { name: 'Copy Received frequency: 435 MHz', exact: true }).waitFor()
+  await speed.fill('3000000')
+  await page.getByRole('alert').filter({ hasText: 'Must be no more than' }).waitFor()
+  if (!(await page.getByRole('button', { name: /Copy Frequency shift/ }).isDisabled())) throw new Error('invalid speed retained a result')
+})
 await step('SWR 2 -> 9.542 dB', async () => { await page.goto(base + '#/tool/swr'); await page.getByLabel('SWR', { exact: true }).fill('2'); await page.getByText('9.542').first().waitFor() })
 await step('VSWR voltage extrema and envelope validate offline', async () => {
   await page.getByRole('button', { name: 'Voltage maxima/minima', exact: true }).click()
@@ -449,12 +474,92 @@ await step('downloads, clean tool headers, band filtering and non-selectable map
   await page.locator('.map svg').focus()
   await page.keyboard.press('ArrowRight')
 })
+await step('Moxon sizes uniform rod, rejects an oversized diameter, and saves and exports offline', async () => {
+  await page.goto(base + '#/tool/moxon')
+  await page.getByLabel('Design frequency', { exact: true }).fill('146')
+  await page.getByLabel('Conductor diameter unit').selectOption('in')
+  const diameter = page.getByLabel('Conductor diameter', { exact: true })
+  await diameter.fill('0.125')
+  await page.getByRole('button', { name: 'Copy A · Overall width: 739.2 mm', exact: true }).waitFor()
+  await page.getByRole('button', { name: 'Copy C · Tip gap: 32.61 mm', exact: true }).waitFor()
+  const diagram = page.getByRole('img', { name: /^Moxon plan view/ })
+  await diagram.waitFor()
+  await diameter.fill('2')
+  await page.getByRole('alert').filter({ hasText: 'Use a conductor diameter between' }).waitFor()
+  await diagram.waitFor({ state: 'detached' })
+  if (!(await page.getByRole('button', { name: 'Save design', exact: true }).isDisabled())) throw new Error('invalid design could be saved')
+  await diameter.fill('0.125')
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('button', { name: 'Download SVG' }).click(),
+  ])
+  const svg = await readFile(await download.path(), 'utf8')
+  if (download.suggestedFilename() !== 'moxon-146MHz.svg' || !svg.includes('32.61 mm')) throw new Error('Moxon SVG lost its dimensions')
+  await page.getByRole('button', { name: 'Save design', exact: true }).click()
+  await page.goto(base + '#/saved')
+  const saved = page.getByRole('row').filter({ hasText: 'Moxon 146 MHz' })
+  await saved.getByRole('link', { name: 'Open' }).click()
+  await page.getByRole('button', { name: 'Copy C · Tip gap: 32.61 mm', exact: true }).waitFor()
+  if (await diameter.inputValue() !== '3.175') throw new Error('saved Moxon lost its conductor diameter')
+})
+await step('Morse plays guided rounds, unlocks a new sound and saves badges and the daily clear', async () => {
+  const trainer = await ctx.newPage()
+  try {
+    trainer.on('pageerror', error => errors.push(error.message))
+    await trainer.addInitScript(() => { Math.random = () => 0 })
+    await trainer.goto(base + '#/tool/morse-trainer')
+    await trainer.getByRole('button', { name: 'Hear E', exact: true }).waitFor()
+    await trainer.getByRole('button', { name: 'Hear T', exact: true }).waitFor()
+    await trainer.getByText('Practice settings', { exact: true }).click()
+    await trainer.getByLabel('Character speed', { exact: true }).fill('60')
+    await trainer.getByLabel('Overall speed', { exact: true }).fill('60')
+    const copy = async (button, answer) => {
+      await trainer.getByRole('button', { name: button, exact: true }).click()
+      await trainer.getByLabel('What you copied', { exact: true }).fill(answer)
+      await trainer.getByRole('button', { name: 'Check my copy', exact: true }).click()
+    }
+    await copy('Start round', 'EEEEE EEEEE EEEEE')
+    await trainer.getByText('1 of 2 passing rounds for this lesson.', { exact: true }).waitFor()
+    await trainer.getByRole('button', { name: 'Practise missed sounds', exact: true }).waitFor()
+    await copy('New round', 'TEEEE EEEEE EEEEE')
+    await trainer.getByText('Next character unlocked.', { exact: true }).waitFor()
+    await trainer.getByRole('button', { name: 'Continue lessons', exact: true }).click()
+    await trainer.getByRole('button', { name: 'Hear M', exact: true }).waitFor()
+    await trainer.getByRole('button', { name: 'Daily signal', exact: true }).click()
+    await copy('Start round', 'EEEEE EEEEE EEEEE')
+    await trainer.getByText('Cleared today', { exact: true }).waitFor()
+    await trainer.reload()
+    await trainer.getByRole('button', { name: 'Hear M', exact: true }).waitFor()
+    if (!(await trainer.getByRole('button', { name: 'Daily signal', exact: true }).isDisabled())) throw new Error('daily clear was lost on reload')
+    const firstCopy = trainer.getByRole('listitem').filter({ hasText: 'First copy' })
+    await firstCopy.getByText('Earned', { exact: true }).waitFor()
+  } finally { await trainer.close() }
+})
+await step('satellite presets show operator links and leave current activity unknown offline', async () => {
+  await page.goto(base + '#/tool/satellite-passes')
+  const list = page.getByRole('combobox', { name: 'Bundled frequency list', exact: true })
+  await list.selectOption('24278')
+  await page.getByText(/Current activity is unknown in this app/).waitFor()
+  await page.getByRole('link', { name: /AMSAT OSCAR Satellite Status/ }).waitFor()
+  await page.getByRole('link', { name: /JARL activation schedule/ }).waitFor()
+  if (await list.locator('option').count() !== 12) throw new Error('expected 11 bundled satellite presets and manual entry')
+})
 await step('no uncaught errors', async () => { if (errors.length) throw new Error(errors.join(' | ')) })
-await step('phone width (375px): no horizontal overflow on any page, menu drawer opens', async () => {
+await step('phone width (375px): pages and expanded formulas fit, menu drawer opens', async () => {
   const m = await ctx.newPage(); await m.setViewportSize({ width: 375, height: 812 })
-  const routes = ['', 'downloads', 'tool/coordinate-converter', 'tool/unit-converter', 'tool/frequency-wavelength', 'tool/ohms-law', 'tool/voltage-divider', 'tool/components', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/efhw', 'tool/jpole', 'tool/vertical', 'tool/loop', 'tool/qfh', 'tool/maidenhead', 'tool/number-codes', 'tool/q-codes', 'tool/band-plans', 'tool/itu-regulations', 'tool/ctcss', 'tool/dcs', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'tool/feedline-loss', 'tool/link-budget', 'tool/l-network', 'tool/low-pass-filter', 'tool/high-pass-filter', 'tool/radiated-power', 'tool/coils', 'tool/power-planner', 'tool/yagi', 'tool/quad', 'tool/radial-planner', 'tool/logbook', 'tool/clock', 'tool/morse-trainer', 'tool/propagation', 'tool/propagation-report', 'tool/satellite-passes', 'tool/diy-components', 'tool/diy-baluns', 'tool/diy-transformers', 'settings', 'saved']
+  const routes = ['', 'downloads', 'tool/coordinate-converter', 'tool/unit-converter', 'tool/awg-wire', 'tool/complex-impedance', 'tool/frequency-wavelength', 'tool/doppler-shift', 'tool/ohms-law', 'tool/voltage-divider', 'tool/components', 'tool/dbm-watts', 'tool/swr', 'tool/reactance-resonance', 'tool/feedline-length', 'tool/dipole', 'tool/inverted-v', 'tool/efhw', 'tool/jpole', 'tool/vertical', 'tool/loop', 'tool/qfh', 'tool/moxon', 'tool/maidenhead', 'tool/number-codes', 'tool/q-codes', 'tool/band-plans', 'tool/itu-regulations', 'tool/ctcss', 'tool/dcs', 'tool/abbreviations', 'tool/constants', 'tool/cw', 'tool/callsign', 'tool/qrm-hunting', 'tool/broadcast-schedules', 'tool/phonetic', 'tool/feedline-loss', 'tool/link-budget', 'tool/l-network', 'tool/low-pass-filter', 'tool/high-pass-filter', 'tool/radiated-power', 'tool/coils', 'tool/power-planner', 'tool/yagi', 'tool/quad', 'tool/radial-planner', 'tool/logbook', 'tool/clock', 'tool/morse-trainer', 'tool/propagation', 'tool/propagation-report', 'tool/satellite-passes', 'tool/diy-components', 'tool/diy-baluns', 'tool/diy-transformers', 'settings', 'saved']
   const bad = []
-  for (const r of routes) { await m.goto(base + '#/' + r); await m.waitForTimeout(400); const w = await m.evaluate(() => [document.documentElement.scrollWidth, innerWidth]); if (w[0] > w[1]) bad.push(r + ' ' + w.join('>')) }
+  for (const r of routes) {
+    await m.goto(base + '#/' + r)
+    await m.waitForTimeout(400)
+    const overflow = await m.evaluate(() => {
+      const formulas = [...document.querySelectorAll('.explain .formula')]
+      for (const formula of formulas) formula.closest('details').open = true
+      if (document.documentElement.scrollWidth > innerWidth) return 'page overflow'
+      if (formulas.some(formula => formula.scrollWidth > formula.clientWidth)) return 'formula overflow'
+    })
+    if (overflow) bad.push(`${r} (${overflow})`)
+  }
   if (bad.length) throw new Error('overflow: ' + bad.join(', '))
   await m.goto(base); await m.getByRole('button', { name: 'Toggle navigation menu' }).click(); await m.locator('aside').getByRole('link', { name: 'SWR & Return Loss' }).first().click(); await m.waitForURL(/tool\/swr/); await m.getByRole('heading', { level: 1, name: 'SWR & Return Loss' }).waitFor()
   await m.close()

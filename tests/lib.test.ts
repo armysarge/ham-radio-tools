@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import * as rf from '../src/lib/rf'
 import * as mh from '../src/lib/maidenhead'
 import * as geo from '../src/lib/geo'
-import { dipoleLength, trimPerLeg, invertedV, vertical, loop, efhw, efhwMatch, jpole, qfh } from '../src/lib/antenna'
+import { dipoleLength, trimPerLeg, invertedV, vertical, loop, efhw, efhwMatch, jpole, qfh, moxon } from '../src/lib/antenna'
 import { fmt, feetInches } from '../src/lib/units'
 
 describe('rf', () => {
@@ -14,6 +14,22 @@ describe('rf', () => {
     expect(() => rf.wavelength(0)).toThrow(/greater than 0/)
     expect(() => rf.wavelength(-5)).toThrow()
     expect(() => rf.wavelength(NaN)).toThrow()
+  })
+  it('shifts a one-way carrier up on approach and down on recession', () => {
+    const carrier = 299_792_458
+    expect(rf.dopplerShift(carrier, -7500).shiftHz).toBeCloseTo(7500, 8)
+    expect(rf.dopplerShift(carrier, -7500).receivedHz).toBeCloseTo(299_799_958, 6)
+    expect(rf.dopplerShift(carrier, 7500).shiftHz).toBeCloseTo(-7500, 8)
+    expect(rf.dopplerShift(carrier, 7500).receivedHz).toBeCloseTo(299_784_958, 6)
+    expect(rf.dopplerShift(carrier, 0)).toEqual({ shiftHz: 0, receivedHz: carrier })
+  })
+  it('rejects Doppler inputs outside the low-speed model or numeric range', () => {
+    expect(() => rf.dopplerShift(0, 7500)).toThrow(/frequency/i)
+    expect(() => rf.dopplerShift(Infinity, 7500)).toThrow(/frequency/i)
+    expect(() => rf.dopplerShift(435e6, NaN)).toThrow(/range rate/i)
+    expect(() => rf.dopplerShift(435e6, 3e6)).toThrow(/range rate/i)
+    expect(() => rf.dopplerShift(435e6, -3e6)).toThrow(/range rate/i)
+    expect(() => rf.dopplerShift(Number.MAX_VALUE, -7500)).toThrow(/numeric range/i)
   })
   it('dBm / watts', () => {
     expect(rf.wattsToDbm(1e-3)).toBeCloseTo(0, 12)
@@ -58,6 +74,27 @@ describe('rf', () => {
     expect(rf.capacitiveReactance(1e6, 159.155e-12)).toBeCloseTo(1000, 1)
     expect(rf.physicalLengthForDegrees(14e6, 0.66, 90)).toBeCloseTo(3.5333, 3)
     expect(() => rf.physicalLengthForDegrees(14e6, 1.2, 90)).toThrow()
+  })
+})
+
+describe('Moxon rectangle', () => {
+  it('matches Cebik’s sizing equations at 146 MHz with 1/8-inch rod', () => {
+    const design = moxon(146e6, 0.003175)
+    expect(design.width).toBeCloseTo(0.739190, 6)
+    expect(design.drivenTail).toBeCloseTo(0.099743, 6)
+    expect(design.tipGap).toBeCloseTo(0.032609, 6)
+    expect(design.reflectorTail).toBeCloseTo(0.141631, 6)
+    expect(design.depth).toBeCloseTo(0.273983, 6)
+  })
+  it('accepts the modelled diameter endpoints and rejects extrapolation', () => {
+    const oneMetreHz = 299_792_458
+    expect(moxon(oneMetreHz, 1e-5).tipGap).toBeGreaterThan(0)
+    expect(moxon(oneMetreHz, 1e-2).tipGap).toBeGreaterThan(0)
+    expect(() => moxon(oneMetreHz, 9e-6)).toThrow(/diameter/i)
+    expect(() => moxon(oneMetreHz, 0.011)).toThrow(/diameter/i)
+    expect(() => moxon(oneMetreHz, NaN)).toThrow(/diameter/i)
+    expect(() => moxon(Infinity, 0.001)).toThrow(/frequency/i)
+    expect(() => moxon(0, 0.001)).toThrow(/frequency/i)
   })
 })
 

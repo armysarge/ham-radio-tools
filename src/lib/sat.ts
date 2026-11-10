@@ -1,5 +1,6 @@
 // Satellite pass prediction from a user-supplied two-line element set (TLE), using SGP4 from satellite.js (bundled, runs offline).
 import * as sat from 'satellite.js'
+import { C, dopplerShift } from './rf'
 
 export interface Tle { name: string; line1: string; line2: string }
 const checksum = (l: string) => { let s = 0; for (const c of l.slice(0, 68)) s += c === '-' ? 1 : /\d/.test(c) ? Number(c) : 0; return s % 10 }
@@ -58,4 +59,43 @@ export function passes(t: Tle, o: Observer, from: Date, hours: number, minElDeg 
     prev = ms; prevUp = up
   }
   return out
+}
+
+// ---- Doppler tracking along a pass ----
+/** Rate of change of the observer-to-satellite distance in m/s, positive when moving apart. Central difference over one second. */
+export function rangeRateMps(t: Tle, o: Observer, at: Date): number | null {
+  const a = look(t, o, new Date(at.getTime() - 500)), b = look(t, o, new Date(at.getTime() + 500))
+  return a && b ? (b.rangeKm - a.rangeKm) * 1000 : null
+}
+
+export interface TrackPoint extends Look { time: Date; rangeRateMps: number; marker?: 'AOS' | 'TCA' | 'LOS' }
+/** Samples from rise to set every `stepSec`, always including the rise, the peak-elevation time and the set. */
+export function trackPass(t: Tle, o: Observer, p: Pass, stepSec = 30): TrackPoint[] {
+  if (!(stepSec >= 1 && stepSec <= 300)) throw new RangeError('Step must be 1 to 300 seconds')
+  const times = new Map<number, TrackPoint['marker']>()
+  const a = p.aos.getTime(), z = p.los.getTime()
+  for (let ms = a; ms < z; ms += stepSec * 1000) times.set(ms, undefined)
+  times.set(a, 'AOS'); times.set(p.tca.getTime(), 'TCA'); times.set(z, 'LOS')
+  const out: TrackPoint[] = []
+  for (const [ms, marker] of [...times].sort((x, y) => x[0] - y[0])) {
+    const at = new Date(ms), l = look(t, o, at), rr = rangeRateMps(t, o, at)
+    if (l && rr != null) out.push({ ...l, time: at, rangeRateMps: rr, ...(marker ? { marker } : {}) })
+  }
+  return out
+}
+
+export interface DopplerFrequencies { downlinkHz: number; shiftHz: number; uplinkHz: number | null }
+/**
+ * What to tune and transmit so the satellite sees the nominal frequencies.
+ * Receive: the satellite's nominal downlink arrives shifted by the first-order Doppler.
+ * Transmit: pre-compensate so the satellite receives the nominal uplink.
+ */
+export function dopplerFrequencies(nominalDownHz: number, nominalUpHz: number | null, rangeRate: number): DopplerFrequencies {
+  const d = dopplerShift(nominalDownHz, rangeRate)
+  let uplinkHz: number | null = null
+  if (nominalUpHz != null) {
+    dopplerShift(nominalUpHz, rangeRate) // validates the inputs
+    uplinkHz = nominalUpHz / (1 - rangeRate / C)
+  }
+  return { downlinkHz: d.receivedHz, shiftHz: d.shiftHz, uplinkHz }
 }

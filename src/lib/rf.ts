@@ -6,6 +6,17 @@ export const wavelength = (fHz: number, vf = 1) => { need(fHz > 0, 'Frequency mu
 export const frequencyFromWavelength = (m: number, vf = 1) => { need(m > 0, 'Wavelength must be greater than 0'); return (C * vf) / m }
 export const period = (fHz: number) => { need(fHz > 0, 'Frequency must be greater than 0'); return 1 / fHz }
 
+export const MAX_DOPPLER_SPEED = C / 100
+/** First-order one-way RF Doppler shift. Positive range rate means the endpoints are moving apart. */
+export function dopplerShift(fHz: number, rangeRateMps: number) {
+  need(Number.isFinite(fHz) && fHz > 0, 'Frequency must be finite and greater than 0')
+  need(Math.abs(rangeRateMps) <= MAX_DOPPLER_SPEED, 'Range rate must be finite and within 1% of the speed of light')
+  const shiftHz = rangeRateMps === 0 ? 0 : fHz * (-rangeRateMps / C)
+  const receivedHz = fHz + shiftHz
+  need(Number.isFinite(receivedHz), 'Received frequency exceeds the supported numeric range')
+  return { shiftHz, receivedHz }
+}
+
 // ---- dB / dBm ----
 export const wattsToDbm = (w: number) => { need(w > 0, 'Power must be greater than 0'); return 10 * Math.log10(w / 1e-3) }
 export const dbmToWatts = (dbm: number) => 1e-3 * 10 ** (dbm / 10)

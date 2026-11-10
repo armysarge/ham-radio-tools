@@ -1,5 +1,7 @@
 <script setup lang="ts">
-type PatternKind = 'dipole' | 'inverted-v' | 'vertical' | 'loop' | 'efhw' | 'jpole' | 'beam' | 'qfh'
+import { MOXON_REFERENCE } from '../data/antennaBands'
+
+type PatternKind = 'dipole' | 'inverted-v' | 'vertical' | 'loop' | 'efhw' | 'jpole' | 'beam' | 'moxon' | 'qfh'
 
 const props = defineProps<{ kind: PatternKind }>()
 const PATTERNS: Record<PatternKind, { title: string; note: string; reference: string; url: string; axis: string }> = {
@@ -37,6 +39,11 @@ const PATTERNS: Record<PatternKind, { title: string; note: string; reference: st
     title: 'Directional beam · forward-lobe concept',
     note: 'Reflector and director elements aim energy toward the forward direction. This sketch does not predict beamwidth, sidelobes, front-to-back ratio or gain for the starting dimensions above.',
     reference: 'ARRL Antenna Book, HF Yagi and Quad Antennas', url: 'https://www.arrl.org/arrl-antenna-book', axis: 'Forward direction →',
+  },
+  moxon: {
+    title: 'Moxon rectangle · forward-lobe concept',
+    note: 'The beam points from the reflector toward the driven element. Tip spacing, mounting and nearby objects affect the actual pattern and rear rejection.',
+    reference: MOXON_REFERENCE.title, url: MOXON_REFERENCE.url, axis: 'Toward the driven element →',
   },
   qfh: {
     title: 'QFH · broad sky-coverage concept',
@@ -76,7 +83,7 @@ const info = PATTERNS[props.kind]
       </g>
       <text x="180" y="265" text-anchor="middle" class="pattern-label">{{ info.axis }}</text>
     </svg>
-    <svg v-else-if="kind === 'beam'" viewBox="0 0 360 210" role="img" :aria-label="`${info.title}: forward-directed main-lobe concept`" class="pattern-svg">
+    <svg v-else-if="kind === 'beam' || kind === 'moxon'" viewBox="0 0 360 210" role="img" :aria-label="`${info.title}: forward-directed main-lobe concept`" class="pattern-svg">
       <circle cx="105" cy="105" r="70" class="pattern-grid" /><circle cx="105" cy="105" r="38" class="pattern-grid" />
       <path d="M105 105 C150 68 225 55 300 88 C326 99 326 111 300 122 C225 155 150 142 105 105Z" class="pattern-lobe" />
       <path d="M68 105H145 M106 70V140" class="pattern-axis" />

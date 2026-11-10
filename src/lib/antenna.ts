@@ -66,6 +66,22 @@ export function loop(fHz: number, k = 1.0218, shape: LoopShape = 'square') {
   }
 }
 
+/** Cebik W4RNL's uniform-diameter Moxon fits, evaluated only over his modelled range. All lengths are in metres. */
+export function moxon(fHz: number, diameterM: number) {
+  if (!Number.isFinite(fHz) || fHz <= 0) throw new RangeError('Frequency must be finite and greater than zero.')
+  const wavelength = C / fHz
+  const diameterInWavelengths = diameterM / wavelength
+  if (!(diameterInWavelengths >= 1e-5 && diameterInWavelengths <= 1e-2)) {
+    throw new RangeError('Use a conductor diameter between 0.001% and 1% of the wavelength at this frequency.')
+  }
+  const x = Math.log10(diameterInWavelengths)
+  const width = wavelength * (0.3398571429 - 0.009571428571 * x - 0.0008571428571 * x ** 2)
+  const drivenTail = wavelength * (0.008285714286 - 0.02035714286 * x - 0.002142857143 * x ** 2)
+  const tipGap = wavelength * (0.05164285714 + 0.01780952381 * x + 0.001809523381 * x ** 2)
+  const reflectorTail = wavelength * (0.07178571429 + 0.001 * x)
+  return { width, drivenTail, tipGap, reflectorTail, depth: drivenTail + tipGap + reflectorTail }
+}
+
 export interface HarmonicBand { n: number; hz: number; band: string | null }
 /**
  * End-fed half-wave (EFHW): a half-wave wire fed at one end. The feed point is a high-impedance (voltage) point on the

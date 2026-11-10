@@ -15,6 +15,7 @@ export const CATEGORIES = [
   { id: 'maps', name: 'Maps & Grid Squares', blurb: 'Maidenhead locators, distance and bearing' },
   { id: 'station', name: 'Station & Logging', blurb: 'Feedlines, links, matching, filters, coils, power and your log' },
   { id: 'prop', name: 'Propagation & Satellites', blurb: 'Skip, grey line and satellite passes' },
+  { id: 'morse', name: 'Morse & CW', blurb: 'Learn Morse by ear, practise copying, send and decode' },
   { id: 'ops', name: 'Operating References', blurb: 'Quick lookups for on-air use' },
 ] as const
 export type CategoryId = (typeof CATEGORIES)[number]['id']
@@ -34,7 +35,7 @@ const load = (f: () => Promise<{ default: Component }>) => f as () => Promise<Co
 const withProps = (f: () => Promise<{ default: Component }>, props: Record<string, unknown>) => () =>
   f().then((m) => defineComponent({ render: () => h(m.default, props) }) as Component)
 
-// To add a tool: create src/tools/MyTool.vue (wrap it in <ToolLayout>) and add one entry here.
+// To add a tool: create src/tools/MyTool.vue (wrap it in <ToolLayout>) and add one entry here, plus a plain-language entry in src/data/toolInfo.ts (the info button).
 export const tools: ToolDef[] = [
   { id: 'coordinate-converter', title: 'Coordinate Converter', category: 'maps', kind: 'analytical',
     summary: 'Convert decimal degrees, degrees/minutes and DMS; inspect a Maidenhead cell and save a location.',
@@ -42,9 +43,18 @@ export const tools: ToolDef[] = [
   { id: 'unit-converter', title: 'Unit Converter', category: 'rf', kind: 'analytical',
     summary: 'Convert length, area, frequency, time, electronics units, energy and temperature, with metric and imperial values.',
     keywords: ['units', 'conversion', 'metric', 'imperial', 'feet', 'inches', 'celsius', 'fahrenheit', 'picofarad', 'nanofarad'], component: load(() => import('../tools/UnitConverter.vue')) },
+  { id: 'awg-wire', title: 'AWG Wire Gauge', category: 'rf', kind: 'analytical',
+    summary: 'Convert AWG, diameter and area; copper resistance, voltage drop on a run, thinnest gauge for a drop limit, skin depth and an AWG chart.',
+    keywords: ['awg', 'wire gauge', 'wire size', 'diameter', 'circular mils', 'mm2', 'copper', 'voltage drop', 'skin depth', 'resistance per metre'], component: load(() => import('../tools/AwgWire.vue')) },
+  { id: 'complex-impedance', title: 'Complex Impedance (Series & Parallel)', category: 'rf', kind: 'analytical',
+    summary: 'Combine resistors, inductors, capacitors and complex impedances in series or parallel at one frequency, with a circuit diagram, admittance, equivalent circuit and SWR.',
+    keywords: ['impedance', 'complex', 'series', 'parallel', 'admittance', 'reactance', 'phase', 'rectangular', 'polar', 'jx', 'rlc', 'swr'], component: load(() => import('../tools/ComplexImpedance.vue')) },
   { id: 'frequency-wavelength', title: 'Frequency ↔ Wavelength', category: 'rf', kind: 'analytical',
     summary: 'Convert frequency, wavelength and period, with optional velocity factor.',
     keywords: ['lambda', 'mhz', 'period', 'meter band', 'velocity factor'], component: load(() => import('../tools/FrequencyWavelength.vue')) },
+  { id: 'doppler-shift', title: 'Doppler Shift', category: 'rf', kind: 'analytical',
+    summary: 'Estimate one-way radio frequency shift and received frequency from line-of-sight speed.',
+    keywords: ['doppler', 'radial velocity', 'range rate', 'satellite', 'offset'], component: load(() => import('../tools/DopplerShift.vue')) },
   { id: 'ohms-law', title: "Ohm's Law & Power", category: 'rf', kind: 'analytical',
     summary: 'Enter any two of voltage, current, resistance or power to get the rest.',
     keywords: ['volts', 'amps', 'watts', 'resistance', 'ohm'], component: load(() => import('../tools/OhmsLaw.vue')) },
@@ -87,6 +97,9 @@ export const tools: ToolDef[] = [
   { id: 'qfh', title: 'Quadrifilar Helix Antenna', category: 'antenna', kind: 'empirical',
     summary: 'Frequency-scaled starting dimensions for a 137 MHz satellite receive QFH, with a labeled drawing and build notes.',
     keywords: ['qfh', 'quadrifilar helix', 'quadrifilar helicoidal', 'weather satellite', '137 MHz', 'circular polarization', 'receive'], component: load(() => import('../tools/Qfh.vue')) },
+  { id: 'moxon', title: 'Moxon Rectangle', category: 'antenna', kind: 'empirical',
+    summary: 'Size a two-element Moxon from frequency and conductor diameter, with a dimensioned plan view and cut lengths.',
+    keywords: ['moxon', 'moxgen', 'cebik', 'directional', 'beam', 'tip gap', 'reflector'], component: load(() => import('../tools/Moxon.vue')) },
   { id: 'feedline-loss', title: 'Feedline Loss', category: 'station', kind: 'analytical',
     summary: 'Cable loss from datasheet figures, length, frequency and SWR, and the power that reaches the antenna.',
     keywords: ['coax', 'rg-58', 'rg-213', 'lmr', 'attenuation', 'db per 100 ft', 'cable loss'], component: load(() => import('../tools/FeedlineLoss.vue')) },
@@ -136,8 +149,8 @@ export const tools: ToolDef[] = [
     summary: 'Which bands suit which time of day, a single-hop MUF estimate, and sunrise, sunset and the grey line on a map.',
     keywords: ['muf', 'skip', 'grey line', 'gray line', 'sunrise', 'sunset', 'terminator', 'ionosphere', 'fof2', 'hf', 'dx'], component: load(() => import('../tools/Propagation.vue')) },
   { id: 'satellite-passes', title: 'Satellite Pass Calculator', category: 'prop', kind: 'analytical',
-    summary: 'When a satellite rises, peaks and sets over you, from a TLE you paste in. Runs offline.',
-    keywords: ['satellite', 'iss', 'tle', 'pass', 'amsat', 'orbit', 'sgp4', 'azimuth', 'elevation', 'oscar', 'keplerian'], component: load(() => import('../tools/SatellitePasses.vue')) },
+    summary: 'When a satellite rises, peaks and sets over you, from a TLE you paste in, with Doppler-corrected downlink and uplink frequencies along each pass. Runs offline.',
+    keywords: ['satellite', 'doppler', 'tracking', 'iss', 'tle', 'pass', 'amsat', 'orbit', 'sgp4', 'azimuth', 'elevation', 'oscar', 'keplerian'], component: load(() => import('../tools/SatellitePasses.vue')) },
   { id: 'qrm-hunting', title: 'QRM Hunting', category: 'ops', kind: 'reference',
     summary: 'Step-by-step noise hunting, source signatures, a harmonic finder, and a DIY SDR sniffer loop.',
     keywords: ['interference', 'noise', 'rfi', 'sdr', 'birdies', 'plc', 'switching supply', 'loop', 'direction finding', 'qrm'], component: load(() => import('../tools/QrmHunting.vue')) },
@@ -168,10 +181,10 @@ export const tools: ToolDef[] = [
   { id: 'clock', title: 'UTC Clock & Timers', category: 'ops', kind: 'reference',
     summary: 'UTC and local time, extra time zones, a station-ID reminder and a UTC countdown for contests and nets.',
     keywords: ['utc', 'time', 'zulu', 'id', 'identification', 'timer', 'countdown', 'contest', 'net', 'world clock'], component: load(() => import('../tools/Clock.vue')) },
-  { id: 'morse-trainer', title: 'Morse Practice Trainer (Koch)', category: 'ops', kind: 'reference',
-    summary: 'Learn Morse by the Koch method: random groups at full character speed with Farnsworth spacing, scored by copy accuracy.',
+  { id: 'morse-trainer', title: 'Morse Trainer', category: 'morse', kind: 'reference',
+    summary: 'Learn Morse by ear with guided lessons, short copy rounds, challenges and badges.',
     keywords: ['morse', 'cw', 'koch', 'farnsworth', 'learn', 'practice', 'training', 'copy', 'g4fon'], component: load(() => import('../tools/MorseTrainer.vue')) },
-  { id: 'cw', title: 'CW (Morse): Send, Decode & Listen', category: 'ops', kind: 'reference',
+  { id: 'cw', title: 'CW (Morse): Send, Decode & Listen', category: 'morse', kind: 'reference',
     summary: 'Morse chart, text-to-Morse player with WAV download, tap or typed decoder, and an experimental microphone decoder.',
     keywords: ['morse', 'code', 'encoder', 'decoder', 'player', 'dit', 'dah', 'farnsworth', 'wpm', 'paris'], component: load(() => import('../tools/Cw.vue')) },
   { id: 'callsign', title: 'Callsign Lookup', category: 'ops', kind: 'reference',
@@ -188,13 +201,13 @@ export const tools: ToolDef[] = [
     keywords: ['nato', 'alpha', 'bravo', 'spelling', 'callsign'], component: load(() => import('../tools/Phonetic.vue')) },
 ]
 
-export const CATEGORY_ICON: Record<string, string> = { rf: 'rf', antenna: 'antenna', maps: 'map', station: 'station', prop: 'sun', ops: 'ops' }
+export const CATEGORY_ICON: Record<string, string> = { rf: 'rf', antenna: 'antenna', maps: 'map', station: 'station', prop: 'sun', morse: 'morse', ops: 'ops' }
 const TOOL_ICON: Record<string, string> = {
-  'coordinate-converter': 'globe', 'unit-converter': 'scale',
+  'coordinate-converter': 'globe', 'unit-converter': 'scale', 'awg-wire': 'cable', 'complex-impedance': 'coil', 'doppler-shift': 'wave', moxon: 'moxon',
   'frequency-wavelength': 'wave', 'ohms-law': 'resistor', 'voltage-divider': 'resistor', components: 'chip', 'dbm-watts': 'bars', swr: 'swr', 'reactance-resonance': 'coil', 'feedline-length': 'coax',
   dipole: 'dipole', efhw: 'endfed', 'inverted-v': 'invertedv', vertical: 'vertical', jpole: 'jpole', loop: 'loop', qfh: 'antenna', maidenhead: 'globe', 'qrm-hunting': 'search', 'broadcast-schedules': 'broadcast',
   'band-plans': 'plan', 'itu-regulations': 'scale', ctcss: 'pulse', dcs: 'pulse', abbreviations: 'list', constants: 'pi', cw: 'morse', callsign: 'badge', 'number-codes': 'list', 'q-codes': 'q', phonetic: 'letterA',
-  'feedline-loss': 'cable', 'link-budget': 'link', 'radiated-power': 'broadcast', 'l-network': 'match', 'low-pass-filter': 'filter', 'high-pass-filter': 'filter', coils: 'toroid', 'power-planner': 'battery', yagi: 'yagi', quad: 'loop', 'radial-planner': 'vertical', logbook: 'book', clock: 'clock', 'morse-trainer': 'morse', propagation: 'sun', 'propagation-report': 'heat', 'satellite-passes': 'sat', 'diy-components': 'diy', 'diy-baluns': 'toroid', 'diy-transformers': 'match',
+  'feedline-loss': 'cable', 'link-budget': 'link', 'radiated-power': 'broadcast', 'l-network': 'match', 'low-pass-filter': 'filter', 'high-pass-filter': 'filter', coils: 'toroid', 'power-planner': 'battery', yagi: 'yagi', quad: 'quad', 'radial-planner': 'vertical', logbook: 'book', clock: 'clock', 'morse-trainer': 'morse', propagation: 'sun', 'propagation-report': 'heat', 'satellite-passes': 'sat', 'diy-components': 'diy', 'diy-baluns': 'toroid', 'diy-transformers': 'match',
 }
 export const iconFor = (id: string) => TOOL_ICON[id] ?? 'wave'
 export const toolById = (id: string) => tools.find((t) => t.id === id)

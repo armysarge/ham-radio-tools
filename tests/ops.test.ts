@@ -39,13 +39,90 @@ describe('ADIF', () => {
 })
 describe('Koch trainer', () => {
   it('order and groups', () => {
-    expect(T.KOCH_ORDER).toHaveLength(41); expect(new Set(T.KOCH_ORDER).size).toBe(41); expect(T.kochChars(2)).toEqual(['K', 'M']); expect(() => T.kochChars(1)).toThrow(); expect(() => T.kochChars(42)).toThrow()
+    expect(new Set(T.KOCH_ORDER).size).toBe(41)
+    expect(T.KOCH_ORDER.join('')).toMatch(/^ETMISOH[A-Z]{19}\d{10}[.,=/?]{5}$/)
+    expect(T.kochChars(2)).toEqual(['E', 'T']); expect(() => T.kochChars(1)).toThrow(); expect(() => T.kochChars(42)).toThrow()
     let i = 0; const rng = () => [0, 0.99][i++ % 2]
     expect(T.randomGroups(['A', 'B'], 3, 2, rng)).toBe('ABA BAB'); expect(() => T.randomGroups([], 3, 2)).toThrow()
   })
   it('accuracy counts edits, not shifts', () => {
     expect(T.copyAccuracy('ABC DEF', 'abcdef')).toBe(100); expect(T.copyAccuracy('ABCDEF', 'ABDEF')).toBeCloseTo(83.33, 1); expect(T.copyAccuracy('ABCD', '')).toBe(0)
     expect(T.readyForNext(90)).toBe(true); expect(T.readyForNext(89.9)).toBe(false); expect(T.editDistance('KITTEN', 'SITTING')).toBe(3)
+  })
+  it('guarantees every focus symbol, including repeats, in three five-character groups', () => {
+    const groups = T.guidedCopy(['E'], ['T', 'M', 'T'], () => 0)
+    expect(groups).toMatch(/^[ETM]{5} [ETM]{5} [ETM]{5}$/)
+    expect(groups.match(/T/g)).toHaveLength(2)
+    expect(groups.match(/M/g)).toHaveLength(1)
+    expect(groups).not.toBe(T.guidedCopy(['E'], ['T', 'M', 'T'], () => 0.99))
+  })
+  it('identifies omitted and substituted symbols without blaming expected symbols for insertions', () => {
+    expect(T.gradeCopy('ABC DEF', 'abdef').missed).toEqual(['C'])
+    expect(T.gradeCopy('ET ET', 'exex')).toEqual({ accuracy: 50, missed: ['T'] })
+    expect(T.gradeCopy('ET', 'eXt')).toEqual({ accuracy: 50, missed: [] })
+  })
+  it('sanitizes persisted progress', () => {
+    expect(T.cleanMorseProgress(null)).toEqual({
+      mastered: 0, passes: 0, xp: 0, rounds: 0, perfectRounds: 0, streak: 0,
+      lastDay: null, dailyDay: null, dailyWins: 0, sprintWins: 0, wordWins: 0, reviewChars: [],
+    })
+    expect(T.cleanMorseProgress({
+      mastered: 1, passes: 7, xp: -10, rounds: '15', perfectRounds: Infinity,
+      lastDay: '2026-02-30', dailyDay: '2024-02-29', reviewChars: ['T', 'T', '!', 'Z', 'e', 1],
+    })).toMatchObject({ mastered: 0, passes: 1, xp: 0, rounds: 0, perfectRounds: 0, lastDay: null, dailyDay: '2024-02-29', reviewChars: ['T', 'E'] })
+    expect(T.nextMorseLesson(T.cleanMorseProgress({ mastered: 100 }))).toBe(41)
+  })
+  it('requires two passing current lessons and resets a pass after a failed current lesson', () => {
+    const initial = T.cleanMorseProgress()
+    const lesson = (progress: T.MorseProgress, accuracy: number, count = 2) => T.recordMorseRound(progress, { mode: 'lesson', lesson: count, accuracy, missed: [] }, '2026-10-19')
+    const firstPass = lesson(initial, 90)
+    expect(T.nextMorseLesson(initial)).toBe(2)
+    expect(initial).toMatchObject({ mastered: 0, passes: 0, xp: 0, rounds: 0 })
+    expect(firstPass).toMatchObject({ mastered: 0, passes: 1, xp: 14, rounds: 1 })
+    expect(lesson(firstPass, 100, 3)).toMatchObject({ mastered: 0, passes: 1 })
+    expect(lesson(firstPass, 89)).toMatchObject({ mastered: 0, passes: 0 })
+    const mastered = lesson(firstPass, 100)
+    expect(mastered).toMatchObject({ mastered: 2, passes: 0, xp: 29, rounds: 2, perfectRounds: 1 })
+    expect(T.nextMorseLesson(mastered)).toBe(3)
+    expect(lesson(T.cleanMorseProgress({ mastered: 41 }), 100, 41)).toMatchObject({ mastered: 41, passes: 0 })
+  })
+  it('refreshes up to six unique mistakes and removes cleared characters after a review', () => {
+    const initial = T.cleanMorseProgress({ mastered: 7, reviewChars: ['E', 'T', 'I', 'M', 'S', 'O'] })
+    const daily = T.recordMorseRound(initial, { mode: 'daily', lesson: 8, accuracy: 80, missed: ['H', 'T', 'H', 'Z'] }, '2026-10-19')
+    expect(daily.reviewChars).toEqual(['H', 'T', 'E', 'I', 'M', 'S'])
+    const sprint = T.recordMorseRound(daily, { mode: 'sprint', lesson: 8, accuracy: 100, missed: [] }, '2026-10-19')
+    expect(sprint.reviewChars).toEqual(daily.reviewChars)
+    const review = T.recordMorseRound(sprint, { mode: 'review', lesson: 8, accuracy: 80, missed: ['M', 'M'] }, '2026-10-19')
+    expect(review.reviewChars).toEqual(['M'])
+  })
+  it('awards one daily bonus per day and tracks scored wins by mode', () => {
+    const initial = T.cleanMorseProgress({ passes: 1 })
+    const day = '2026-10-19'
+    const daily = { mode: 'daily' as const, lesson: 2, accuracy: 100, missed: [] }
+    const loss = T.recordMorseRound(initial, { ...daily, accuracy: 89, missed: ['T'] }, day)
+    expect(loss).toMatchObject({ dailyWins: 0, dailyDay: null, xp: 13 })
+    const win = T.recordMorseRound(loss, daily, day)
+    expect(win).toMatchObject({ dailyWins: 1, dailyDay: day, xp: 48, rounds: 2, perfectRounds: 1, passes: 1 })
+    const repeat = T.recordMorseRound(win, daily, day)
+    expect(repeat).toMatchObject({ dailyWins: 1, xp: 63, rounds: 3, perfectRounds: 2 })
+    const tomorrow = T.recordMorseRound(repeat, daily, '2026-10-20')
+    expect(tomorrow).toMatchObject({ dailyWins: 2, dailyDay: '2026-10-20', xp: 98 })
+    const sprint = T.recordMorseRound(win, { ...daily, mode: 'sprint' }, day)
+    const words = T.recordMorseRound(sprint, { ...daily, mode: 'words' }, day)
+    expect(words).toMatchObject({ dailyWins: 1, sprintWins: 1, wordWins: 1, passes: 1 })
+    expect(T.recordMorseRound(words, { ...daily, mode: 'free' }, '2026-10-20')).toBe(words)
+  })
+  it('continues a streak across adjacent local calendar days and restarts after a gap', () => {
+    const newYear = T.practiceDay(new Date(2027, 0, 1, 0, 1))
+    expect(newYear).toBe('2027-01-01')
+    const initial = T.cleanMorseProgress({ lastDay: '2026-12-31', streak: 4 })
+    expect(T.activeMorseStreak(initial, newYear)).toBe(4)
+    const round = { mode: 'lesson' as const, lesson: 2, accuracy: 0, missed: ['E', 'T'] }
+    const dayOne = T.recordMorseRound(initial, round, newYear)
+    expect(dayOne).toMatchObject({ xp: 5, streak: 5, lastDay: newYear })
+    expect(T.recordMorseRound(dayOne, round, newYear).streak).toBe(5)
+    expect(T.activeMorseStreak(dayOne, '2027-01-03')).toBe(0)
+    expect(T.recordMorseRound(dayOne, round, '2027-01-03').streak).toBe(1)
   })
 })
 describe('clock and timers', () => {

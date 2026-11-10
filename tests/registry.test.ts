@@ -30,6 +30,10 @@ describe('registry integrity', () => {
     expect(tools.find((t) => t.id === 'diy-components')).toMatchObject({ title: 'DIY Components', category: 'rf' })
     expect(CATEGORIES.map((c) => c.id)).not.toContain('diy')
   })
+  it('groups the trainer and CW tools together under Morse & CW', () => {
+    expect(CATEGORIES.find(category => category.id === 'morse')?.name).toBe('Morse & CW')
+    expect(tools.filter(tool => tool.category === 'morse').map(tool => tool.id)).toEqual(['morse-trainer', 'cw'])
+  })
   it('finds transformer guidance in DIY Components without a separate menu entry', () => {
     expect(tools.some((t) => t.id === 'diy-transformers')).toBe(false)
     for (const query of ['transformer', 'transformers', 'rf transformer', 'impedance ratio', 'turns ratio', 'ferrite', 'toroid', 'unun', '49:1', '9:1']) {

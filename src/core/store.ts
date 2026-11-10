@@ -1,5 +1,7 @@
 import { reactive, watch } from 'vue'
 import type { ProjectData } from '../lib/project'
+import { cleanSavedElements, type SavedElement } from '../lib/elementStore'
+import { cleanMorseProgress, type MorseProgress } from '../lib/trainer'
 
 export interface SavedLocation { id: string; name: string; lat: number; lon: number }
 export interface SavedDesign { id: string; toolId: string; name: string; summary: string; params: Record<string, number | string>; saved: string }
@@ -14,11 +16,14 @@ interface State {
   locations: SavedLocation[]
   stationId: string | null
   designs: SavedDesign[]
+  elements: SavedElement[]
+  elementsFetched: string | null // when the saved sets were last downloaded from CelesTrak (desktop), if ever
+  morse: MorseProgress
   analytics: 'unset' | 'on' | 'off' // only offered in the demo build; never 'on' without an explicit click
 }
 
 const KEY = 'hrt:v1'
-const defaults = (): State => ({ theme: 'system', units: 'metric', textSize: 'normal', callsign: '', favorites: [], navExpanded: [], showAllRadioServices: false, locations: [], stationId: null, designs: [], analytics: 'unset' })
+const defaults = (): State => ({ theme: 'system', units: 'metric', textSize: 'normal', callsign: '', favorites: [], navExpanded: [], showAllRadioServices: false, locations: [], stationId: null, designs: [], elements: [], elementsFetched: null, morse: cleanMorseProgress(), analytics: 'unset' })
 
 // localStorage can be missing or throw (private windows, blocked storage); the app must still work without it.
 function load(): State {
@@ -26,6 +31,9 @@ function load(): State {
     const raw = localStorage.getItem(KEY)
     const loaded: State = { ...defaults(), ...(raw ? JSON.parse(raw) : {}) }
     loaded.showAllRadioServices = loaded.showAllRadioServices === true
+    loaded.elements = cleanSavedElements(loaded.elements)
+    loaded.elementsFetched = typeof loaded.elementsFetched === 'string' && !Number.isNaN(Date.parse(loaded.elementsFetched)) ? loaded.elementsFetched : null
+    loaded.morse = cleanMorseProgress(loaded.morse)
     loaded.favorites = Array.isArray(loaded.favorites)
       ? [...new Set(loaded.favorites.filter(id => typeof id === 'string').map(id => id === 'diy-transformers' ? 'diy-components' : id))]
       : []

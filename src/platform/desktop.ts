@@ -10,6 +10,7 @@ export interface DesktopControls {
 
   copyText(text: string): Promise<void>
   saveFile(name: string, bytes: Uint8Array): Promise<void>
+  fetchElements?(): Promise<{ text?: string; retrievedAt?: string; error?: string }>
   checkUpdate(): Promise<UpdateResult>
   downloadUpdate(): Promise<UpdateResult>
   installUpdate(): Promise<UpdateResult>
