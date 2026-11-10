@@ -116,6 +116,8 @@ Data that goes out of date is **not** baked into the app. A pack is a JSON file 
 
 Working examples of both formats are in [docs/packs](packs) (clearly marked as format demos, not real data).
 
+For a broadcast schedule with publisher validity dates, use `"version": 2` and include both `"validFrom"` and `"validUntil"` at the top level in `YYYY-MM-DD` format. Both UTC dates are inclusive. The text schedule converter accepts these dates when installing or saving a pack. Outside the window, rows are available under Everything as reference. Version 1 packs without dates continue to work with the revision age warning.
+
 Band-plan pack format (`data.segments`): `{ "band": "20 m", "fromHz": 14000000, "toHz": 14070000, "use": "CW and narrow digital", "modes": "CW, RTTY", "power": "…", "status": "…", "classes": "General, Extra", "note": "…" }`, plus optional pack-level `notes`. Schedule pack format (`data.entries`): `{ "freqKhz": 5950, "startUtc": "0000", "endUtc": "0100", "days": "daily" | "135", "station": "…", "language": "…", "target": "…", "country": "…" }` (days: 1 = Monday).
 
 ## Calculation references and known limitations

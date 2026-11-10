@@ -6,10 +6,11 @@ import { getPack, installedPacks } from '../src/core/packs'
 
 vi.mock('../src/core/packs', async () => {
   const { shallowRef } = await import('vue')
+  const installedPacks = shallowRef([{ id: 'fixture', kind: 'broadcast-schedule', title: 'Test schedule', revision: '2026-09-01', source: 'Test source' }])
   return {
-    installedPacks: shallowRef([{ id: 'fixture', kind: 'broadcast-schedule', title: 'Test schedule', revision: '2026-09-01', source: 'Test source' }]),
+    installedPacks,
     refreshPacks: vi.fn(async () => {}),
-    getPack: vi.fn(async () => ({ data: { entries: [
+    getPack: vi.fn(async (id: string) => ({ ...installedPacks.value.find(p => p.id === id), data: { entries: [
       { station: 'Night service', freqKhz: 6000, startUtc: '2300', endUtc: '0031', days: '7' },
       { station: 'Night service', freqKhz: 7000, startUtc: '2300', endUtc: '0031', days: '7' },
       { station: 'Day service', freqKhz: 9000, startUtc: '1200', endUtc: '1300', days: '1' },
@@ -32,6 +33,42 @@ beforeEach(() => {
   vi.setSystemTime(new Date('2026-10-26T00:30:00Z'))
 })
 afterEach(() => vi.useRealTimers())
+
+it('applies each imported season at UTC midnight while retaining its reference rows', async () => {
+  const original = installedPacks.value
+  vi.setSystemTime(new Date('2026-10-25T23:59:45Z'))
+  installedPacks.value = [{ ...original[0]!, validFrom: '2026-10-26', validUntil: '2026-10-26' }]
+  vi.mocked(getPack).mockResolvedValueOnce({ ...installedPacks.value[0], data: { entries: [
+    { station: 'Seasonal service', freqKhz: 5950, startUtc: '0000', endUtc: '0000', days: 'daily' },
+  ] } } as Awaited<ReturnType<typeof getPack>>)
+  const w = mount(BroadcastSchedules, { global: { stubs: { RouterLink: true } } })
+  try {
+    await w.get('select').setValue('fixture'); await flushPromises()
+    const live = w.get('section[aria-label="On the air now"]')
+    const details = w.get('.schedule-results')
+    expect(live.text()).toContain('not yet in effect')
+    expect(live.text()).not.toContain('Seasonal service')
+    expect(details.text()).not.toContain('Seasonal service')
+    await w.findAll('button').find(b => b.text() === 'Everything')!.trigger('click')
+    expect(details.text()).toContain('Upcoming reference')
+    expect(details.text()).toContain('Seasonal service')
+    await w.findAll('button').find(b => b.text() === 'On air at…')!.trigger('click')
+
+    await vi.advanceTimersByTimeAsync(15_000)
+    expect(live.text()).toContain('Seasonal service')
+    expect(details.text()).toContain('Seasonal service')
+
+    vi.setSystemTime(new Date('2026-10-26T23:59:45Z'))
+    await vi.advanceTimersByTimeAsync(15_000)
+    expect(live.text()).toContain('expired')
+    expect(live.text()).not.toContain('Seasonal service')
+    expect(live.text()).toContain('WWV (Fort Collins')
+    expect(details.text()).not.toContain('Seasonal service')
+    await w.findAll('button').find(b => b.text() === 'Everything')!.trigger('click')
+    expect(details.text()).toContain('Archive')
+    expect(details.text()).toContain('Seasonal service')
+  } finally { w.unmount(); installedPacks.value = original }
+})
 
 it('groups current frequencies, remains live during manual browsing and updates when a transmission ends', async () => {
   const w = mount(BroadcastSchedules, { global: { stubs: { RouterLink: true } } })
@@ -75,7 +112,7 @@ it('ignores a previous schedule load after switching back to bundled stations', 
   try {
     await w.get('select').setValue('fixture')
     expect(w.get('section[aria-label="On the air now"]').text()).toContain('Loading')
-    await w.get('select').setValue('time')
+    await w.get('select').setValue('bundled:time')
     finish(null); await flushPromises()
     const now = w.get('section[aria-label="On the air now"]')
     expect(now.text()).toContain('WWV (Fort Collins')
@@ -88,7 +125,7 @@ it('combines bundled and multiple installed sources independently of the dropdow
   vi.setSystemTime(new Date('2026-10-26T05:30:00Z'))
   const original = installedPacks.value
   installedPacks.value = [...original, { ...original[0]!, id: 'second', title: 'Second schedule' }]
-  vi.mocked(getPack).mockImplementation(async id => ({ data: { entries: [
+  vi.mocked(getPack).mockImplementation(async id => ({ ...installedPacks.value.find(p => p.id === id), data: { entries: [
     { station: id === 'second' ? 'Second service' : 'First service', freqKhz: 8000, startUtc: '0000', endUtc: '0000', days: 'daily' },
   ] } }) as Awaited<ReturnType<typeof getPack>>)
   const w = mount(BroadcastSchedules, { global: { stubs: { RouterLink: true } } })

@@ -44,9 +44,3 @@ export const BBC_SCHEDULE: BroadcastEntry[] = [
   ]),
   ...region('South Asia', [['1500', '1600', 'daily', [17575]]], true),
 ]
-
-/** Published date range is inclusive, in UTC. Out-of-season rows remain available only as a reference. */
-export function bbcDateStatus(now: Date): 'upcoming' | 'current' | 'expired' {
-  const date = now.toISOString().slice(0, 10)
-  return date < BBC_META.validFrom ? 'upcoming' : date > BBC_META.validUntil ? 'expired' : 'current'
-}

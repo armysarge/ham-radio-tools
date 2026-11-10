@@ -1,7 +1,7 @@
 import { afterEach, expect, it, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
-import { BBC_SCHEDULE, BBC_META, bbcDateStatus } from '../src/data/bbcSchedule'
-import { transmissionOnAirAt } from '../src/lib/packs'
+import { BBC_SCHEDULE, BBC_META } from '../src/data/bbcSchedule'
+import { scheduleDateStatus, transmissionOnAirAt } from '../src/lib/packs'
 import BroadcastSchedules from '../src/tools/BroadcastSchedules.vue'
 
 afterEach(() => vi.useRealTimers())
@@ -38,10 +38,10 @@ it('transcribes the supplied BBC season with explicit weekdays and reception mod
   expect(transmissionOnAirAt(midnight, 0, 2)).toBe(false)
 })
 it('uses inclusive UTC season dates and excludes dates outside the published window', () => {
-  expect(bbcDateStatus(new Date('2026-10-24T23:59:59Z'))).toBe('upcoming')
-  expect(bbcDateStatus(new Date('2026-10-25T00:00:00Z'))).toBe('current')
-  expect(bbcDateStatus(new Date('2027-03-27T23:59:59Z'))).toBe('current')
-  expect(bbcDateStatus(new Date('2027-03-28T00:00:00Z'))).toBe('expired')
+  expect(scheduleDateStatus(BBC_META, new Date('2026-10-24T23:59:59Z'))).toBe('upcoming')
+  expect(scheduleDateStatus(BBC_META, new Date('2026-10-25T00:00:00Z'))).toBe('current')
+  expect(scheduleDateStatus(BBC_META, new Date('2027-03-27T23:59:59Z'))).toBe('current')
+  expect(scheduleDateStatus(BBC_META, new Date('2027-03-28T00:00:00Z'))).toBe('expired')
 })
 it('provides BBC offline, expires the live list and keeps an explicitly labelled archive', async () => {
   vi.useFakeTimers({ toFake: ['Date', 'setInterval', 'clearInterval'] })

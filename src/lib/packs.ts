@@ -1,12 +1,13 @@
 // Optional content packs (band plans, broadcast schedules…) imported from a local file or USB stick.
 // A pack always says where its data came from and how old it is; the app never fetches packs itself.
 export const PACK_FORMAT = 'ham-radio-tools-pack'
-export const PACK_VERSION = 1
+export const PACK_VERSION = 2
 export type PackKind = 'band-plan' | 'broadcast-schedule'
 
 export interface BandSegment { band: string; fromHz: number; toHz: number; use: string; modes?: string; power?: string; status?: string; classes?: string; note?: string }
 export interface BroadcastEntry { freqKhz: number; startUtc: string; endUtc: string; days: string; station: string; language?: string; target?: string; country?: string; note?: string }
-export interface Pack<D = unknown> {
+export interface ScheduleValidity { validFrom?: string; validUntil?: string }
+export interface Pack<D = unknown> extends ScheduleValidity {
   format: typeof PACK_FORMAT; version: number; kind: PackKind
   id: string; title: string; jurisdiction?: string; source: string; sourceUrl?: string; notes?: string
   revision: string // YYYY-MM-DD
@@ -24,8 +25,16 @@ export function safeHttpUrl(v: unknown): string | undefined {
   try { const u = new URL(v.trim()); return u.protocol === 'https:' || u.protocol === 'http:' ? u.href : undefined } catch { return undefined }
 }
 const DATE = /^\d{4}-\d{2}-\d{2}$/
+const isUtcDate = (v: unknown): v is string => typeof v === 'string' && DATE.test(v) && new Date(`${v}T00:00:00Z`).toJSON()?.slice(0, 10) === v
 
 export const ageDays = (revision: string, now = new Date()) => Math.floor((now.getTime() - Date.parse(revision + 'T00:00:00Z')) / 86_400_000)
+
+/** Season dates apply to the entire UTC day at both ends. */
+export function scheduleDateStatus({ validFrom, validUntil }: ScheduleValidity, now: Date): 'upcoming' | 'current' | 'expired' {
+  if (!validFrom || !validUntil) return 'current'
+  const date = now.toISOString().slice(0, 10)
+  return date < validFrom ? 'upcoming' : date > validUntil ? 'expired' : 'current'
+}
 
 /** Parse and validate a pack file. Throws an Error whose message is suitable for the user. */
 export function parsePack(text: string): { pack: Pack; skipped: string[]; rows: number } {
@@ -40,6 +49,14 @@ export function parsePack(text: string): { pack: Pack; skipped: string[]; rows: 
   if (!title || !source || !license) throw new Error('A pack must state its title, source and licence so you know where the data came from.')
   if (typeof raw.revision !== 'string' || !DATE.test(raw.revision) || Number.isNaN(Date.parse(raw.revision))) throw new Error('The pack revision must be a date written YYYY-MM-DD.')
   if (!isObj(raw.data)) throw new Error('The pack has no data section.')
+
+  let validity: ScheduleValidity = {}
+  const { validFrom, validUntil } = raw
+  if (raw.kind === 'broadcast-schedule' && (validFrom !== undefined || validUntil !== undefined)) {
+    if (!isUtcDate(validFrom) || !isUtcDate(validUntil)) throw new Error('Enter both validity dates as real UTC dates in YYYY-MM-DD format, or leave both blank.')
+    if (validFrom > validUntil) throw new Error('The validity end date must be on or after the start date.')
+    validity = { validFrom, validUntil }
+  }
 
   const skipped: string[] = []
   let data: unknown, rows: number
@@ -67,7 +84,8 @@ export function parsePack(text: string): { pack: Pack; skipped: string[]; rows: 
     if (!entries.length) throw new Error('The pack contains no usable schedule entries.')
     data = { entries }; rows = entries.length
   }
-  const pack: Pack = { format: PACK_FORMAT, version: PACK_VERSION, kind: raw.kind, id, title, jurisdiction: optS(raw.jurisdiction, 80), source, sourceUrl: safeHttpUrl(raw.sourceUrl)?.slice(0, 300), notes: optS(raw.notes, 3000), revision: raw.revision, license, data }
+  // Older apps ignore unknown fields in version 1, so dated packs must require version 2.
+  const pack: Pack = { format: PACK_FORMAT, version: validity.validFrom ? PACK_VERSION : 1, kind: raw.kind, id, title, jurisdiction: optS(raw.jurisdiction, 80), source, sourceUrl: safeHttpUrl(raw.sourceUrl)?.slice(0, 300), notes: optS(raw.notes, 3000), revision: raw.revision, ...validity, license, data }
   return { pack, skipped, rows }
 }
 

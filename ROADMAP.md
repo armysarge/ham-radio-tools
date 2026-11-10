@@ -50,7 +50,7 @@ Work through these in order, keeping each increment runnable and verified.
 - [x] Inspect the supplied BBC frequency-page snapshot and record its provenance, checksum, conversion cautions and validity window: **2026-10-25–2027-03-27**.
 - [x] Bundle a factual BBC frequency reference with 30 entries from the 21 supplied rows, including weekday restrictions, midnight boundaries, DRM and 639/702/720 kHz medium-wave entries; original HTML/artwork are excluded.
 - [x] Enforce BBC's inclusive UTC season for live/time-filtered matches, with upcoming/expired notices and a labelled reference view outside the season.
-- [ ] Extend seasonal validity support to imported schedule packs. Their 45-day age warning still does not enforce a publisher's expiry date.
+- [x] Imported broadcast schedule packs can include an inclusive UTC validity window. Upcoming and expired schedules are excluded from live and time-filtered matches and remain available under Everything. The 45-day age warning still applies independently.
 - [ ] Establish terms for separately distributed BBC content packs; no general BBC redistribution licence is claimed.
 - [ ] Obtain a separate dated, maintainable programme-listing source and confirm its redistribution terms. The supplied frequency page has no programme titles.
 

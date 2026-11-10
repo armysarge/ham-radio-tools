@@ -7,8 +7,24 @@ import { getPack, installPack, installedPacks, refreshPacks, removePack } from '
 const base = { format: 'ham-radio-tools-pack', version: 1, id: 'test-plan', title: 'Test plan', source: 'Unit test', license: 'CC0', revision: '2026-10-01' }
 const plan = (segments: unknown[]) => JSON.stringify({ ...base, kind: 'band-plan', data: { segments } })
 const sched = (entries: unknown[], extra = {}) => JSON.stringify({ ...base, kind: 'broadcast-schedule', id: 'sched', ...extra, data: { entries } })
+const season = { validFrom: '2026-10-25', validUntil: '2027-03-27' }
+const transmission = { station: 'Test', freqKhz: 5950, startUtc: '0000', endUtc: '0000', days: 'daily' }
 
 describe('pack validation', () => {
+  it('validates an optional pair of real, ordered UTC dates and keeps older packs usable', () => {
+    expect(parsePack(sched([transmission])).pack).toMatchObject({ version: 1 })
+    expect(parsePack(sched([transmission], season)).pack).toMatchObject({ ...season, version: 2 })
+    expect(parsePack(sched([transmission], { version: 2, validFrom: '2028-02-29', validUntil: '2028-02-29' })).rows).toBe(1)
+    for (const dates of [
+      { validUntil: season.validUntil },
+      { validFrom: season.validFrom },
+      { ...season, validFrom: null },
+      { ...season, validFrom: '2026-02-29' },
+      { ...season, validUntil: '2027-02-30' },
+      { ...season, validUntil: '2027-3-27' },
+      { validFrom: season.validUntil, validUntil: season.validFrom },
+    ]) expect(() => parsePack(sched([transmission], dates))).toThrow(/valid|dates/i)
+  })
   it('accepts a band plan and skips bad segments with reasons', () => {
     const r = parsePack(plan([{ band: '20 m', fromHz: 14e6, toHz: 14.07e6, use: 'CW' }, { band: '20 m', fromHz: 14.07e6, toHz: 14e6, use: 'backwards' }, { band: '', fromHz: 1, toHz: 2, use: 'x' }]))
     expect(r.rows).toBe(1); expect(r.skipped).toHaveLength(2)
@@ -49,6 +65,14 @@ describe('time helpers', () => {
 })
 
 describe('pack storage (IndexedDB)', () => {
+  it('preserves season dates in stored schedules and their metadata', async () => {
+    const { pack, rows } = parsePack(sched([transmission], { ...season, version: 2 }))
+    await installPack(pack, rows)
+    try {
+      expect(installedPacks.value.find(p => p.id === pack.id)).toMatchObject(season)
+      expect(await getPack(pack.id)).toMatchObject(season)
+    } finally { await removePack(pack.id) }
+  })
   it('stores a Vue reactive pack (Proxy) without a DataCloneError', async () => {
     const r = parsePack(plan([{ band: '40 m', fromHz: 7e6, toHz: 7.2e6, use: 'amateur' }]))
     await installPack(reactive(r.pack) as typeof r.pack, r.rows)

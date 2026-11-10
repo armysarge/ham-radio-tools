@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { installPack, installedPacks, packsError, refreshPacks, removePack } from '../core/packs'
-import { ageDays, parsePack, type Pack } from '../lib/packs'
+import { PACK_FORMAT, PACK_VERSION, ageDays, parsePack, type Pack } from '../lib/packs'
 import { parseScheduleText } from '../lib/scheduleImport'
 import { BUNDLED_PACKS } from '../data/packs'
 import { platform } from '../platform'
@@ -30,7 +30,7 @@ const age = (rev: string) => ageDays(rev)
 
 // ---- convert a plain schedule file into a pack ----
 const conv = ref<{ entries: ReturnType<typeof parseScheduleText>['entries']; skipped: string[]; layout: string; file: string } | null>(null)
-const meta = ref({ title: '', source: '', revision: '', license: '' })
+const meta = ref({ title: '', source: '', revision: '', license: '', validFrom: '', validUntil: '' })
 const convErr = ref('')
 async function onSchedule(e: Event) {
   const input = e.target as HTMLInputElement, file = input.files?.[0]
@@ -39,14 +39,15 @@ async function onSchedule(e: Event) {
   try {
     const r = await file.text().then(parseScheduleText)
     conv.value = { ...r, file: file.name }
-    meta.value = { title: r.layout === 'eibi' ? 'EiBi shortwave schedule' : file.name.replace(/\.[^.]+$/, ''), source: r.layout === 'eibi' ? 'EiBi (eibispace.de) shortwave schedule' : '', revision: '', license: '' }
+    meta.value = { title: r.layout === 'eibi' ? 'EiBi shortwave schedule' : file.name.replace(/\.[^.]+$/, ''), source: r.layout === 'eibi' ? 'EiBi (eibispace.de) shortwave schedule' : '', revision: '', license: '', validFrom: '', validUntil: '' }
   } catch (x) { convErr.value = (x as Error).message }
   input.value = ''
 }
 function buildPack() {
   if (!conv.value) throw new Error('No file loaded.')
-  const id = meta.value.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'schedule'
-  return JSON.stringify({ format: 'ham-radio-tools-pack', version: 1, kind: 'broadcast-schedule', id, title: meta.value.title, source: meta.value.source, revision: meta.value.revision, license: meta.value.license, data: { entries: conv.value.entries } })
+  const { validFrom, validUntil, ...details } = meta.value
+  const id = details.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'schedule'
+  return JSON.stringify({ format: PACK_FORMAT, version: PACK_VERSION, kind: 'broadcast-schedule', id, ...details, validFrom: validFrom || undefined, validUntil: validUntil || undefined, data: { entries: conv.value.entries } })
 }
 async function installConverted() {
   convErr.value = ''
@@ -73,6 +74,7 @@ function saveConverted() {
           <td>{{ p.title }}<div class="hint">{{ KIND[p.kind] }} · {{ p.rows }} rows{{ p.jurisdiction ? ' · ' + p.jurisdiction : '' }}</div></td>
           <td>Installed<button class="ghost" :aria-label="`Remove ${p.title}`" @click="removePack(p.id)">Remove</button></td>
           <td>{{ p.source }} · revision {{ p.revision }} ({{ age(p.revision) }} days old)
+            <div v-if="p.validFrom" class="hint">Valid {{ p.validFrom }} through {{ p.validUntil }} inclusive, UTC.</div>
             <div v-if="age(p.revision) > STALE[p.kind]" class="err">Older than {{ STALE[p.kind] }} days — look for a newer pack.</div></td>
         </tr>
         <tr><td>BBC World Service frequency reference</td><td>Bundled</td><td>2026-10-25–2027-03-27 UTC; live matches disabled outside this season</td></tr>
@@ -87,6 +89,7 @@ function saveConverted() {
     <div v-if="pending" class="notice" role="status">
       <strong>{{ pending.pack.title }}</strong> — {{ KIND[pending.pack.kind] }}, {{ pending.rows }} rows, revision {{ pending.pack.revision }} ({{ age(pending.pack.revision) }} days old).<br />
       Source: {{ pending.pack.source }} · Licence: {{ pending.pack.license }}
+      <div v-if="pending.pack.validFrom">Valid {{ pending.pack.validFrom }} through {{ pending.pack.validUntil }} inclusive, UTC.</div>
       <p v-if="existing()" style="margin:.4rem 0 0">Replaces the installed copy (revision {{ existing()!.revision }}){{ existing()!.revision > pending.pack.revision ? ' — note: the installed one is NEWER' : '' }}.</p>
       <ul v-if="pending.skipped.length" style="margin:.4rem 0 0"><li v-for="m in pending.skipped.slice(0, 5)" :key="m">Skipped: {{ m }}</li><li v-if="pending.skipped.length > 5">…and {{ pending.skipped.length - 5 }} more</li></ul>
       <button class="primary" style="margin-top:.6rem" @click="confirm">Install pack</button>
@@ -105,6 +108,11 @@ function saveConverted() {
         <label class="field"><span class="lbl">Source (where the file came from)</span><input v-model="meta.source" type="text" /></label>
         <label class="field"><span class="lbl">Schedule date (YYYY-MM-DD)</span><input v-model="meta.revision" type="text" placeholder="e.g. 2026-10-26" inputmode="numeric" />
           <span class="hint">The date the schedule was issued, as stated by the source — this is what the age warning counts from.</span></label>
+        <div class="cols">
+          <label class="field"><span class="lbl">Valid from (UTC)</span><input v-model="meta.validFrom" type="date" aria-describedby="schedule-validity-help" /></label>
+          <label class="field"><span class="lbl">Valid through (UTC)</span><input v-model="meta.validUntil" type="date" aria-describedby="schedule-validity-help" /></label>
+        </div>
+        <p id="schedule-validity-help" class="hint" style="margin:0">Enter both dates if the publisher gives a validity window. Both dates are inclusive. Leave both blank if the dates are unknown.</p>
         <label class="field"><span class="lbl">Licence / terms of use</span><input v-model="meta.license" type="text" placeholder="e.g. free for private use, per the publisher" /></label>
         <div class="seg"><button class="primary" @click="installConverted">Install on this device</button><button @click="saveConverted">Save as pack file (.json)</button></div>
       </div>
