@@ -93,8 +93,36 @@ const arrow = (b: number | null) => (b == null ? null : { x: 100 + 72 * Math.sin
     </div>
     <template #explain>
       <p><strong>Locator ↔ coordinates.</strong> The world is split into 18×18 “fields” (letters A–R), each into 10×10 “squares” (digits), each into 24×24 “subsquares” (letters A–X), each into 10×10 “extended squares” (digits). A locator names a <em>cell</em>, so converting it back gives the cell’s centre, which can be off by up to half the cell size from where you actually are. Points exactly on a cell edge belong to the cell to their north-east; longitude 180° wraps to −180° and latitude 90° belongs to the northernmost row.</p>
-      <div class="formula">a = sin²(Δφ/2) + cos φ₁·cos φ₂·sin²(Δλ/2)     d = 2R·asin(√a)     θ = atan2( sin Δλ·cos φ₂ , cos φ₁·sin φ₂ − sin φ₁·cos φ₂·cos Δλ )</div>
-      <p>Long path = Earth circumference − short path, heading = short heading + 180°. Distances use a spherical Earth (R = 6371.0088 km), which can differ from ellipsoidal results by up to about 0.5%. Headings are true bearings; subtract/add your local magnetic declination for a compass. At a pole every direction is south (north pole) or north (south pole). Basemap: 1:110m country outlines — fine for locating a continent or country, not for street-level work; detailed packs are planned.</p>
+      <div class="formula">
+        <math display="block">
+          <mi>h</mi><mo>(</mo><mi>α</mi><mo>)</mo><mo>=</mo><msup><mi>sin</mi><mn>2</mn></msup><mo>(</mo>
+          <mfrac><mi>α</mi><mn>2</mn></mfrac>
+          <mo>)</mo>
+        </math>
+        <math display="block">
+          <mi>k</mi><mo>=</mo><mi>cos</mi><msub><mi>φ</mi><mn>1</mn></msub><mi>cos</mi><msub><mi>φ</mi><mn>2</mn></msub>
+        </math>
+        <math display="block">
+          <mi>a</mi><mo>=</mo><mi>h</mi><mo>(</mo><mi>Δ</mi><mi>φ</mi><mo>)</mo><mo>+</mo><mi>k</mi><mi>h</mi><mo>(</mo><mi>Δ</mi><mi>λ</mi><mo>)</mo>
+        </math>
+        <math display="block">
+          <mi>d</mi><mo>=</mo><mn>2</mn><mi>R</mi><mi>arcsin</mi><mo>(</mo><msqrt><mi>a</mi></msqrt><mo>)</mo>
+        </math>
+        <math display="block">
+          <mi>b</mi><mo>=</mo><mi>cos</mi><msub><mi>φ</mi><mn>2</mn></msub><mi>cos</mi><mo>(</mo><mi>Δ</mi><mi>λ</mi><mo>)</mo>
+        </math>
+        <math display="block">
+          <mi>x</mi><mo>=</mo><mi>cos</mi><msub><mi>φ</mi><mn>1</mn></msub><mi>sin</mi><msub><mi>φ</mi><mn>2</mn></msub><mo>−</mo><mi>b</mi><mi>sin</mi><msub><mi>φ</mi><mn>1</mn></msub>
+        </math>
+        <math display="block">
+          <mi>y</mi><mo>=</mo><mi>cos</mi><msub><mi>φ</mi><mn>2</mn></msub><mi>sin</mi><mo>(</mo><mi>Δ</mi><mi>λ</mi><mo>)</mo>
+        </math>
+        <math display="block">
+          <mi>θ</mi><mo>=</mo><mi>atan2</mi><mo>(</mo><mi>y</mi><mo>,</mo><mi>x</mi><mo>)</mo>
+        </math>
+      </div>
+      <p>φ<sub>1</sub> and φ<sub>2</sub> are the start and end latitudes. Δφ and Δλ are the end minus start differences in latitude and longitude. Use radians for these angles. The haversine function h takes an angle α, and k is the product of the two latitude cosines. The term a gives the short-path distance d. The bearing uses intermediate terms b, x and y, then converts θ to degrees clockwise from true north, wrapped to 0°–360°.</p>
+      <p>Long-path distance is Earth’s circumference minus the short-path distance. Its initial bearing is 180° from the short-path bearing. Distances use a spherical Earth with radius <math><mi>R</mi><mo>=</mo><mn>6371.0088</mn><mi>km</mi></math>, which can differ from ellipsoidal results by up to about 0.5%. Headings are true bearings; subtract/add your local magnetic declination for a compass. At a pole every direction is south (north pole) or north (south pole). Basemap: 1:110m country outlines — fine for locating a continent or country, not for street-level work; detailed packs are planned.</p>
     </template>
   </ToolLayout>
 </template>

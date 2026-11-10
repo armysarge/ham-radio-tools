@@ -161,8 +161,12 @@ const chartRows = computed(() => chart.filter(([k, v]) => !q.value.trim() || k.t
     </div>
 
     <template #explain>
-      <div class="formula">dit = 1200 / WPM ms     dah = 3 dits     gap: 1 inside a letter, 3 between letters, 7 between words</div>
-      <p>The word “PARIS” is exactly 50 units long, which defines words per minute. <strong>Farnsworth</strong> keeps each character at a faster speed but stretches the gaps so the overall speed drops: gap unit = (60c − 37.2s) / (19·c·s) seconds for character speed c and overall speed s.</p>
+      <div class="formula">
+        <div>Dit duration (ms) = 1200 ÷ c</div>
+        <div>Dah duration = 3 × dit duration</div>
+        <div>Farnsworth gap unit (s) = (60c − 37.2s) ÷ (19 × c × s)</div>
+      </div>
+      <p>c is character speed and s is overall speed, both in words per minute. The standard word “PARIS” takes 50 dit units. The gap inside a letter is one dit. Between letters and between words, the gaps are three and seven gap units respectively. <strong>Farnsworth</strong> stretches the gaps between letters and words while keeping the faster character speed.</p>
       <p><strong>Decoding</strong> works out the dit length from your own timing by splitting the key-down times into short and long groups, then the gaps into letter and word groups, so no speed has to be set. It copes with about ±15% timing wobble in tests; sloppy hand-keying, QSB and QRM will still cause errors. Microphone decoding is experimental. It uses the Goertzel algorithm (power at one frequency) with an adaptive threshold.</p>
     </template>
   </ToolLayout>

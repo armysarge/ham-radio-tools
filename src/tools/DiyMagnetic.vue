@@ -182,9 +182,25 @@ const refs = [
     </section>
 
     <template #explain>
-      <div v-if="kind === 'balun'" class="formula">Ltarget = Xtarget / (2πf) · ALstack ≈ AL × core count<br />N = ceil(√(Ltarget / ALstack)) · Lwound ≈ ALstack × N²</div>
-      <div v-else class="formula">Ns/Np = √(Zs/Zp) · Ltarget = factor × Zp / (2πf)<br />Np = ceil(√(Ltarget/AL)) · Ns = nearest whole turn<br />Zs,rounded = Zp × (Ns/Np)²</div>
-      <p>Internal calculations use henries, metres, hertz and ohms; AL is entered in nH/turn². Turns are rounded up for the inductance target; transformer secondary turns are rounded to the nearest whole turn, with the resulting impedance shown explicitly.</p>
+      <template v-if="kind === 'balun'">
+        <div class="formula">
+          <div>L<sub>target</sub> = X<sub>target</sub> ÷ (2π × f)</div>
+          <div>A<sub>L, stack</sub> ≈ A<sub>L</sub> × number of cores</div>
+          <div>N = √(L<sub>target</sub> ÷ A<sub>L, stack</sub>), rounded up</div>
+          <div>L<sub>wound</sub> ≈ A<sub>L, stack</sub> × N<sup>2</sup></div>
+        </div>
+        <p>X<sub>target</sub> is the target reactance in ohms. L<sub>target</sub> is the target inductance, A<sub>L, stack</sub> is the stacked cores’ inductance factor, N is the whole-turn count, and L<sub>wound</sub> is the inductance at that count.</p>
+      </template>
+      <template v-else>
+        <div class="formula">
+          <div>L<sub>target</sub> = factor × Z<sub>p</sub> ÷ (2π × f)</div>
+          <div>N<sub>p</sub> = √(L<sub>target</sub> ÷ A<sub>L</sub>), rounded up</div>
+          <div>N<sub>s</sub> = N<sub>p</sub> × √(Z<sub>s</sub> ÷ Z<sub>p</sub>), rounded to the nearest whole turn</div>
+          <div>Z<sub>s, wound</sub> = Z<sub>p</sub> × (N<sub>s</sub> ÷ N<sub>p</sub>)<sup>2</sup></div>
+        </div>
+        <p>Z<sub>p</sub> and Z<sub>s</sub> are the primary and target secondary impedances in ohms. N<sub>p</sub> and N<sub>s</sub> are the primary and secondary turns, each at least one. The reactance factor sets the primary reactance target as a multiple of Z<sub>p</sub>, which gives target inductance L<sub>target</sub>. Z<sub>s, wound</sub> is the secondary impedance after rounding.</p>
+      </template>
+      <p>f is frequency in hertz. The reactance formula gives L<sub>target</sub> in henries. Convert it to nanohenries before dividing by the core inductance factor A<sub>L</sub> or A<sub>L, stack</sub>, both in nanohenries per turn squared.</p>
       <p>The material allowance follows the rectangular core cross-section perimeter, adds π × insulated conductor diameter per turn, a small existing core-perimeter allowance, 15% slack, and the entered leads. It is a rough shopping allowance, not a winding jig or bend-radius model. Leakage inductance, winding capacitance, ferrite complex permeability, core flux, voltage breakdown and thermal limits require a separate measured design.</p>
     </template>
   </ToolLayout>

@@ -78,11 +78,45 @@ const SRC: [Src, string][] = [['swr', 'SWR'], ['rl', 'Return loss'], ['gamma', '
       </div>
     </div>
     <template #explain>
-      <p>VSWR = V<sub>max</sub> / V<sub>min</sub> = (1 + |Γ|) / (1 − |Γ|)</p>
-      <p>|Γ| = (VSWR − 1) / (VSWR + 1) &nbsp; · &nbsp; RL = −20 log₁₀|Γ| &nbsp; · &nbsp; ML = −10 log₁₀(1 − |Γ|²)</p>
+      <div class="formula">
+        <math display="block">
+          <mi>VSWR</mi><mo>=</mo>
+          <mfrac><msub><mi>V</mi><mi>max</mi></msub><msub><mi>V</mi><mi>min</mi></msub></mfrac>
+          <mo>=</mo>
+          <mfrac><mrow><mn>1</mn><mo>+</mo><mo>|</mo><mi>Γ</mi><mo>|</mo></mrow><mrow><mn>1</mn><mo>−</mo><mo>|</mo><mi>Γ</mi><mo>|</mo></mrow></mfrac>
+        </math>
+        <math display="block">
+          <mo>|</mo><mi>Γ</mi><mo>|</mo><mo>=</mo>
+          <mfrac><mrow><mi>VSWR</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi>VSWR</mi><mo>+</mo><mn>1</mn></mrow></mfrac>
+        </math>
+        <math display="block">
+          <mi>RL</mi><mo>=</mo><mo>−</mo><mn>20</mn><msub><mi>log</mi><mn>10</mn></msub><mo>(</mo><mo>|</mo><mi>Γ</mi><mo>|</mo><mo>)</mo>
+        </math>
+        <math display="block">
+          <mi>ML</mi><mo>=</mo><mo>−</mo><mn>10</mn><msub><mi>log</mi><mn>10</mn></msub><mo>(</mo><mn>1</mn><mo>−</mo><msup><mrow><mo>|</mo><mi>Γ</mi><mo>|</mo></mrow><mn>2</mn></msup><mo>)</mo>
+        </math>
+      </div>
+      <p>V<sub>max</sub> and V<sub>min</sub> are the largest and smallest voltage magnitudes along the line. |Γ| is the magnitude of the load reflection coefficient, from 0 to 1. RL is return loss and ML is mismatch loss, both in dB.</p>
       <p>A matched line has equal nonzero extrema, VSWR 1:1 and infinite return loss. A zero minimum with a nonzero maximum represents ideal total reflection: infinite VSWR, 0 dB return loss and 100% reflected power. Zero for both voltages gives no defined ratio.</p>
-      <p>The illustrative envelope assumes a uniform lossless line and a single frequency. With g = |Γ| and u = distance / line wavelength, V/V<sub>max</sub> = √[cos²(2πu) + ((1 − g)/(1 + g))² sin²(2πu)]. Unknown reflection phase shifts the envelope along the line; it does not change VSWR. The drawing does not locate voltage peaks on your installation.</p>
-      <p>Assumes a lossless line, so values are those at the load. Feedline loss makes the SWR measured at the radio look better than at the antenna, and it adds its own loss on top of the mismatch loss shown here. “Power reflected” is |Γ|², not what a tuner or amplifier necessarily sees.</p>
+      <div class="formula">
+        <math display="block">
+          <mi>k</mi><mo>=</mo>
+          <mfrac><mrow><mn>1</mn><mo>−</mo><mi>g</mi></mrow><mrow><mn>1</mn><mo>+</mo><mi>g</mi></mrow></mfrac>
+        </math>
+        <math display="block">
+          <mi>φ</mi><mo>=</mo><mn>2</mn><mi>π</mi><mi>u</mi>
+        </math>
+        <math display="block">
+          <mfrac><mi>V</mi><msub><mi>V</mi><mi>max</mi></msub></mfrac>
+          <mo>=</mo>
+          <msqrt>
+            <msup><mi>cos</mi><mn>2</mn></msup><mi>φ</mi><mo>+</mo>
+            <msup><mi>k</mi><mn>2</mn></msup><msup><mi>sin</mi><mn>2</mn></msup><mi>φ</mi>
+          </msqrt>
+        </math>
+      </div>
+      <p>The illustrative envelope assumes a uniform lossless line and a single frequency. V is the local voltage magnitude, <math><mi>g</mi><mo>=</mo><mo>|</mo><mi>Γ</mi><mo>|</mo></math>, and u is distance from a voltage maximum measured in line wavelengths. φ is the corresponding phase in radians. The factor k is the ratio of the voltage minimum to the maximum. Unknown reflection phase shifts the envelope along the line while leaving VSWR the same. The drawing does not locate voltage peaks on your installation.</p>
+      <p>Assumes a lossless line, so values are those at the load. Feedline loss makes the SWR measured at the radio look better than at the antenna, and it adds its own loss on top of the mismatch loss shown here. The reflected power fraction at the load is <math><msup><mrow><mo>|</mo><mi>Γ</mi><mo>|</mo></mrow><mn>2</mn></msup></math>. A tuner or amplifier can see a different fraction.</p>
     </template>
   </ToolLayout>
 </template>

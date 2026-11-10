@@ -110,7 +110,12 @@ const usable = computed(() => r.value?.harmonics.filter((h) => h.band) ?? [])
     <ModsPanel antenna="efhw" />
 
     <template #explain>
-      <div class="formula">L = k · c / (2f)       Z<sub>in</sub> = Z<sub>end</sub> / ratio       harmonics at n · f</div>
+      <div class="formula">
+        <div>L = k × c ÷ (2f)</div>
+        <div>Z<sub>in</sub> = Z<sub>end</sub> ÷ impedance ratio</div>
+        <div>Harmonic frequency = n × f</div>
+      </div>
+      <p>L is the wire length in metres, k is the empirical shortening factor, c is the speed of light in metres per second, and f is the fundamental frequency in hertz. n is the whole-number harmonic order. Z<sub>end</sub> is the assumed wire-end impedance and Z<sub>in</sub> is the transformed impedance seen from the feedline, both in ohms.</p>
       <p>A half-wave wire fed at the end has the voltage at its maximum and the current at its minimum there, so the impedance is very high (often thousands of ohms) on the fundamental <strong>and on every multiple</strong> of it. A transformer brings that down to about 50 Ω, which is why one EFHW works on several bands without a tuner. The wire needs a return path: a short counterpoise or the outside of the coax, and a current choke keeps the coax from becoming part of the antenna.</p>
       <p><strong>Design estimate, not a simulation:</strong> the end impedance, SWR and the pattern on harmonic bands are not predicted. The pattern splits into more lobes as the wire gets longer in wavelengths, and the transformer and counterpoise change the match on each band.</p>
     </template>

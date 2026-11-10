@@ -83,6 +83,11 @@ main { padding: 1.25rem 1.5rem 4rem; max-width: 1200px; width: 100%; min-width: 
 details.explain { background: var(--panel); border: 1.5px solid var(--line); border-radius: var(--radius); padding: .5rem 1rem; margin-top: 1rem; }
 details.explain summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
 details.explain pre, .formula { font-family: var(--mono); background: var(--panel2); padding: .5rem .75rem; border-radius: 6px; overflow-x: auto; margin: .5rem 0; }
+.formula { overflow-wrap: anywhere; }
+.formula > div + div { margin-top: .3rem; }
+.explain math { font-family: "Cambria Math", "STIX Two Math", math, serif; }
+.formula > math { font-size: clamp(1.125rem, 2.5vw, 1.5rem); padding-block: .2rem; }
+.formula > math + math { margin-top: .5rem; }
 .notice { border-left: 5px solid var(--warn); background: var(--panel2); padding: .6rem .9rem; border-radius: 6px; font-size: .92rem; }
 .table-wrap { overflow-x: auto; }
 .table { width: 100%; border-collapse: collapse; }

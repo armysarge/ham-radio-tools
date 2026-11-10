@@ -57,7 +57,28 @@ const add = () => loads.value.push({ name: 'Another load', amps: 1, hours: 1 })
       </div>
     </div>
     <template #explain>
-      <p>Each load’s daily amp-hours are its current times its hours; adding them gives the day’s use. Runtime divides the usable part of the battery by the average current. The solar panel must replace a day’s use in the peak-sun hours after losses. The sizing is a planning figure: temperature, ageing and cloud move the real answer, so add margin.</p>
+      <div class="formula">
+        <math display="block">
+          <msub><mi>Q</mi><mi>day</mi></msub><mo>=</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>I</mi><mi>i</mi></msub><msub><mi>t</mi><mi>i</mi></msub>
+        </math>
+        <math display="block">
+          <msub><mi>E</mi><mi>day</mi></msub><mo>=</mo><mi>V</mi><msub><mi>Q</mi><mi>day</mi></msub>
+        </math>
+        <math display="block">
+          <msub><mi>I</mi><mi>avg</mi></msub><mo>=</mo>
+          <mfrac><msub><mi>Q</mi><mi>day</mi></msub><mrow><mn>24</mn><mtext> h</mtext></mrow></mfrac>
+        </math>
+        <math display="block">
+          <msub><mi>t</mi><mi>run</mi></msub><mo>=</mo>
+          <mfrac><msub><mi>Q</mi><mi>usable</mi></msub><msub><mi>I</mi><mi>avg</mi></msub></mfrac>
+        </math>
+        <math display="block">
+          <msub><mi>P</mi><mi>panel</mi></msub><mo>=</mo>
+          <mfrac><msub><mi>E</mi><mi>day</mi></msub><mrow><msub><mi>t</mi><mi>sun</mi></msub><mi>η</mi></mrow></mfrac>
+        </math>
+      </div>
+      <p>For each load i, I<sub>i</sub> is current in amperes and t<sub>i</sub> is daily use in hours. Q<sub>day</sub> is daily charge in amp-hours, E<sub>day</sub> is daily energy in watt-hours, V is battery voltage, and I<sub>avg</sub> is average current in amperes.</p>
+      <p>Runtime t<sub>run</sub> is in hours. Usable capacity Q<sub>usable</sub> is rated amp-hours times the usable fraction. Panel power P<sub>panel</sub> is in watts, t<sub>sun</sub> is peak-sun hours, and η is system efficiency as a fraction, such as 0.8 for 80%. Temperature, ageing and cloud affect actual runtime and solar output.</p>
     </template>
   </ToolLayout>
 </template>

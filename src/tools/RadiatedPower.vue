@@ -44,10 +44,33 @@ const result = computed(() => calculation.value.result)
       </div>
     </div>
     <template #explain>
-      <p>P<sub>antenna</sub> = P<sub>TX</sub> × 10<sup>−loss/10</sup></p>
-      <p>EIRP = P<sub>antenna</sub> × 10<sup>G(dBi)/10</sup> &nbsp; · &nbsp; ERP = EIRP ÷ 10<sup>2.15/10</sup></p>
-      <p>G(dBi) = G(dBd) + 2.15. This nominal conversion references an ideal half-wave dipole in free space. Real installation, ground and nearby objects change the antenna's gain. Enter antenna gain rather than directivity alone; gain must include antenna efficiency. Account for mismatch once, either in realised gain or the entered feed-system loss.</p>
-      <p>For logarithmic power, dBm = 10 log₁₀(P in watts) + 30. Results use your entered gain and loss; no antenna model or legal power-limit check is performed.</p>
+      <div class="formula">
+        <math display="block">
+          <msub><mi>P</mi><mi>antenna</mi></msub><mo>=</mo><msub><mi>P</mi><mi>TX</mi></msub><mo>⋅</mo>
+          <msup><mn>10</mn><mfrac><mrow><mo>−</mo><mi>L</mi></mrow><mn>10</mn></mfrac></msup>
+        </math>
+        <math display="block">
+          <mi>EIRP</mi><mo>=</mo><msub><mi>P</mi><mi>antenna</mi></msub><mo>⋅</mo>
+          <msup><mn>10</mn><mfrac><msub><mi>G</mi><mi>dBi</mi></msub><mn>10</mn></mfrac></msup>
+        </math>
+        <math display="block">
+          <mi>ERP</mi><mo>=</mo>
+          <mfrac><mi>EIRP</mi><msup><mn>10</mn><mfrac><mn>2.15</mn><mn>10</mn></mfrac></msup></mfrac>
+        </math>
+        <math display="block">
+          <msub><mi>G</mi><mi>dBi</mi></msub><mo>=</mo><msub><mi>G</mi><mi>dBd</mi></msub><mo>+</mo><mn>2.15</mn>
+        </math>
+      </div>
+      <p>P<sub>TX</sub> is transmitter output power and P<sub>antenna</sub> is the power reaching the antenna. The equations give both radiated powers in watts. L is total feed-system loss in dB. G<sub>dBi</sub> is gain relative to an isotropic radiator and G<sub>dBd</sub> is gain relative to an ideal half-wave dipole in free space.</p>
+      <p>Real installation, ground and nearby objects change the antenna's gain. Enter antenna gain rather than directivity alone; gain must include antenna efficiency. Account for mismatch once, either in realised gain or the entered feed-system loss.</p>
+      <div class="formula">
+        <math display="block">
+          <msub><mi>P</mi><mi>dBm</mi></msub><mo>=</mo><mn>10</mn><msub><mi>log</mi><mn>10</mn></msub><mo>(</mo>
+          <mfrac><mi>P</mi><mrow><mn>1</mn><mi>mW</mi></mrow></mfrac>
+          <mo>)</mo>
+        </math>
+      </div>
+      <p>P<sub>dBm</sub> is the level relative to 1 mW, and P is any of the calculated powers. Results use your entered gain and loss. The calculator performs no antenna modelling or legal power-limit check.</p>
     </template>
   </ToolLayout>
 </template>

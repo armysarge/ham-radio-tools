@@ -60,8 +60,18 @@ const wave = Array.from({ length: 81 }, (_, i) => `${i ? 'L' : 'M'}${40 + i * 5}
       </div>
     </div>
     <template #explain>
-      <div class="formula">λ = c × VF / f      T = 1 / f</div>
-      <p>c is the speed of light in a vacuum. Signals in cable travel slower by the velocity factor (VF), so the wavelength <em>in the cable</em> is shorter. For antennas in air use VF = 1; the dipole tool applies a separate end-effect factor.</p>
+      <div class="formula">
+        <math display="block">
+          <mi>λ</mi><mo>=</mo>
+          <mfrac><mrow><mi>c</mi><mo>⋅</mo><mi>VF</mi></mrow><mi>f</mi></mfrac>
+        </math>
+        <math display="block">
+          <mi>T</mi><mo>=</mo>
+          <mfrac><mn>1</mn><mi>f</mi></mfrac>
+        </math>
+      </div>
+      <p>λ is wavelength in metres, T is period in seconds, and f is frequency in hertz.</p>
+      <p>c is the speed of light in a vacuum. Signals in cable travel slower by the velocity factor (VF), so the wavelength <em>in the cable</em> is shorter. For antennas in air use <math><mi>VF</mi><mo>=</mo><mn>1</mn></math>. The dipole tool applies a separate end-effect factor.</p>
       <p>Result precision is shown to 4 significant figures; inputs are rarely known better than that.</p>
     </template>
   </ToolLayout>

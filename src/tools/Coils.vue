@@ -53,8 +53,18 @@ const check = computed(() => (airTurns.value && airLen.value && dIn.value ? airC
       </div>
     </div>
     <template #explain>
-      <div class="formula">toroid: N = √(L / AL)       air: L(µH) = d²n² / (18d + 40l)</div>
-      <p>A toroid’s catalogue AL value gives its inductance in nanohenries for one turn squared, so turns follow from a square root. AL varies from part to part and with winding spread; wind the figure, measure it, then add or remove a turn or two. The air-core formula is Wheeler’s, good to about a percent for a coil longer than 0.8 of its diameter.</p>
+      <div class="formula">
+        <math display="block">
+          <mtext>Toroid</mtext><mspace width="1em" /><mi>N</mi><mo>=</mo>
+          <msqrt><mfrac><msub><mi>L</mi><mi>nH</mi></msub><msub><mi>A</mi><mi>L</mi></msub></mfrac></msqrt>
+        </math>
+        <math display="block">
+          <mtext>Air core</mtext><mspace width="1em" /><msub><mi>L</mi><mi>µH</mi></msub><mo>=</mo>
+          <mfrac><mrow><msup><mi>D</mi><mn>2</mn></msup><msup><mi>N</mi><mn>2</mn></msup></mrow><mrow><mn>18</mn><mi>D</mi><mo>+</mo><mn>40</mn><mi>ℓ</mi></mrow></mfrac>
+        </math>
+      </div>
+      <p>N is the number of turns. L is inductance, expressed in nanohenries for the toroid and microhenries for the air-core coil. D is coil diameter and ℓ is the wound length, both in inches.</p>
+      <p>A toroid’s catalogue A<sub>L</sub> value is its inductance factor in nanohenries per turn squared. A<sub>L</sub> varies from part to part and with winding spread; wind the figure, measure it, then add or remove a turn or two. The air-core formula is Wheeler’s, good to about a percent for a coil longer than 0.8 of its diameter.</p>
     </template>
   </ToolLayout>
 </template>

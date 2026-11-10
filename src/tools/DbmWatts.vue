@@ -52,8 +52,29 @@ const vrms = computed(() => (w.value != null && z.value != null ? vrmsFromWatts(
       </div>
     </div>
     <template #explain>
-      <div class="formula">dBm = 10·log₁₀(P / 1 mW)     V<sub>rms</sub> = √(P·R)     dB = 10·log₁₀(P₂/P₁) = 20·log₁₀(V₂/V₁)</div>
-      <p>Power dB is always valid. The 20·log voltage form assumes both voltages are measured across the same impedance; if the impedances differ, convert both to power first. 3 dB is ≈ ×2 power, 6 dB ≈ ×2 voltage.</p>
+      <div class="formula">
+        <math display="block">
+          <msub><mi>P</mi><mi>dBm</mi></msub><mo>=</mo><mn>10</mn><msub><mi>log</mi><mn>10</mn></msub><mo>(</mo>
+          <mfrac><mi>P</mi><mrow><mn>1</mn><mi>mW</mi></mrow></mfrac>
+          <mo>)</mo>
+        </math>
+        <math display="block">
+          <msub><mi>V</mi><mi>rms</mi></msub><mo>=</mo>
+          <msqrt><mi>P</mi><mi>R</mi></msqrt>
+        </math>
+        <math display="block">
+          <mi>Δ</mi><mi>L</mi><mo>=</mo><mn>10</mn><msub><mi>log</mi><mn>10</mn></msub><mo>(</mo>
+          <mfrac><msub><mi>P</mi><mn>2</mn></msub><msub><mi>P</mi><mn>1</mn></msub></mfrac>
+          <mo>)</mo>
+        </math>
+        <math display="block">
+          <mi>Δ</mi><mi>L</mi><mo>=</mo><mn>20</mn><msub><mi>log</mi><mn>10</mn></msub><mo>(</mo>
+          <mfrac><msub><mi>V</mi><mn>2</mn></msub><msub><mi>V</mi><mn>1</mn></msub></mfrac>
+          <mo>)</mo>
+        </math>
+      </div>
+      <p>P<sub>dBm</sub> is the power level relative to 1 mW. For the voltage calculation use power P in watts, load resistance R in ohms and RMS voltage V<sub>rms</sub> in volts. ΔL is the level difference in dB. Subscript 1 is the reference and 2 is the comparison. Use matching units in each ratio.</p>
+      <p>The voltage-ratio equation assumes both voltages are measured across the same impedance. If the impedances differ, convert both to power first. A 3 dB increase roughly doubles the power and a 6 dB increase roughly doubles the voltage.</p>
     </template>
   </ToolLayout>
 </template>

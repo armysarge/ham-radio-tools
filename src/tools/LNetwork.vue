@@ -43,7 +43,20 @@ const uh = (h: number) => h * 1e6, pf = (c: number) => c * 1e12
       </div>
     </div>
     <template #explain>
-      <div class="formula">Q = √(R<sub>high</sub> / R<sub>low</sub> − 1)     X<sub>series</sub> = Q · R<sub>low</sub>     X<sub>shunt</sub> = R<sub>high</sub> / Q</div>
+      <div class="formula">
+        <math display="block">
+          <mi>Q</mi><mo>=</mo>
+          <msqrt><mfrac><msub><mi>R</mi><mi>high</mi></msub><msub><mi>R</mi><mi>low</mi></msub></mfrac><mo>−</mo><mn>1</mn></msqrt>
+        </math>
+        <math display="block">
+          <msub><mi>X</mi><mi>series</mi></msub><mo>=</mo><mi>Q</mi><msub><mi>R</mi><mi>low</mi></msub>
+        </math>
+        <math display="block">
+          <msub><mi>X</mi><mi>shunt</mi></msub><mo>=</mo>
+          <mfrac><msub><mi>R</mi><mi>high</mi></msub><mi>Q</mi></mfrac>
+        </math>
+      </div>
+      <p>Q is the dimensionless matching quality factor. R<sub>high</sub> and R<sub>low</sub> are the higher and lower of the source and load resistances. X<sub>series</sub> and X<sub>shunt</sub> are reactance magnitudes in ohms.</p>
       <p>An L-network is two parts: one in series with the lower resistance side, one across the higher side. The reactances above become inductances and capacitances at your frequency. Choose the low-pass form when you also want to cut harmonics. It transforms the resistances only at the design frequency, and with a fairly narrow bandwidth for large ratios.</p>
     </template>
   </ToolLayout>

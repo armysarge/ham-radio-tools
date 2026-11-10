@@ -104,7 +104,12 @@ const endY = computed(() => (r.value ? G - Math.max(r.value.endHeight, 0) * sc.v
     <ModsPanel antenna="inverted-v" />
 
     <template #explain>
-      <div class="formula">L<sub>total</sub> = k · s · c / (2f)     span = 2·(L/2)·sin(θ/2)     drop = (L/2)·cos(θ/2)</div>
+      <div class="formula">
+        <div>L<sub>total</sub> = k × s × c ÷ (2f)</div>
+        <div>Span = L<sub>total</sub> × sin(θ ÷ 2)</div>
+        <div>Drop = (L<sub>total</sub> ÷ 2) × cos(θ ÷ 2)</div>
+      </div>
+      <p>L<sub>total</sub> is the wire length for both legs, span is the horizontal tip-to-tip distance, and drop is the vertical distance from apex to either tip, all in metres. θ is the included apex angle in degrees. c is the speed of light in metres per second and f is frequency in hertz.</p>
       <p>An inverted-V is a dipole hung from a single high support. k ≈ 0.95 is the usual end-effect factor and s ≈ 0.97 an allowance for the sloping legs; both are <strong>empirical</strong>. The tool does not simulate the antenna, so it makes no claim about SWR bandwidth, gain or pattern.</p>
       <ul>
         <li><strong>Feed impedance:</strong> lowering the legs brings the feed impedance below a flat dipole’s ~70 Ω; many builders report roughly 50 Ω near a 90–120° angle, but this varies with height and ground and is not calculated here.</li>

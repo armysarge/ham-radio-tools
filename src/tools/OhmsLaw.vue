@@ -56,7 +56,24 @@ const shownValue = (k: OhmKey) => (order.value.includes(k) ? vals[k] : solved.va
       </div>
     </div>
     <template #explain>
-      <div class="formula">V = I × R     P = V × I = I² × R = V² / R</div>
+      <div class="formula">
+        <math display="block">
+          <mi>V</mi><mo>=</mo><mi>I</mi><mi>R</mi>
+        </math>
+        <math display="block">
+          <mi>I</mi><mo>=</mo>
+          <mfrac><mi>V</mi><mi>R</mi></mfrac>
+        </math>
+        <math display="block">
+          <mi>R</mi><mo>=</mo>
+          <mfrac><mi>V</mi><mi>I</mi></mfrac>
+        </math>
+        <math display="block">
+          <mi>P</mi><mo>=</mo><mi>V</mi><mi>I</mi><mo>=</mo><msup><mi>I</mi><mn>2</mn></msup><mi>R</mi><mo>=</mo>
+          <mfrac><msup><mi>V</mi><mn>2</mn></msup><mi>R</mi></mfrac>
+        </math>
+      </div>
+      <p>V is voltage in volts, I is current in amperes, R is resistance in ohms, and P is power in watts.</p>
       <p>Any two quantities fix the other two. Voltage and power must be non-negative here; the tool treats AC values as RMS values in a purely resistive circuit. Reactive loads (coils, capacitors, antennas off resonance) need impedance, not just resistance.</p>
     </template>
   </ToolLayout>

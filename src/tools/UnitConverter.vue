@@ -66,9 +66,38 @@ const refs = ['NIST SP 811, Appendix B.8: SI and customary unit conversions, tem
       </div>
     </div>
     <template #explain>
-      <div class="formula">Canonical value = input × source factor + source offset<br />Output = (canonical value − destination offset) / destination factor</div>
-      <p v-if="canonical != null" class="formula">{{ fmt(value, 8) }} {{ source.label }} → {{ fmt(canonical, 8) }} {{ group.units[0].label }} → {{ fmt(result.value, 8) }} {{ target.label }}</p>
-      <p>Linear factors and SI prefixes convert through a canonical unit: metres, square metres, hertz, seconds, watts, volts, amperes, ohms, farads, henries, joules or kelvins. Celsius and Fahrenheit also need an offset; °C = (°F − 32) × 5/9. One watt-hour is 3600 joules.</p>
+      <div class="formula">
+        <math display="block">
+          <msub><mi>x</mi><mi>c</mi></msub><mo>=</mo><msub><mi>a</mi><mi>s</mi></msub><msub><mi>x</mi><mi>s</mi></msub><mo>+</mo><msub><mi>b</mi><mi>s</mi></msub>
+        </math>
+        <math display="block">
+          <msub><mi>x</mi><mi>d</mi></msub><mo>=</mo>
+          <mfrac><mrow><msub><mi>x</mi><mi>c</mi></msub><mo>−</mo><msub><mi>b</mi><mi>d</mi></msub></mrow><msub><mi>a</mi><mi>d</mi></msub></mfrac>
+        </math>
+      </div>
+      <p>The source value x<sub>s</sub> converts to the canonical value x<sub>c</sub> and then to the destination value x<sub>d</sub>. The a terms are scale factors and the b terms are offsets. Subscripts s and d refer to the source and destination units.</p>
+      <div v-if="canonical != null" class="formula">
+        <math display="block">
+          <msub><mi>x</mi><mi>s</mi></msub><mo>=</mo><mn>{{ fmt(value, 8) }}</mn><mtext> {{ source.label }}</mtext>
+        </math>
+        <math display="block">
+          <msub><mi>x</mi><mi>c</mi></msub><mo>=</mo><mn>{{ fmt(canonical, 8) }}</mn><mtext> {{ group.units[0].label }}</mtext>
+        </math>
+        <math display="block">
+          <msub><mi>x</mi><mi>d</mi></msub><mo>=</mo><mn>{{ fmt(result.value, 8) }}</mn><mtext> {{ target.label }}</mtext>
+        </math>
+      </div>
+      <p>Linear factors and SI prefixes convert through a canonical unit such as metres, hertz or joules. Celsius and Fahrenheit also need an offset. T<sub>C</sub> and T<sub>F</sub> below are the readings in degrees Celsius and Fahrenheit.</p>
+      <div class="formula">
+        <math display="block">
+          <msub><mi>T</mi><mi>C</mi></msub><mo>=</mo>
+          <mfrac><mn>5</mn><mn>9</mn></mfrac>
+          <mo>(</mo><msub><mi>T</mi><mi>F</mi></msub><mo>−</mo><mn>32</mn><mo>)</mo>
+        </math>
+        <math display="block">
+          <mn>1</mn><mtext> Wh</mtext><mo>=</mo><mn>3600</mn><mtext> J</mtext>
+        </math>
+      </div>
       <p>Conversion factors use exact definitions where specified, evaluated with ordinary floating-point arithmetic. This tool does not calculate dBm, RMS/peak relationships, battery amp-hours from watt-hours, or the frequency–wavelength relationship; those need their dedicated calculators and assumptions.</p>
     </template>
   </ToolLayout>

@@ -184,7 +184,7 @@ export const tools: ToolDef[] = [
     summary: 'Common Q signals as questions and answers, with a quick filter.',
     keywords: ['qth', 'qsl', 'qrm', 'qrp', 'qsy', 'abbreviation'], component: load(() => import('../tools/QCodes.vue')) },
   { id: 'phonetic', title: 'Phonetic Alphabet', category: 'ops', kind: 'reference',
-    summary: 'ICAO/ITU spelling alphabet and digits, large and searchable.',
+    summary: 'Spell out callsigns with the international alphabet and pronunciation guidance for letters and digits.',
     keywords: ['nato', 'alpha', 'bravo', 'spelling', 'callsign'], component: load(() => import('../tools/Phonetic.vue')) },
 ]
 

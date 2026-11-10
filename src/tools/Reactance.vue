@@ -50,7 +50,20 @@ const curves = computed(() => {
       </div>
     </div>
     <template #explain>
-      <div class="formula">X_L = 2π·f·L     X_C = 1 / (2π·f·C)     f₀ = 1 / (2π·√(L·C))</div>
+      <div class="formula">
+        <math display="block">
+          <msub><mi>X</mi><mi>L</mi></msub><mo>=</mo><mn>2</mn><mi>π</mi><mi>f</mi><mi>L</mi>
+        </math>
+        <math display="block">
+          <msub><mi>X</mi><mi>C</mi></msub><mo>=</mo>
+          <mfrac><mn>1</mn><mrow><mn>2</mn><mi>π</mi><mi>f</mi><mi>C</mi></mrow></mfrac>
+        </math>
+        <math display="block">
+          <msub><mi>f</mi><mn>0</mn></msub><mo>=</mo>
+          <mfrac><mn>1</mn><mrow><mn>2</mn><mi>π</mi><msqrt><mi>L</mi><mi>C</mi></msqrt></mrow></mfrac>
+        </math>
+      </div>
+      <p>X<sub>L</sub> is inductive reactance and X<sub>C</sub> is the magnitude of capacitive reactance, both in ohms. f is the operating frequency and f<sub>0</sub> is the resonant frequency, both in hertz. Use inductance L in henries and capacitance C in farads.</p>
       <p>Ideal components only. Real coils have resistance and self-capacitance, and real capacitors have inductance, so a part’s behaviour departs from these formulas well below its self-resonant frequency. Values are for a lossless series or parallel LC; Q and bandwidth are not computed.</p>
     </template>
   </ToolLayout>

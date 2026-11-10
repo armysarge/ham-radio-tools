@@ -2,10 +2,27 @@ import { describe, it, expect } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { CONSTANTS, CTCSS, DCS_CODES, ITU_BANDS } from '../src/data/reference'
 import BandPlans from '../src/tools/BandPlans.vue'
+import Phonetic from '../src/tools/Phonetic.vue'
 import RefLists from '../src/tools/RefLists.vue'
 
 const global = { stubs: { RouterLink: true } }
 const c = (sym: string) => CONSTANTS.find((x) => x.symbol === sym)!.value
+
+describe('phonetic alphabet', () => {
+  it('shows pronunciation for every letter and digit while spelling callsigns as code words', async () => {
+    const w = mount(Phonetic, { global })
+    const cards = w.get('section[aria-labelledby="phonetic-pronunciation"]').findAll('.card')
+    const guide = cards.map(card => card.get('p').text())
+    expect(guide).toHaveLength(36)
+    expect(guide.every(Boolean)).toBe(true)
+    expect(cards.find(card => card.text().includes('Quebec'))?.get('p').text()).toBe('keh-BECK')
+    expect(cards.find(card => card.text().includes('Charlie'))?.get('p').text()).toBe('CHAR-lee or SHAR-lee')
+    expect(cards.find(card => card.text().includes('Nine'))?.get('p').text()).toBe('NINE-er')
+    await w.get('input').setValue('q9j')
+    expect(w.get('[aria-live="polite"]').text()).toBe('Q Quebec · 9 Nine · J Juliett')
+    w.unmount()
+  })
+})
 
 describe('reference data sanity', () => {
   it('CTCSS: 50 unique ascending tones, 38 of them standard EIA', () => {

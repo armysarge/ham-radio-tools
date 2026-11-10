@@ -136,8 +136,13 @@ const spacingPx = computed(() => 28)
     </div>
 
     <template #explain>
-      <p>Man-made noise is usually either <strong>local</strong> (found by switching things off) or <strong>external</strong> (found by walking with a portable receiver and a directional loop). Harmonic maths tells you whether a suspected fundamental can reach your band: noise at n × f lands wherever n × f falls within your passband.</p>
-      <div class="formula">harmonic n = f / fundamental     small loop: perimeter ≤ λ / 10     usable f<sub>max</sub> = c / (10 · π · D)</div>
+      <p>Man-made noise is usually either <strong>local</strong> (found by switching things off) or <strong>external</strong> (found by walking with a portable receiver and a directional loop). The harmonic finder checks whether a multiple of a suspected fundamental falls in your receiver’s passband.</p>
+      <div class="formula">
+        <div>Harmonic frequency = n × f<sub>fund</sub></div>
+        <div>Small-loop perimeter limit = λ ÷ 10</div>
+        <div>f<sub>max</sub> = c ÷ (10 × π × D)</div>
+      </div>
+      <p>n is the whole-number harmonic order and f<sub>fund</sub> is the suspected source’s fundamental frequency. λ is the wavelength at the highest frequency of interest. For a circular loop of diameter D in metres, f<sub>max</sub> is the frequency in hertz where the perimeter reaches one tenth of a wavelength. c is the speed of light in metres per second.</p>
       <p>Interference rules, limits and reporting procedures are different in every country, so this tool gives no legal advice; contact your national regulator or amateur-radio society for local steps.</p>
     </template>
   </ToolLayout>

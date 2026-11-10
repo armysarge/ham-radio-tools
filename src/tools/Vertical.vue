@@ -102,7 +102,8 @@ const ry = computed(() => RP * Math.sin(((mode.value === 'elevated' ? droop.valu
     <ModsPanel antenna="vertical" />
 
     <template #explain>
-      <div class="formula">radiator = radial = k · c / (4f)      k ≈ 0.95  (234 ÷ f<sub>MHz</sub> feet)</div>
+      <div class="formula">Radiator length = resonant radial length = k × c ÷ (4f)</div>
+      <p>Lengths are in metres when c is the speed of light in metres per second and f is frequency in hertz. k is the empirical shortening factor, typically about 0.95. The corresponding rule in feet is about 234 ÷ f<sub>MHz</sub>, with frequency in megahertz.</p>
       <p>A quarter-wave vertical uses the ground, or a set of radials, as the other half of a dipole. <strong>These are empirical design estimates, not simulations</strong>: the tool makes no claim about gain, take-off angle or bandwidth.</p>
       <ul>
         <li><strong>Elevated radials</strong> are resonant (about ¼ wavelength) and work well in small numbers. Horizontal radials give roughly 35 Ω; sloping them about 45° brings the impedance up toward 50 Ω.</li>

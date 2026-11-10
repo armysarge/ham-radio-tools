@@ -49,7 +49,15 @@ const lam = computed(() => { try { return f.value && vf.value ? wavelength(f.val
       </div>
     </div>
     <template #explain>
-      <div class="formula">L = (θ / 360) × c × VF / f</div>
+      <div class="formula">
+        <math display="block">
+          <mi>L</mi><mo>=</mo>
+          <mfrac><mi>θ</mi><mrow><mn>360</mn><mo>°</mo></mrow></mfrac>
+          <mo>⋅</mo>
+          <mfrac><mrow><mi>c</mi><mo>⋅</mo><mi>VF</mi></mrow><mi>f</mi></mfrac>
+        </math>
+      </div>
+      <p>L is physical cable length in metres, θ is electrical length in degrees, c is the speed of light in metres per second, VF is the cable’s velocity factor as a fraction, and f is frequency in hertz.</p>
       <p>Signals travel slower in a cable than in air, so a “quarter wave” of cable is shorter than a quarter wave in free space. Measure the connector-to-connector <em>electrical</em> length: connectors add a little, and VF varies between makes and with age, so cut slightly long and verify with an antenna analyser if precision matters (phasing lines, stubs).</p>
     </template>
   </ToolLayout>

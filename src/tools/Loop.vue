@@ -99,9 +99,11 @@ const SHAPES: [LoopShape, string][] = [['square', 'Square'], ['triangle', 'Trian
     <ModsPanel antenna="loop" />
 
     <template #explain>
-      <div class="formula">perimeter = k · c / f      k ≈ 1.0218  (1005 ÷ f<sub>MHz</sub> feet)</div>
+      <div class="formula">Loop perimeter = k × c ÷ f</div>
+      <p>Perimeter is in metres when c is the speed of light in metres per second and f is frequency in hertz. k is the empirical loop factor. The default k ≈ 1.0218 corresponds to about 1005 ÷ f<sub>MHz</sub> feet.</p>
       <p>A full-wave loop is about one wavelength of wire (slightly more, because of the wire’s end-effects and the closed shape). The numbers are an <strong>empirical design estimate</strong>, not a simulation: shape, wire size, height and nearby objects shift resonance, and gain or radiation patterns are not computed. Square, triangle and circle differ little in resonant length for a given perimeter; the circle encloses the most area.</p>
-      <p>Quarter-wave transformer: Z<sub>in</sub> = Z<sub>line</sub>² / Z<sub>load</sub>, so 75 Ω² / ~110 Ω ≈ 51 Ω. It is valid only at the design frequency, so bandwidth is limited.</p>
+      <div class="formula">Z<sub>in</sub> = Z<sub>line</sub><sup>2</sup> ÷ Z<sub>load</sub></div>
+      <p>For the quarter-wave transformer, Z<sub>in</sub> is the impedance seen at its input, Z<sub>line</sub> is the cable’s characteristic impedance, and Z<sub>load</sub> is the loop’s assumed impedance. For example, (75 Ω)<sup>2</sup> ÷ 110 Ω ≈ 51 Ω. This transformation holds at the design frequency, so bandwidth is limited.</p>
     </template>
   </ToolLayout>
 </template>

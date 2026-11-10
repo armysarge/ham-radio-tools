@@ -134,15 +134,20 @@ const printPage = () => window.print()
     <ModsPanel antenna="dipole" />
 
     <template #explain>
-      <div class="formula">L<sub>total</sub> = k · c / (2f)       k ≈ 0.95  (468 ÷ f<sub>MHz</sub> feet)</div>
-      <p>A free-space half wave would be c/2f; the wire is electrically longer than it looks because of end effects, so it is cut a few percent shorter. <strong>k is an empirical factor.</strong> This is a design estimate, not a simulation: it says nothing about SWR bandwidth, feed-point impedance or radiation pattern.</p>
+      <div class="formula">
+        <div>L<sub>total</sub> = k × c ÷ (2f)</div>
+        <div>L<sub>leg</sub> = L<sub>total</sub> ÷ 2</div>
+      </div>
+      <p>L<sub>total</sub> is the total wire length in metres and L<sub>leg</sub> is the length of each leg. c is the speed of light in metres per second, f is the design frequency in hertz, and k is the shortening factor. The familiar rule in feet is about 468 ÷ f<sub>MHz</sub>, with frequency in megahertz.</p>
+      <p>A free-space half wave would be c ÷ (2f). The wire is electrically longer than it looks because of end effects, so it is cut a few percent shorter. <strong>k is an empirical factor.</strong> This is a design estimate, not a simulation: it says nothing about SWR bandwidth, feed-point impedance or radiation pattern.</p>
       <ul>
         <li><strong>Conductor:</strong> thicker conductors lower k (shorter antenna) and widen bandwidth.</li>
         <li><strong>Height &amp; ground:</strong> below about ¼ wavelength, the ground shifts resonance and impedance noticeably; expect to trim.</li>
         <li><strong>Surroundings:</strong> trees, gutters and metal masts typically lower the resonant frequency.</li>
         <li><strong>Insulation:</strong> covered wire resonates lower than bare wire, so the 5% allowance matters.</li>
       </ul>
-      <p>Trim estimate: resonance moves inversely with length, ΔL ≈ L·(f<sub>measured</sub> − f<sub>target</sub>)/f<sub>target</sub> (small corrections only).</p>
+      <div class="formula">Trim per leg ≈ L<sub>current</sub> × (1 − f<sub>measured</sub> ÷ f<sub>target</sub>) ÷ 2</div>
+      <p>L<sub>current</sub> is the wire’s current total length. f<sub>measured</sub> is its measured resonant frequency and f<sub>target</sub> is the desired resonance. A positive trim means cut that much from each leg. A negative trim means add wire. Use this estimate for small corrections.</p>
     </template>
   </ToolLayout>
 </template>

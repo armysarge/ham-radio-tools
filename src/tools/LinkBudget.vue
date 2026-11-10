@@ -62,7 +62,26 @@ const fres = computed(() => { try { return d.value && f.value ? fresnelRadius(d.
       </div>
     </div>
     <template #explain>
-      <div class="formula">margin = P<sub>EIRP</sub> − FSPL − other + G<sub>rx</sub> − L<sub>rx</sub> − (−174 + 10·log₁₀(B) + NF + SNR)</div>
+      <div class="formula">
+        <math display="block">
+          <msub><mi>L</mi><mi>total</mi></msub><mo>=</mo><mi>FSPL</mi><mo>+</mo><msub><mi>L</mi><mi>other</mi></msub><mo>+</mo><msub><mi>L</mi><mi>RX</mi></msub>
+        </math>
+        <math display="block">
+          <msub><mi>P</mi><mi>RX</mi></msub><mo>=</mo><mi>EIRP</mi><mo>+</mo><msub><mi>G</mi><mi>RX</mi></msub><mo>−</mo><msub><mi>L</mi><mi>total</mi></msub>
+        </math>
+        <math display="block">
+          <msub><mi>N</mi><mi>B</mi></msub><mo>=</mo><mo>−</mo><mn>174</mn><mo>+</mo><mn>10</mn><msub><mi>log</mi><mn>10</mn></msub><mo>(</mo>
+          <mfrac><mi>B</mi><mrow><mn>1</mn><mi>Hz</mi></mrow></mfrac>
+          <mo>)</mo>
+        </math>
+        <math display="block">
+          <msub><mi>P</mi><mi>min</mi></msub><mo>=</mo><msub><mi>N</mi><mi>B</mi></msub><mo>+</mo><mi>NF</mi><mo>+</mo><mi>SNR</mi>
+        </math>
+        <math display="block">
+          <mi>M</mi><mo>=</mo><msub><mi>P</mi><mi>RX</mi></msub><mo>−</mo><msub><mi>P</mi><mi>min</mi></msub>
+        </math>
+      </div>
+      <p>P<sub>RX</sub> is received power, EIRP is equivalent isotropic radiated power, and P<sub>min</sub> is receiver sensitivity, all in dBm. FSPL is free-space path loss, L<sub>other</sub> covers other losses, and L<sub>RX</sub> is receive feedline loss, all in dB. G<sub>RX</sub> is receive antenna gain in dBi. L<sub>total</sub> combines the losses and M is the link margin, both in dB. N<sub>B</sub> is thermal noise in dBm over the bandwidth B in hertz. The sensitivity calculation adds the noise figure NF and required signal-to-noise ratio SNR, both in dB.</p>
       <p>Everything is added in decibels: power out of the antenna, minus the spreading loss over distance, plus the receive antenna gain, minus losses, compared with the weakest signal your receiver can use. The result is a <strong>best-case free-space</strong> figure; it ignores terrain, ground reflections and the atmosphere, so treat the margin as an upper bound, not a promise. A real VHF path wants 10–20 dB of margin to cover fading.</p>
     </template>
   </ToolLayout>

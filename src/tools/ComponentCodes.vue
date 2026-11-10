@@ -250,7 +250,8 @@ void parseValue
     <template #explain>
       <p><strong>Resistor colour code.</strong> The first bands are digits, the next is a multiplier (a power of ten; gold and silver are ×0.1 and ×0.01), then tolerance, and on 6-band parts the temperature coefficient. The value is the digits read as a number times the multiplier. Orientation matters: the tolerance band sits slightly apart from the others, normally at the right.</p>
       <p><strong>Preferred values.</strong> Parts are made in standard steps so that every value is within tolerance of a stock one; the nearest-value finder compares on a logarithmic scale because tolerance is a percentage.</p>
-      <p><strong>LED resistor.</strong> R = (V<sub>supply</sub> − V<sub>LED</sub>) / I, rounded <em>up</em> to a stock value so the current stays at or below the target. These are idealised formulas: real LEDs, supplies and resistors vary, and nothing here replaces a datasheet.</p>
+      <div class="formula">LED series resistor R = (V<sub>supply</sub> − V<sub>LED</sub>) ÷ I</div>
+      <p>R is resistance in ohms, V<sub>supply</sub> is supply voltage, V<sub>LED</sub> is the LED’s forward voltage, and I is target current in amperes. Round R <em>up</em> to a stock value so current stays at or below the target. Real LEDs, supplies and resistors vary, so check the datasheets.</p>
     </template>
   </ToolLayout>
 </template>

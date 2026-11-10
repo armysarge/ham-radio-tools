@@ -82,7 +82,8 @@ const printPage = () => window.print()
     <ModsPanel antenna="qfh" />
 
     <template #explain>
-      <div class="formula">Dimensions = published 137.55 MHz prototype dimensions × (137.55 MHz ÷ selected frequency)</div>
+      <div class="formula">D = D<sub>ref</sub> × (137.55 MHz ÷ f)</div>
+      <p>D is a scaled dimension and D<sub>ref</sub> is its published prototype value. Use the selected frequency f in megahertz.</p>
       <p>This is an empirical geometric scale of the EDN prototype: long loop 560 mm, short loop 512 mm, former diameter 355.6 mm and loop offset 24 mm at 137.55 MHz. It is not a general QFH synthesis method. Changing frequency scales the shape but does not account for conductor thickness, dielectric supports, feed network or surrounding structures.</p>
       <p>QFH antennas use four helical conductors arranged as two unequal loops. The feed network and winding/phase orientation are essential to polarization and pattern; this drawing does not validate either. It is intended as a receive construction starting point, not a transmit-ready design.</p>
     </template>

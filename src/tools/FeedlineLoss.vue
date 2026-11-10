@@ -67,7 +67,27 @@ const marker = computed<[number, number] | null>(() => (res.value && f.value && 
       </div>
     </div>
     <template #explain>
-      <div class="formula">loss(f) = loss<sub>ref</sub> · √(f / f<sub>ref</sub>) · length / 100 ft       total = 10·log₁₀((a² − ρ²) / (a·(1 − ρ²)))</div>
+      <div class="formula">
+        <math display="block">
+          <msub><mi>L</mi><mi>m</mi></msub><mo>=</mo><msub><mi>L</mi><mi>ref</mi></msub>
+          <msqrt><mfrac><mi>f</mi><msub><mi>f</mi><mi>ref</mi></msub></mfrac></msqrt>
+          <mfrac><mi>ℓ</mi><msub><mi>ℓ</mi><mi>ref</mi></msub></mfrac>
+        </math>
+        <math display="block">
+          <mi>a</mi><mo>=</mo>
+          <msup><mn>10</mn><mfrac><msub><mi>L</mi><mi>m</mi></msub><mn>10</mn></mfrac></msup>
+        </math>
+        <math display="block">
+          <mi>ρ</mi><mo>=</mo>
+          <mfrac><mrow><mi>SWR</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi>SWR</mi><mo>+</mo><mn>1</mn></mrow></mfrac>
+        </math>
+        <math display="block">
+          <msub><mi>L</mi><mi>total</mi></msub><mo>=</mo><mn>10</mn><msub><mi>log</mi><mn>10</mn></msub><mo>(</mo>
+          <mfrac><mrow><msup><mi>a</mi><mn>2</mn></msup><mo>−</mo><msup><mi>ρ</mi><mn>2</mn></msup></mrow><mrow><mi>a</mi><mo>(</mo><mn>1</mn><mo>−</mo><msup><mi>ρ</mi><mn>2</mn></msup><mo>)</mo></mrow></mfrac>
+          <mo>)</mo>
+        </math>
+      </div>
+      <p>L<sub>m</sub> is matched loss and L<sub>total</sub> is total loss including mismatch, both in dB. L<sub>ref</sub> is the datasheet loss in dB over its reference length ℓ<sub>ref</sub> at reference frequency f<sub>ref</sub>. ℓ is the actual cable length and f is the operating frequency. Use matching units for the two lengths and for the two frequencies. a is the matched power-loss ratio and ρ is the magnitude of the load reflection coefficient.</p>
       <p>Cable loss is quoted in dB per 100 ft (or per 100 m) at a few frequencies. This tool scales one datasheet point with the square root of frequency, which suits HF and VHF where the conductors dominate; at UHF and above the real cable loses more than this predicts, so enter your datasheet figure <em>at your frequency</em> and use that as the reference.</p>
       <p>A mismatch makes the signal travel up and down the line more than once, so it adds loss on top of the matched figure; the extra is small on a low-loss line and large on a lossy one. The SWR must be the value <strong>at the antenna</strong>: a meter at the radio reads lower than the truth on a lossy line. This is a calculation from your inputs; real cables age, kink and get wet.</p>
     </template>

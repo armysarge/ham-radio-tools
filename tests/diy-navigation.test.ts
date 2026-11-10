@@ -40,7 +40,7 @@ describe('DIY Components navigation', () => {
     expect(root.querySelector('svg[aria-label^="Two electrically separate"]')).not.toBeNull()
     expect(text()).toContain('Which wire and cables can I use?')
     expect(text()).toContain('Build and verify')
-    expect(text()).toContain('Ns/Np = √(Zs/Zp)')
+    expect(root.querySelector('details.explain .formula')?.textContent).toContain('Ns = Np × √(Zs ÷ Zp)')
     expect(text()).not.toContain('Wheeler’s formula')
   })
 

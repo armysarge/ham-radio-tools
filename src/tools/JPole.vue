@@ -104,7 +104,12 @@ const X2 = X1 + SP
     <ModsPanel antenna="jpole" />
 
     <template #explain>
-      <div class="formula">overall = 0.75 · k · λ       stub = 0.25 · k · λ       radiator = overall − stub = 0.5 · k · λ</div>
+      <div class="formula">
+        <div>Overall length = ¾ × k × λ</div>
+        <div>Stub length = ¼ × k × λ</div>
+        <div>Radiator length = ½ × k × λ</div>
+      </div>
+      <p>λ is the free-space wavelength in metres and k is the empirical shortening factor. The overall length includes the stub and the radiator.</p>
       <p>A J-pole is a half-wave radiator with a quarter-wave stub as its matching section. At the shorted bottom of a quarter-wave stub the impedance is almost zero; moving the feed tap up the stub raises it until it reaches about 50 Ω, which is why the coax connects part-way up. Because the radiator is fed at the shorted end of the stub, it needs no radials or ground plane, although the outside of the coax still needs a choke.</p>
       <p><strong>Empirical design estimate, not a simulation.</strong> The spacing and tap are starting values: they depend on the tube diameter and fittings. SWR bandwidth, gain and pattern are not predicted. A J-pole’s gain is about that of a half-wave dipole, so claims of much more should be treated with caution.</p>
     </template>

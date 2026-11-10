@@ -173,7 +173,12 @@ const ferrite = computed(() => CORES.filter((c) => c.material.startsWith('Ferrit
     </div>
     </template>
     <template v-if="tab !== 'transformer'" #explain>
-      <p>Each part is a textbook formula turned into a build size: capacitors from plate area, gap and the film’s permittivity (C = ε₀·εr·A/d), coils from Wheeler’s formula, toroids from the core’s AL value. Real home-made parts differ from the numbers because films stretch, plates warp and winding is never perfect. The answer is a good first cut: build it, measure it, and trim.</p>
+      <div class="formula">
+        <div>Plate capacitance per gap C = ε<sub>0</sub> × ε<sub>r</sub> × A ÷ d</div>
+        <div>Toroid inductance L = A<sub>L</sub> × N<sup>2</sup></div>
+      </div>
+      <p>C is capacitance in farads, A is plate overlap in square metres, and d is the gap in metres. ε<sub>0</sub> is vacuum permittivity and ε<sub>r</sub> is the dielectric’s relative permittivity. For a toroid, L is inductance in nanohenries, A<sub>L</sub> is the core’s inductance factor in nanohenries per turn squared, and N is the number of turns.</p>
+      <p>Air-core coils use Wheeler’s single-layer formula. Films stretch, plates warp and windings vary, so use the dimensions as a starting point and measure the finished part.</p>
       <p>Parts from this page are for receive circuits, test gear and learning, plus low-power, well-ventilated transmit use where noted. Mains-voltage and high-voltage parts are left out on purpose.</p>
     </template>
   </component>

@@ -85,7 +85,16 @@ const refs = ['NIST SP 811, Appendix B.8: angular units, degree/minute/second re
     </div>
     <div style="margin-top:1rem"><WorldMap :markers="point ? [{ ...point, label: 'Position' }] : []" :cell="cell" @pick="(a, b) => setPoint(+a.toFixed(6), +b.toFixed(6))" /></div>
     <template #explain>
-      <div class="formula">Decimal degrees = sign × (degrees + minutes / 60 + seconds / 3600)<br />1° = 60′ = 3600″ · N/E positive · S/W negative</div>
+      <div class="formula">
+        <math display="block">
+          <mi>θ</mi><mo>=</mo><mi>s</mi><mo>(</mo>
+          <mi>D</mi><mo>+</mo><mfrac><mi>M</mi><mn>60</mn></mfrac><mo>+</mo><mfrac><mi>S</mi><mn>3600</mn></mfrac><mo>)</mo>
+        </math>
+        <math display="block">
+          <mn>1</mn><mo>°</mo><mo>=</mo><mn>60</mn><mo>′</mo><mo>=</mo><mn>3600</mn><mo>″</mo>
+        </math>
+      </div>
+      <p>θ is the coordinate in decimal degrees. Use unsigned degrees D, arcminutes M and arcseconds S. The sign s is +1 for north or east and −1 for south or west.</p>
       <p>Minutes and seconds are each less than 60. Only the smallest supplied field may have a fractional part. A sign and hemisphere must agree: −25 S is valid; −25 N is contradictory.</p>
       <p>Assume WGS84 coordinates for the map and saved station. This tool does not convert between datums, project UTM coordinates or find street addresses. DMS is rounded to 0.01″ and decimal minutes to 0.0001′ for display; rounding carries into the next minute or degree.</p>
     </template>

@@ -66,10 +66,51 @@ const show = (p: { kind: string; value: number }) => (p.kind === 'C' ? `${fmt(p.
       </div>
     </div>
     <template #explain>
-      <p>The ladder is scaled from normalised prototype values g to your cutoff and impedance. This designer supports odd orders with equal source/load terminations. A Chebyshev response trades pass-band ripple for a steeper transition than Butterworth.</p>
-      <p v-if="highPass">High-pass: series C = 1 / (2π f<sub>c</sub> Z₀ g); shunt L = Z₀ / (2π f<sub>c</sub> g). The low-pass response is evaluated at f<sub>c</sub>/f, exchanging low and high frequencies.</p>
-      <p v-else>Low-pass: shunt C = g / (2π f<sub>c</sub> Z₀); series L = g Z₀ / (2π f<sub>c</sub>).</p>
-      <p>Butterworth attenuation A = 10 log₁₀(1 + x<sup>2n</sup>). Chebyshev A = 10 log₁₀(1 + ε²T<sub>n</sub>(x)²), where ε² = 10<sup>ripple/10</sup> − 1 and T<sub>n</sub> is the Chebyshev polynomial. x = {{ highPass ? 'f꜀/f' : 'f/f꜀' }}.</p>
+      <p>The ladder scales normalised prototype values to your cutoff and impedance. This designer supports odd orders with equal source and load impedances. A Chebyshev response trades passband ripple for a steeper transition than Butterworth.</p>
+      <div v-if="highPass" class="formula">
+        <math display="block">
+          <msub><mi>C</mi><mi>series</mi></msub><mo>=</mo>
+          <mfrac><mn>1</mn><mrow><mn>2</mn><mi>π</mi><msub><mi>f</mi><mi>c</mi></msub><msub><mi>Z</mi><mn>0</mn></msub><mi>g</mi></mrow></mfrac>
+        </math>
+        <math display="block">
+          <msub><mi>L</mi><mi>shunt</mi></msub><mo>=</mo>
+          <mfrac><msub><mi>Z</mi><mn>0</mn></msub><mrow><mn>2</mn><mi>π</mi><msub><mi>f</mi><mi>c</mi></msub><mi>g</mi></mrow></mfrac>
+        </math>
+        <math display="block">
+          <mi>x</mi><mo>=</mo>
+          <mfrac><msub><mi>f</mi><mi>c</mi></msub><mi>f</mi></mfrac>
+        </math>
+      </div>
+      <div v-else class="formula">
+        <math display="block">
+          <msub><mi>C</mi><mi>shunt</mi></msub><mo>=</mo>
+          <mfrac><mi>g</mi><mrow><mn>2</mn><mi>π</mi><msub><mi>f</mi><mi>c</mi></msub><msub><mi>Z</mi><mn>0</mn></msub></mrow></mfrac>
+        </math>
+        <math display="block">
+          <msub><mi>L</mi><mi>series</mi></msub><mo>=</mo>
+          <mfrac><mrow><mi>g</mi><msub><mi>Z</mi><mn>0</mn></msub></mrow><mrow><mn>2</mn><mi>π</mi><msub><mi>f</mi><mi>c</mi></msub></mrow></mfrac>
+        </math>
+        <math display="block">
+          <mi>x</mi><mo>=</mo>
+          <mfrac><mi>f</mi><msub><mi>f</mi><mi>c</mi></msub></mfrac>
+        </math>
+      </div>
+      <p>C is capacitance in farads and L is inductance in henries. g is the normalised value of that prototype element. Z<sub>0</sub> is the termination impedance in ohms. The ratio x compares the evaluation frequency f and cutoff f<sub>c</sub>, both in hertz.</p>
+      <div class="formula">
+        <math display="block">
+          <msub><mi>A</mi><mi>B</mi></msub><mo>=</mo><mn>10</mn><msub><mi>log</mi><mn>10</mn></msub><mo>(</mo><mn>1</mn><mo>+</mo><msup><mi>x</mi><mrow><mn>2</mn><mi>n</mi></mrow></msup><mo>)</mo>
+        </math>
+        <math display="block">
+          <msub><mi>A</mi><mi>C</mi></msub><mo>=</mo><mn>10</mn><msub><mi>log</mi><mn>10</mn></msub><mo>(</mo>
+          <mn>1</mn><mo>+</mo><msup><mi>ε</mi><mn>2</mn></msup><msubsup><mi>T</mi><mi>n</mi><mn>2</mn></msubsup><mo>(</mo><mi>x</mi><mo>)</mo><mo>)</mo>
+        </math>
+        <math display="block">
+          <msup><mi>ε</mi><mn>2</mn></msup><mo>=</mo>
+          <msup><mn>10</mn><mfrac><mi>r</mi><mn>10</mn></mfrac></msup>
+          <mo>−</mo><mn>1</mn>
+        </math>
+      </div>
+      <p>A<sub>B</sub> and A<sub>C</sub> are the Butterworth and Chebyshev attenuation in dB. n is the filter order, T<sub>n</sub> is the order-n Chebyshev polynomial, and ε is the ripple factor derived from the passband ripple r in dB.</p>
       <p>The attenuation shown is for lossless parts at ideal values. Real coils have loss and stray capacitance, so the stop-band flattens out at high frequency; component tolerance moves the cutoff.</p>
       <p>Use RF-rated parts and a short, low-inductance ground return. These values do not specify safe transmitter power, capacitor voltage rating, coil current or core material. Check the built filter with suitable instruments before use.</p>
     </template>

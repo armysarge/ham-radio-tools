@@ -44,6 +44,11 @@ const show = (m: number) => (imp.value ? `${(m / 0.3048).toFixed(1)} ft` : `${m.
       </div>
     </div>
     <template #explain>
+      <div class="formula">
+        <div>Nominal radial length = k × λ ÷ 4</div>
+        <div>Total wire = cut length × radial count</div>
+      </div>
+      <p>λ is the free-space wavelength and k is 0.97 for elevated radials or 1 for ground-mounted radials. The cut length is the nominal length limited by the available radius.</p>
       <p>A quarter-wave vertical needs a return path for its current. On the ground that is a fan of wires lying on or just under the surface; each extra radial lowers the ground loss. Elevated, a few resonant radials are enough because they carry the current themselves. The counts shown are the commonly quoted ones; your soil, nearby metal and the surface you have decide the real loss, and no tool here can measure that.</p>
     </template>
   </ToolLayout>

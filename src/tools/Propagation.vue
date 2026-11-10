@@ -96,7 +96,14 @@ const useNow = () => { when.value = new Date().toISOString().slice(0, 16) }
     </div>
 
     <template #explain>
-      <p>The sun’s position follows from the date and time using standard astronomical formulae, so the sunrise, sunset and grey line need no data from anywhere else. The MUF is the secant law: a wave sent up at a steeper angle needs a lower frequency to be bent back, and the flatter the angle (the longer the hop), the higher the frequency that still returns. It needs the layer’s critical frequency, which changes hourly and is not something this tool can know. Use it for the shape of the answer, not the number.</p>
+      <p>The sun’s position follows from the date and time using standard astronomical formulae, so the sunrise, sunset and grey line need no data from anywhere else.</p>
+      <div class="formula">
+        <math display="block">
+          <mi>MUF</mi><mo>=</mo>
+          <mfrac><msub><mi>f</mi><mi>oF2</mi></msub><mrow><mi>cos</mi><mo>(</mo><mi>θ</mi><mo>)</mo></mrow></mfrac>
+        </math>
+      </div>
+      <p>MUF is the estimated single-hop maximum usable frequency and f<sub>oF2</sub> is the F2 layer’s critical frequency, both in megahertz. θ is the angle from the vertical at the reflection point, calculated from hop distance and layer height. The critical frequency changes hourly, so supply a measurement or forecast for the time and region of interest.</p>
     </template>
   </ToolLayout>
 </template>

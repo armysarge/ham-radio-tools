@@ -67,6 +67,18 @@ const diagram = computed(() => {
     <AntennaBands :antenna="which" />
     <RadiationPattern kind="beam" />
     <template #explain>
+      <div v-if="isYagi" class="formula">
+        <div>Driven element length = 0.473 × λ</div>
+        <div>Reflector length = 1.05 × driven element length</div>
+        <div>First director length = 0.95 × driven element length</div>
+      </div>
+      <div v-else class="formula">
+        <div>Driven loop perimeter (ft) = 1005 ÷ f<sub>MHz</sub></div>
+        <div>Reflector loop perimeter (ft) = 1030 ÷ f<sub>MHz</sub></div>
+        <div>Director loop perimeter (ft) = 975 ÷ f<sub>MHz</sub></div>
+      </div>
+      <p v-if="isYagi">λ is the free-space wavelength in metres. Each additional director is 0.97 times the length of the previous one.</p>
+      <p v-else>f<sub>MHz</sub> is the design frequency in megahertz. Each side is one quarter of its loop perimeter. Loop spacing is 0.2 times the free-space wavelength.</p>
       <p v-if="isYagi">A Yagi’s parasitic elements are not fed. The one behind the driven element is slightly long, so it re-radiates forward; the ones in front are slightly short, so they pull the pattern forward. Real optimised designs trade lengths and spacings against each other; these proportions are a sound place to begin. The result will cover a narrow band. Every figure is an empirical starting point, not a computed optimum.</p>
       <p v-else>A quad element is a full-wave loop. This starting design uses a larger reflector and smaller directors. The perimeters come from empirical formulas; trim and measure the assembled antenna. The rotatable drawing projects square loop planes and their positions in three dimensions, preserving their relative lengths and spacings. It is a construction view, not a model of gain, impedance or radiation pattern.</p>
     </template>
