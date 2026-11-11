@@ -4,14 +4,18 @@ All notable changes are listed here, newest first. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-11
+
 ### Changed
 - Calculator explanations use typeset equations with stacked fractions, italic variables, radicals, powers and subscripts. Nearby definitions identify symbols and units.
 - Morse & CW is a dedicated category. The trainer starts with E and T, adds characters through short guided rounds, and brings back missed sounds for review. Daily signals, speed sprints and on-air words earn XP and badges, with progress and streaks stored on the device.
+- Moxon Rectangle and Cubical Quad Beam have distinct menu icons that show their antenna layouts.
 
 ### Fixed
 - Desktop splash no longer flashes past on fast local startup: retain it for at least 700 ms from its first native window display, showing Ready if loading finishes sooner. Slow startups receive no extra hold; the browser handoff remains immediate. Added a real Electron first-display regression check.
 
 ### Added
+- Imported broadcast schedule packs can carry inclusive UTC validity dates. Upcoming and expired schedules remain available under Everything and are excluded from time-based matches.
 - Satellite Pass Calculator keeps a saved library of element sets (TLEs) on the device, so passes work offline without pasting each time. Save the pasted set, import a multi-satellite file such as CelesTrak's amateur-radio list (damaged sets are rejected, the newest set per satellite is kept), and see each set's age. The desktop app adds an explicit **Update from CelesTrak** button that follows CelesTrak's usage policy: one documented URL, at most once every 2 hours, stop on any error. Nothing downloads in the background, and the web build does not connect out.
 - Every tool page has an info button (ⓘ) beside the favourite star that opens a plain-language “What is this?” explanation and when you would use the tool. Text lives in `src/data/toolInfo.ts`; a test fails if a tool has none.
 - Satellite Pass Calculator shows Doppler for any predicted pass. Enter a downlink and optional uplink, or choose from a SatNOGS DB snapshot of 11 satellites (CC BY-SA 4.0, retrieved 2026-11-10). The page shows the source, licence and snapshot age and warns when it is over 90 days old. It links to AMSAT activity reports, ARISS ISS status and the JARL FO-29 schedule for an online check.
